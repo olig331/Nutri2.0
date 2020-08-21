@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Search } from './Search';
 import { Stats } from './Stats';
+import { Link } from 'react-router-dom';
+
+
 
 export const Tracker: React.FC = () => {
 
@@ -25,7 +28,10 @@ export const Tracker: React.FC = () => {
 
 
   return (
-    <>
+    <> 
+      <Link to="/dashboard">
+        <button>Dashboard</button>
+      </Link>
       <Search
         addItem={addItemFromSearch}
       />

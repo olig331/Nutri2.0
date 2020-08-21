@@ -1,73 +1,117 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { UsersSettingsContext, IsLoggedContext, UsersContext } from '../Context/Context';
+import { Link } from 'react-router-dom';
 
 
 export const SettingsForm: React.FC = () => {
 
-  const ageDropDown = Array.from(Array(100), (_, i: number) => i + 1);
+  const ageArray: number[] = Array.from(Array(100), (_, i) => i + 1)
+
+  const { isLogged, setisLogged } = useContext(IsLoggedContext);
+  const { userSettings, setuserSettings } = useContext(UsersSettingsContext);
+  const { users, setusers } = useContext(UsersContext);
+  const [setUpComplete, setsetUpComplete] = useState<boolean>(false);
+
+  const handleSettingsOnChange = (e: any) => {
+    var nestedCopy = { ...userSettings.usersPersonalSettings }
+    var fullCopy = { ...userSettings };
+    nestedCopy[e.target.name] = e.target.value
+    fullCopy.usersPersonalSettings = nestedCopy;
+    setuserSettings(fullCopy);  
+  };
+
+  const userSetUpComplete = () => {
+    setsetUpComplete(true);
+    setusers([...users, userSettings])
+  };
+
+  useEffect(() => {
+    if (setUpComplete) {
+      localStorage.setItem("userArray", JSON.stringify(users));
+    }
+  }, [setUpComplete])
+
+
+  const saveUserSettings = (): void => {
+    console.log("hello")
+  }
+
 
   return (
-    <div>
-      <form>=
-        <label htmlFor="gender">
-          Male: 
-          <input type="radio" name="gender" value="male" required/>
+    <>
+      {isLogged?<Link to="/dashboard"><button>Dashboard</button></Link>:null}
+      <div>
+        <h5>SETTINGS TAB </h5>
+        {/* GENDER SECTION */}
+        <label>
+          Gender:
+          Male:
+        <input
+            name="gender"
+            value="male"
+            type="radio"
+            onChange={handleSettingsOnChange}
+          />
+        Female:
+        <input
+            name="gender"
+            value="female"
+            type="radio"
+            onChange={handleSettingsOnChange}
+          />
         </label>
-        <label htmlFor="gender">
-          Female: 
-          <input type="radio" name="gender" value="female" required/>
-        </label>
-          <br/>
+        {/* AGE SECTION */}
         <label>
           Age:
-            <select>
-            {ageDropDown.map((x: number) => (
+        <select required name="age" onChange={handleSettingsOnChange}>
+            {ageArray.map((x: number) => (
               <option key={x} value={x}>{x}</option>
             ))}
           </select>
         </label>
-          <br/>
+        {/* WEIGHT SECTION */}
         <label>
           Weight:
-          <input type="number" required />
-              <label htmlFor="kg">
-                kg
-                <input id="kg" type="radio" name="weight" value="kg" required/>
-              </label>
-              <label htmlFor="lbs">
-                lbs
-                <input id="lbs" type="radio" name="weight" value="lbs" required/>
-              </label>
+        <input type="number" name="weight" onChange={handleSettingsOnChange} required />
+        LBS:
+        <input type="radio" name="weightUnit" value="lbs" onChange={handleSettingsOnChange} required />
+        KG:
+        <input type="radio" name="weightUnit" value="kg" onChange={handleSettingsOnChange} required />
         </label>
-          <br/>
-        <label htmlFor="">
+        {/* HEIGHT SECTION */}
+        <label>
           Height:
-          <input type="number" name="height" required/>
-            <label htmlFor="cm">
-              cm
-              <input type="radio" name="height" value="cm" required/>
-            </label>
-            <label htmlFor="inches">
-              Inches
-              <input type="radio" name="height" value="inches" required/>
-            </label>
+          <input type="number" name="height" onChange={handleSettingsOnChange} required />
+          Inch:
+          <input type="radio" name="heightUnit" value="inches" onChange={handleSettingsOnChange} required />
+          CM:
+          <input type="radio" name="heightUnit" value="cm" onChange={handleSettingsOnChange} required />
         </label>
-        <br/>
-        <label htmlFor="goal">Goal: {" "}
-          <label htmlFor="lose">
-            Lose
-            <input id="lose" type="radio" name="goal" value="lose" required/>
-          </label>
-          <label htmlFor="gain">
-            Gain
-            <input type="radio" id="gain" name="goal" value="gain" required/>
-          </label>
-          <label htmlFor="maintain">
-            Maintain
-            <input type="radio" id="maintain" name="goal" value="maintain" required/>
-          </label>
-        </label>   
-      </form>
-    </div>
+        {/* GOAL SECTION */}
+        <label>
+          Goal: {"  "}
+        Lose:
+        <input type="radio" name="goal" onChange={handleSettingsOnChange} value="lose" required />
+        Maintain:
+        <input type="radio" name="goal" onChange={handleSettingsOnChange} value="maintain" required />
+        Gain:
+        <input type="radio" name="goal" onChange={handleSettingsOnChange} value="gain" required />
+        </label>
+        {/* ACTIVITY LEVEL SECTION */}
+        <label>
+          Activity: {" "}
+        Sedatory:
+        <input type="radio" name="activityLevel" onChange={handleSettingsOnChange} value="sedatory" required />
+        Light:
+        <input type="radio" name="activityLevel" onChange={handleSettingsOnChange} value="light" required />
+        Medium:
+        <input type="radio" name="activityLevel" onChange={handleSettingsOnChange} value="medium" required />
+        High:
+        <input type="radio" name="activityLevel" onChange={handleSettingsOnChange} value="high" required />
+        </label>
+        <button onClick={!isLogged ? userSetUpComplete : saveUserSettings}>{isLogged ? "Save Settings" : "Complete Set Up"}</button>
+        <button onClick={() => console.log(userSettings)}>Check Settings</button>
+      </div>
+    </>
   )
 }
-

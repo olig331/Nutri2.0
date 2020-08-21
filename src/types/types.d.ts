@@ -31,7 +31,6 @@ type gdaObj ={
 }
 
 type UserInfo = {
-  name:string,
   gender:string,
   age:number;
   height:number,
@@ -39,5 +38,22 @@ type UserInfo = {
   weight:number,
   weightUnit:string,
   goal:string,
-  activityLevel:string
+  activityLevel:string,
+}
+
+
+type UsersType = {
+  userName: string,
+  userPicture: string,
+  usersPersonalSettings:{
+    gender:string,
+    age: number,
+    weight:number,
+    weightUnit:string,
+    height:number,
+    heightUnit:string,
+    goal:string,
+    activityLevel:string  
+  }
+
 }
