@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { UsersSettingsContext, IsLoggedContext, UsersContext } from '../Context/Context';
 import { Link } from 'react-router-dom';
 
@@ -9,8 +9,7 @@ export const SettingsForm: React.FC = () => {
 
   const { isLogged, setisLogged } = useContext(IsLoggedContext);
   const { userSettings, setuserSettings } = useContext(UsersSettingsContext);
-  const { users, setusers } = useContext(UsersContext);
-  const [setUpComplete, setsetUpComplete] = useState<boolean>(false);
+  
 
   const handleSettingsOnChange = (e: any) => {
     var nestedCopy = { ...userSettings.usersPersonalSettings }
@@ -21,16 +20,15 @@ export const SettingsForm: React.FC = () => {
   };
 
   const userSetUpComplete = () => {
-    setsetUpComplete(true);
-    setusers([...users, userSettings])
-  };
-
-  useEffect(() => {
-    if (setUpComplete) {
-      localStorage.setItem("userArray", JSON.stringify(users));
+    if(JSON.parse(localStorage.getItem("userArray")!).length > 0){
+      let lsUserArray = JSON.parse(localStorage.getItem("userArray")!);
+      lsUserArray = [...lsUserArray, userSettings];
+      console.log(lsUserArray);
+      localStorage.setItem("userArray", JSON.stringify(lsUserArray));
+    }else{
+      localStorage.setItem("userArray", JSON.stringify([userSettings])); 
     }
-  }, [setUpComplete])
-
+  };
 
   const saveUserSettings = (): void => {
     console.log("hello")
@@ -108,8 +106,10 @@ export const SettingsForm: React.FC = () => {
         <input type="radio" name="activityLevel" onChange={handleSettingsOnChange} value="medium" required />
         High:
         <input type="radio" name="activityLevel" onChange={handleSettingsOnChange} value="high" required />
-        </label>
-        <button onClick={!isLogged ? userSetUpComplete : saveUserSettings}>{isLogged ? "Save Settings" : "Complete Set Up"}</button>
+        </label>.
+        <Link to="/">
+          <button onClick={isLogged ? saveUserSettings : userSetUpComplete}>{isLogged ? "Save Settings" : "Complete Set Up"}</button>
+        </Link>
         <button onClick={() => console.log(userSettings)}>Check Settings</button>
       </div>
     </>

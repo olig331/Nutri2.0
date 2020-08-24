@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { IsLoggedContext } from '../Context/Context';
+import { IsLoggedContext, LoggedInUserSettingsContext } from '../Context/Context';
 
 interface passesFunc {
   toggleRender: () => void

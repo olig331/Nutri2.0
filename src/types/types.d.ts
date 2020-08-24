@@ -54,6 +54,8 @@ type UsersType = {
     heightUnit:string,
     goal:string,
     activityLevel:string  
-  }
-
+  },
+  usersDailyFood: any[],
+  usersHistory: any[]
 }
+
