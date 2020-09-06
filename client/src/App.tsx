@@ -4,7 +4,7 @@ import { Tracker } from './components/Tracker';
 import { UserSetUp } from './components/UserSetUp';
 import { History } from './components/History';
 import './style/style.css';
-import { UsersContext, IsLoggedContext, CreatingNewUserContext, LoggedInUserSettingsContext } from './Context/Context';
+import { UsersContext, IsLoggedContext, CreatingNewUserContext, LoggedInUserSettingsContext, DailyFoodContext } from './Context/Context';
 import { UserSelect } from './components/UserSelect';
 import { SettingsForm } from './components/SettingsForm';
 
@@ -18,6 +18,7 @@ export const App: React.FC = () => {
   const [users, setusers] = useState<UsersType[]>([]);
   const [creatingNewUser, setcreatingNewUser] = useState<boolean>(false);
   const [loggedInUserSettings, setLoggedInUserSettings] = useState<UsersType>();
+  const [dailyFood, setdailyFood] = useState<any[]>([]);
 
 
   useEffect(() => {
@@ -28,7 +29,8 @@ export const App: React.FC = () => {
     console.log(creatingNewUser)
   }, [])
 
-  window.onunload = () =>{
+
+  window.onunload = () => {
     localStorage.setItem("userArray", JSON.stringify(users));
   }
 
@@ -38,21 +40,23 @@ export const App: React.FC = () => {
         <IsLoggedContext.Provider value={{ isLogged, setisLogged }}>
           <CreatingNewUserContext.Provider value={{ creatingNewUser, setcreatingNewUser }}>
             <LoggedInUserSettingsContext.Provider value={{ loggedInUserSettings, setLoggedInUserSettings }}>
-              <Router>
-                <Switch>
-                  <Route path='/'exact component={UserSelect} />
-                  <Route path='/dashboard' component={Dashboard} />
-                  <Route path='/setup' component={UserSetUp} />
-                  <Route path='/tracker' component={Tracker} />
-                  <Route path='/history' component={History} />
-                  <Route path='/settings' component={SettingsForm} />
-                </Switch>
-              </Router>
+              <DailyFoodContext.Provider value={{ dailyFood, setdailyFood }}>
+                <Router>
+                  <Switch>
+                    <Route path='/' exact component={UserSelect} />
+                    <Route path='/dashboard' component={Dashboard} />
+                    <Route path='/setup' component={UserSetUp} />
+                    <Route path='/tracker' component={Tracker} />
+                    <Route path='/history' component={History} />
+                    <Route path='/settings' component={SettingsForm} />
+                  </Switch>
+                </Router>
+              </DailyFoodContext.Provider>
             </LoggedInUserSettingsContext.Provider>
           </CreatingNewUserContext.Provider>
         </IsLoggedContext.Provider>
       </UsersContext.Provider>
       <button onClick={() => { console.log(isLogged); console.log(users); console.log(creatingNewUser); console.log(loggedInUserSettings); }}>conole log stats</button>
-    </div>
+    </div >
   );
 };

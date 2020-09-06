@@ -11,6 +11,7 @@ export const UserSelect: React.FC = () => {
   const {users, setusers} = useContext(UsersContext);
   const {setcreatingNewUser} = useContext(CreatingNewUserContext);
   const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext)
+  const {setisLogged} = useContext(IsLoggedContext);
 
   
 
@@ -22,6 +23,7 @@ export const UserSelect: React.FC = () => {
     setLoggedInUserSettings(userDetails)
   }
 
+
   return (
     <>
       {users.length > 0
@@ -30,7 +32,7 @@ export const UserSelect: React.FC = () => {
             <div style={{ border: "1px solid black", borderRadius: "50%", width: "100px", height: "100px" }}></div>
             <h5>{user.userName}</h5>
             <Link to="/dashboard">
-              <button onClick={()=> settingSettings(user)}>Log In</button>
+              <button onClick={()=> {settingSettings(user); setisLogged(true)}}>Log In</button>
             </Link>
           </div>
 

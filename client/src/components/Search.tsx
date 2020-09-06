@@ -19,7 +19,7 @@ export const Search: React.FC<passedProps> = ({ addItem }) => {
     const data = await response.json();
     console.log(data.hits)
     setitemsNutrition(data.hits);
-  };
+  }
 
   const searchBarInput = (e: any) => {
     setsearchInputValue(e.target.value);

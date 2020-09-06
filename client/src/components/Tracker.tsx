@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Search } from './Search';
 import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
-import { LoggedInUserSettingsContext, UsersContext } from '../Context/Context';
+import { LoggedInUserSettingsContext, UsersContext, DailyFoodContext } from '../Context/Context';
 
 
 
@@ -10,10 +10,10 @@ export const Tracker: React.FC = () => {
 
   const todaysDate = new Date().toLocaleDateString();
 
-  const [dailyFood, setdailyFood] = useState<any[]>([]);
-
-  const {users, setusers} = useContext(UsersContext)
-  const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext)
+  
+  const {dailyFood, setdailyFood} = useContext(DailyFoodContext);
+  const {users, setusers} = useContext(UsersContext);
+  const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
 
   useEffect(()=>{
@@ -23,11 +23,6 @@ export const Tracker: React.FC = () => {
     setLoggedInUserSettings(copy)
   }, [dailyFood]);
   
-  useEffect(()=>{
-    console.log("users below")
-    console.log(users);
-    setdailyFood(loggedInUserSettings.usersDailyFood)
-  },[]);
 
   useEffect(()=>{
     let usersVar = [...users]
@@ -36,7 +31,6 @@ export const Tracker: React.FC = () => {
         usersVar[i] = loggedInUserSettings
       };
     });
-    console.log(`this is users var ${usersVar}`);
     setusers(usersVar);
     
   }, [loggedInUserSettings]);

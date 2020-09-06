@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom';
 export const UserSetUp: React.FC = () => {
 
   const [NameComplete, setNameComplete] = useState<boolean>(false);
+  const [uniqueName, setuniqueName] = useState<boolean>(true);
   const {users} = useContext(UsersContext);
   const {setcreatingNewUser} = useContext(CreatingNewUserContext)
 
@@ -28,6 +29,28 @@ export const UserSetUp: React.FC = () => {
     usersHistory: []
   })
 
+  const validateUserName =  (e:any) =>{
+    let usersState = [...users];
+    let allUserNames:any[] = []
+      usersState.map((x)=>{
+       if(x.hasOwnProperty("userName")){
+       allUserNames = [...allUserNames, x.userName];
+     }
+    })
+    allUserNames.map((x)=>{
+      if(e.target.value.toLowerCase() === x.toLowerCase()){
+        console.log(x)
+        console.log("username taken")
+        setuniqueName(false)
+      }else{
+        setuserSettings({...userSettings,[ e.target.name]: e.target.value})
+        setuniqueName(true);
+      }
+    });
+    console.log(e.target.value)
+  };
+
+
   return (
     <>
       {!NameComplete 
@@ -40,9 +63,11 @@ export const UserSetUp: React.FC = () => {
           <div style={{ border: "1px solid black", borderRadius: "50%", width: "100px", height: "100px" }}>PIC</div>
           <input type="text"
             name="userName"
-            onChange={(e) => setuserSettings({...userSettings, [e.target.name]: e.target.value})}
+            onChange={validateUserName}
            />
-          <button onClick={() => setNameComplete(true)}>Next {">>"}</button>
+           <span>{!uniqueName?"User name is taken":""}</span>
+          <button disabled={!uniqueName} onClick={() => setNameComplete(true)}>Next {">>"}</button>
+          <button onClick={()=> console.log(users)}>Users log</button>
          </div>
         )
       :
