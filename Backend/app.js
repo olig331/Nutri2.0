@@ -45,13 +45,6 @@ app.get('/login', async (req, res) => {
     })
 });
 
-app.post('/updateUsersFood', async (req, res) => {
-  console.log(req.query.id)
-  console.log(req.body)
-
-    const person = User.updateOne({ id: req.query.id }, { usersDailyFood: req.body })
-    console.log(await person)
-});
 
 app.patch('/updateUserFood', async (req, res)=>{
   try{
