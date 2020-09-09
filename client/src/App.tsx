@@ -40,7 +40,7 @@ export const App: React.FC = () => {
 
 
   window.onunload = async () => {
-    await fetch(`http://localhost:5000/updateUsersFood?id=${loggedInID}`, {
+    await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
       method: 'POST',
       body: JSON.stringify(dailyFood),
       mode: "no-cors"

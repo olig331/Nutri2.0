@@ -53,6 +53,18 @@ app.post('/updateUsersFood', async (req, res) => {
     console.log(await person)
 });
 
+app.patch('/updateUserFood', async (req, res)=>{
+  try{
+    const updatedFood = await User.updateOne(
+      {id: req.query.userId},
+      {$set: {usersDailyFood: req.body}}
+    );
+    res.json(updatedFood);
+  }catch (err) {
+    res.json({message: err})
+  }
+})
+
 //CONNTECT TO DB
 mongoose.connect(
   process.env.DB_CONNECTION,
