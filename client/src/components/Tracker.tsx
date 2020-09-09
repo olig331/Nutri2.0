@@ -15,25 +15,11 @@ export const Tracker: React.FC = () => {
   const {users, setusers} = useContext(UsersContext);
   const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
+  console.log(loggedInUserSettings)
 
   useEffect(()=>{
-    let copy = {...loggedInUserSettings}
-    copy.usersDailyFood = dailyFood
-    console.log(copy)
-    setLoggedInUserSettings(copy)
-  }, [dailyFood]);
-  
-
-  useEffect(()=>{
-    let usersVar = [...users]
-    usersVar.map((x:UsersType, i:number)=>{
-      if(x.userName === loggedInUserSettings.userName){
-        usersVar[i] = loggedInUserSettings
-      };
-    });
-    setusers(usersVar);
-    
-  }, [loggedInUserSettings]);
+    setdailyFood(loggedInUserSettings.usersDailyFood)
+  }, [])
 
   const addItemFromSearch = (item: responseItemsFields): void => {
     let copy = [...dailyFood]
@@ -49,11 +35,14 @@ export const Tracker: React.FC = () => {
   };
 
   const removeItem = (indexOfItem: number): void => {
+
     let dailyFoodCopy = [...dailyFood]
+    console.log(dailyFood);
+    console.log(indexOfItem)
     if (indexOfItem === 0) {
       dailyFoodCopy.splice(indexOfItem, indexOfItem + 1);
     } else {
-      dailyFoodCopy.splice(indexOfItem, indexOfItem);
+      dailyFoodCopy.splice(indexOfItem + 1 , indexOfItem + 1);
     }
     setdailyFood(dailyFoodCopy);
   };
@@ -70,7 +59,7 @@ export const Tracker: React.FC = () => {
       />
       <div>
         {dailyFood.slice(1).map((x: any, i: number) => (
-          <li key={i}>{i + 1}. {x.item_name}<button onClick={() => removeItem(i)}>X</button></li>
+          <li key={i}>{i + 1}. {x.item_name}<button onClick={() => {removeItem(i)}}>X</button></li>
         ))}
       </div>
       <Stats

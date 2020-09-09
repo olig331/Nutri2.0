@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { UsersSettingsContext, IsLoggedContext, LoggedInUserSettingsContext } from '../Context/Context';
 import { Link } from 'react-router-dom';
-import { resolve } from 'url';
 import { rejects } from 'assert';
+
 
 
 export const SettingsForm: React.FC = () => {
@@ -25,7 +25,7 @@ export const SettingsForm: React.FC = () => {
 
   // ADD NEW USER TO MONGODB 
   const userSetUpComplete = async () => {
-   return fetch("http://localhost:5000/createUser", {
+   return fetch("http://localhost:5000/createUser?", {
       method: 'POST',
       body: JSON.stringify(userSettings),
       mode: "no-cors"

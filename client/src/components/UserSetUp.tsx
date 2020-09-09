@@ -57,7 +57,7 @@ export const UserSetUp: React.FC = () => {
       ?
         (<div>
           {users.length > 0 || users !== null
-            ? <Link to="/select-user"><button onClick={()=>setcreatingNewUser(false)}>Back to User Select</button></Link>
+            ? <Link to="/"><button onClick={()=>setcreatingNewUser(false)}>Back to User Select</button></Link>
             : null
           }
           <div style={{ border: "1px solid black", borderRadius: "50%", width: "100px", height: "100px" }}>PIC</div>

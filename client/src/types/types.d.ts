@@ -59,3 +59,27 @@ type UsersType = {
   usersHistory: any[]
 }
 
+type UsersDBType = {
+  userName: string,
+  userPicture: string,
+  usersPersonalSettings:{
+    gender:string,
+    age: number,
+    weight:number,
+    weightUnit:string,
+    height:number,
+    heightUnit:string,
+    goal:string,
+    activityLevel:string  
+  },
+  __v: number,
+  _id: string,
+  usersDailyFood: any[],
+  usersHistory: any[]
+}
+
+type PrivateRouteType = {
+  component: any,
+  authed: any,
+  
+}

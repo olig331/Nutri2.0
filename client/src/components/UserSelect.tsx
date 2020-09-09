@@ -1,46 +1,60 @@
-import React, { useContext, useEffect } from 'react';
-import { IsLoggedContext, UsersContext, CreatingNewUserContext, LoggedInUserSettingsContext } from '../Context/Context';
-import { Link } from 'react-router-dom';
-
+import React, { useContext, useEffect, useState, Component } from 'react';
+import { IsLoggedContext, UsersContext, CreatingNewUserContext, LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext } from '../Context/Context';
+import { Link, Route, Redirect, Router, useHistory } from 'react-router-dom';
+import { Dashboard } from './Dashboard';
 
 
 export const UserSelect: React.FC = () => {
 
   const localStorageArray = JSON.parse(localStorage.getItem("userArray")!)
-  
-  const {users, setusers} = useContext(UsersContext);
-  const {setcreatingNewUser} = useContext(CreatingNewUserContext);
-  const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext)
-  const {setisLogged} = useContext(IsLoggedContext);
 
-  
+  const pageHistory = useHistory()
 
-  useEffect(()=>{
-    setusers(JSON.parse(localStorage.getItem("userArray")!))
-  },[])
+  //STATE VARIABLES
+  const [enterUserName, setenterUserName] = useState<string>("");
 
-  const settingSettings = (userDetails: UsersType) =>{
-    setLoggedInUserSettings(userDetails)
+  // CONTEXT
+  const {loggedInID, setloggedInID} = useContext(LoggedInIDContext);
+  const {userAuthed, setuserAuthed} = useContext(UserAuthedContext);
+  const { setcreatingNewUser } = useContext(CreatingNewUserContext);
+  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const { setisLogged } = useContext(IsLoggedContext);
+
+  // SETTING STATE FROM LOG IN INPUT 
+  const enteredUserName = (e: any) => {
+    setenterUserName(e.target.value);
   }
 
 
+  // CHECK IF USER EXISTS ON DB ? LOGIN : REJECT 
+  const login = async () => {
+    const response = await fetch(`http://localhost:5000/login?name=${enterUserName}`, {
+      method: "GET",
+    })
+    const data = await response.json();
+    console.log(data)
+    if (data !== null) {
+      console.log("user Found")
+       setuserAuthed(true)
+       setloggedInID(data._id);
+       setLoggedInUserSettings(data)
+       console.log(`this is history ${pageHistory}`)
+       pageHistory.replace("/dashboard")
+    } 
+  };
+
+  
+
   return (
     <>
-      {users.length > 0
-        ? users.map((user: UsersType, index: number) => (
-          <div key={index}>
-            <div style={{ border: "1px solid black", borderRadius: "50%", width: "100px", height: "100px" }}></div>
-            <h5>{user.userName}</h5>
-            <Link to="/dashboard">
-              <button onClick={()=> {settingSettings(user); setisLogged(true)}}>Log In</button>
-            </Link>
-          </div>
-
-        )) : ""}
+      <div>
+          <input type="text" onChange={enteredUserName} />
+          <button onClick={()=>{login();}}>Log In</button>
+      </div>
+      <button onClick={()=>console.log(pageHistory)}></button>
       <Link to="/setup">
-        <button onClick={()=>setcreatingNewUser(true)}>Create New User</button>
+        <button onClick={() => setcreatingNewUser(true)}>Create New User</button>
       </Link>
-    <button onClick={()=> {console.log(users); console.log(loggedInUserSettings)}}>button in user select for settings</button>
     </>
   );
 };

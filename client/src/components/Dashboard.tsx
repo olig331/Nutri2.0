@@ -2,11 +2,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IsLoggedContext, LoggedInUserSettingsContext, DailyFoodContext } from '../Context/Context';
 
-interface passesFunc {
-  toggleRender: () => void
-}
 
-export const Dashboard: React.FC<passesFunc> = ({ toggleRender }) => {
+export const Dashboard: React.FC = () => {
 
   const todaysDate = new Date().toLocaleDateString();
 
@@ -19,32 +16,32 @@ export const Dashboard: React.FC<passesFunc> = ({ toggleRender }) => {
     showPopUp ? setshowpopUp(false) : setshowpopUp(true);
   }
 
-  useEffect(()=>{
-    let dateCheck = loggedInUserSettings.usersDailyFood;
-    console.log(dateCheck)
-    console.log(dateCheck[0])
-    console.log(todaysDate)
-    if(dateCheck[0]  !== todaysDate){
-      let copy = {...loggedInUserSettings}
-      copy.usersHistory.push(dateCheck)
-      copy.usersDailyFood = []
-      console.log(copy)
-      setLoggedInUserSettings(copy);
-    }else{
-      setdailyFood(loggedInUserSettings.usersDailyFood)
-    }
-  },[]);
+  // useEffect(()=>{
+  //   let dateCheck = loggedInUserSettings.usersDailyFood;
+  //   console.log(dateCheck)
+  //   console.log(dateCheck[0])
+  //   console.log(todaysDate)
+  //   if(dateCheck[0]  !== todaysDate){
+  //     let copy = {...loggedInUserSettings}
+  //     copy.usersHistory.push(dateCheck)
+  //     copy.usersDailyFood = []
+  //     console.log(copy)
+  //     setLoggedInUserSettings(copy);
+  //   }else{
+  //     setdailyFood(loggedInUserSettings.usersDailyFood)
+  //   }
+  // },[]);
 
   return (
     <div>
       <Link to="/tracker">
-        <div onClick={toggleRender}>Tracker</div>
+        <div>Tracker</div>
       </Link>
       <Link to="/history">
-        <div onClick={toggleRender}>History</div>
+        <div >History</div>
       </Link>
       <Link to="/settings">
-        <div onClick={toggleRender}>Settings</div>
+        <div >Settings</div>
       </Link>
        <div onClick={togglePopUp}>Change User
         {showPopUp
