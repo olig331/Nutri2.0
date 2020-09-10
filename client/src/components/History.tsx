@@ -1,10 +1,27 @@
-import React, { useContext } from 'react';
+import React, { useContext,useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LoggedInUserSettingsContext } from '../Context/Context';
+import { LoggedInUserSettingsContext, LoggedInIDContext } from '../Context/Context';
 
 export const History:React.FC = () => {
 
   const {loggedInuserSettings} = useContext(LoggedInUserSettingsContext);
+  const [dbhistory, setdbhistory] = useState<any[]>([])
+
+  const {loggedInID, setloggedInID} = useContext(LoggedInIDContext);
+
+  const pullHistoryFromDB = async () =>{
+    const response = await fetch(`/history?userId=${loggedInID}`, {
+      method: 'GET'
+    })
+    const data = await response.json()
+    console.log(await data)
+    setdbhistory(data);
+  }
+
+  useEffect(()=>{
+    pullHistoryFromDB()
+  },[])
+
 
   return (
     <div>
@@ -12,17 +29,12 @@ export const History:React.FC = () => {
         <button>Dashboard</button>
       </Link>
       <div>
-        {/* {loggedInuserSettings.usersHistory.map((day:any, index:number)=>(
-          <>
-            <h3></h3>
-            <div>{day.map((item:any, index2:number)=>(
-              <h5>{item.item_name}</h5>
-            ))}
-            </div>
-          </>
-        ))} */}
+        {dbhistory.map((x, i)=>(
+          <h3>{x}</h3>
+        ))}
       </div>
       <button onClick={()=>console.log(loggedInuserSettings)}></button>
+      <button onClick={()=> console.log(dbhistory)}></button>
     </div>
   )
 };

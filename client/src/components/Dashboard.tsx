@@ -38,9 +38,8 @@ export const Dashboard: React.FC<passedFunction> = ({logOutUpdate}) => {
       return response.text();
     })
     .catch(err =>{
-      rejects(err)
+      console.log(err)
     });
-
   };
 
   const resetDailyFood =() =>{
@@ -48,18 +47,7 @@ export const Dashboard: React.FC<passedFunction> = ({logOutUpdate}) => {
     copy.usersDailyFood = [];
     setLoggedInUserSettings(copy);
   };
-
-  useEffect(() => {
-    async function blob(){
-    if(loggedInUserSettings.usersDailyFood[0] !== todaysDate){
-      await  updateHistory();
-        resetDailyFood();
-    };
-  };
-
-   blob();
-  },[]);
-
+ 
 
   return (
     <div>
@@ -67,7 +55,7 @@ export const Dashboard: React.FC<passedFunction> = ({logOutUpdate}) => {
         <div>Tracker</div>
       </Link>
       <Link to="/history">
-        <div >History</div>
+        <div onClick={()=>{loggedInUserSettings.usersDailyFood[0] !== todaysDate ?updateHistory(): console.log("dates eqaul")}}>History</div>
       </Link>
       <Link to="/settings">
         <div >Settings</div>
@@ -86,6 +74,7 @@ export const Dashboard: React.FC<passedFunction> = ({logOutUpdate}) => {
             : null
           }
         </div>
+        <button onClick={()=> {console.log(loggedInUserSettings); console.log(loggedInID)}}>Check status</button>
     </div>
   );
 }; 

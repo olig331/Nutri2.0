@@ -2,16 +2,17 @@ import React, { useContext, useState } from 'react';
 import { SettingsForm } from './SettingsForm';
 import { UsersSettingsContext, UsersContext, CreatingNewUserContext } from '../Context/Context';
 import {Link} from 'react-router-dom';
+import { rejects } from 'assert';
+import { runInNewContext } from 'vm';
+import { nextTick } from 'process';
 
 
 
 export const UserSetUp: React.FC = () => {
 
-  const [NameComplete, setNameComplete] = useState<boolean>(false);
+  //STATE
+  const [nameComplete, setnameComplete] = useState<boolean>(false);
   const [uniqueName, setuniqueName] = useState<boolean>(true);
-  const {users} = useContext(UsersContext);
-  const {setcreatingNewUser} = useContext(CreatingNewUserContext)
-
   const [userSettings, setuserSettings] = useState<UsersType>({
     userName: "",
     userPicture: "",
@@ -27,47 +28,44 @@ export const UserSetUp: React.FC = () => {
     },
     usersDailyFood: [],
     usersHistory: []
-  })
+  });
 
-  const validateUserName =  (e:any) =>{
-    let usersState = [...users];
-    let allUserNames:any[] = []
-      usersState.map((x)=>{
-       if(x.hasOwnProperty("userName")){
-       allUserNames = [...allUserNames, x.userName];
-     }
+  const next = () =>{
+    setnameComplete(true);
+  }
+
+  const validateUserName = async () =>{
+    const response = await fetch(`/login?name=${userSettings.userName}`, {
+      method: "get",
+      mode: "no-cors",
     })
-    allUserNames.map((x)=>{
-      if(e.target.value.toLowerCase() === x.toLowerCase()){
-        console.log(x)
-        console.log("username taken")
-        setuniqueName(false)
-      }else{
-        setuserSettings({...userSettings,[ e.target.name]: e.target.value})
-        setuniqueName(true);
-      }
-    });
-    console.log(e.target.value)
-  };
+    const data = await response.json();
+    if(data === null ){
+      setuniqueName(true)
+      next();
+    }else{
+      setuniqueName(false)
+    }
+  }
+
+  const settingName = (e:React.FormEvent<HTMLInputElement>) =>{
+    setuserSettings({...userSettings,[ e.currentTarget.name]: e.currentTarget.value});
+    setuniqueName(true)
+  }
 
 
   return (
     <>
-      {!NameComplete 
+      {!nameComplete 
       ?
         (<div>
-          {users.length > 0 || users !== null
-            ? <Link to="/"><button onClick={()=>setcreatingNewUser(false)}>Back to User Select</button></Link>
-            : null
-          }
           <div style={{ border: "1px solid black", borderRadius: "50%", width: "100px", height: "100px" }}>PIC</div>
           <input type="text"
             name="userName"
-            onChange={validateUserName}
+            onChange={settingName}
            />
            <span>{!uniqueName?"User name is taken":""}</span>
-          <button disabled={!uniqueName} onClick={() => setNameComplete(true)}>Next {">>"}</button>
-          <button onClick={()=> console.log(users)}>Users log</button>
+          <button disabled={!uniqueName} onClick={validateUserName}>Next {">>"}</button>
          </div>
         )
       :

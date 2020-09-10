@@ -39,9 +39,14 @@ export const UserSelect: React.FC = () => {
        setuserAuthed(true)
        setloggedInID(data._id);
        setLoggedInUserSettings(data)
-       console.log(`this is history ${pageHistory}`)
+       logFunc()
        pageHistory.replace("/dashboard")
     } 
+  };
+
+  function logFunc(){
+    console.log(loggedInUserSettings);
+    console.log(loggedInID);
   };
 
 
