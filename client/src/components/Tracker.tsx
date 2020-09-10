@@ -3,22 +3,21 @@ import { Search } from './Search';
 import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
 import { LoggedInUserSettingsContext, UsersContext, DailyFoodContext } from '../Context/Context';
+import { log } from 'util';
 
 
 
 export const Tracker: React.FC = () => {
-
-  const todaysDate = new Date().toLocaleDateString();
-
   
   const {dailyFood, setdailyFood} = useContext(DailyFoodContext);
-  const {users, setusers} = useContext(UsersContext);
   const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
   console.log(loggedInUserSettings)
 
   useEffect(()=>{
-    setdailyFood(loggedInUserSettings.usersDailyFood)
+    if(loggedInUserSettings  !==  undefined){
+      setdailyFood(loggedInUserSettings.usersDailyFood)
+    }
   }, [])
 
   const addItemFromSearch = (item: responseItemsFields): void => {

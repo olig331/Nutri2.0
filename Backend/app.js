@@ -45,6 +45,19 @@ app.get('/login', async (req, res) => {
     })
 });
 
+app.patch('/updateUserHistory', async (req, res)=>{
+  try{
+    const userInfo = await User.updateOne(
+      {id: req.query.userId},
+      {$set:{usersHistory: req.body}}
+      );
+    res.json(userInfo)
+  }catch(err){
+    res.status(500).json({
+      message: err
+    });
+  };
+});
 
 app.patch('/updateUserFood', async (req, res)=>{
   try{

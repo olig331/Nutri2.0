@@ -1,36 +1,65 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { IsLoggedContext, LoggedInUserSettingsContext, DailyFoodContext } from '../Context/Context';
+import { IsLoggedContext, LoggedInUserSettingsContext,LoggedInIDContext,  DailyFoodContext } from '../Context/Context';
+import { rejects } from 'assert';
+import { compileFunction } from 'vm';
 
+interface passedFunction {
+  logOutUpdate: () => void
+}
 
-export const Dashboard: React.FC = () => {
+export const Dashboard: React.FC<passedFunction> = ({logOutUpdate}) => {
 
+  //VARIABLES
   const todaysDate = new Date().toLocaleDateString();
-
+  
+  //STATE
   const [showPopUp, setshowpopUp] = useState<Boolean>(false);
-  const { isLogged, setisLogged } = useContext(IsLoggedContext);
+  
+  //CONTEXT 
+  const {loggedInID, setloggedInID} = useContext(LoggedInIDContext);
+  const {isLogged, setisLogged } = useContext(IsLoggedContext);
   const {dailyFood, setdailyFood} = useContext(DailyFoodContext);
   const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
   const togglePopUp = () => {
     showPopUp ? setshowpopUp(false) : setshowpopUp(true);
-  }
+  };
 
-  // useEffect(()=>{
-  //   let dateCheck = loggedInUserSettings.usersDailyFood;
-  //   console.log(dateCheck)
-  //   console.log(dateCheck[0])
-  //   console.log(todaysDate)
-  //   if(dateCheck[0]  !== todaysDate){
-  //     let copy = {...loggedInUserSettings}
-  //     copy.usersHistory.push(dateCheck)
-  //     copy.usersDailyFood = []
-  //     console.log(copy)
-  //     setLoggedInUserSettings(copy);
-  //   }else{
-  //     setdailyFood(loggedInUserSettings.usersDailyFood)
-  //   }
-  // },[]);
+
+  
+  const updateHistory = async () =>{
+    await fetch(`http://localhost:5000/updateUserHistory?userId=${loggedInID}`, {
+      method: 'POST',
+      body: JSON.stringify(loggedInUserSettings.usersDailyFood),
+      mode: 'no-cors'
+    })
+    .then(response =>{
+      return response.text();
+    })
+    .catch(err =>{
+      rejects(err)
+    });
+
+  };
+
+  const resetDailyFood =() =>{
+   const copy = {...loggedInUserSettings};
+    copy.usersDailyFood = [];
+    setLoggedInUserSettings(copy);
+  };
+
+  useEffect(() => {
+    async function blob(){
+    if(loggedInUserSettings.usersDailyFood[0] !== todaysDate){
+      await  updateHistory();
+        resetDailyFood();
+    };
+  };
+
+   blob();
+  },[]);
+
 
   return (
     <div>
@@ -49,7 +78,7 @@ export const Dashboard: React.FC = () => {
               <>
                 <h5>Changing User will log you out. Are you sure you wish to continue?</h5>
                   <Link to="/">
-                    <button onClick={()=>{setisLogged(false)}}>Log Out </button>
+                    <button onClick={()=>{setisLogged(false); logOutUpdate();}}>Log Out</button>
                   </Link>
                 <button onClick={togglePopUp}>Go Back</button>
               </>

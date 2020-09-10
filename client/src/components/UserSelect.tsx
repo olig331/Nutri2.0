@@ -4,9 +4,10 @@ import { Link, Route, Redirect, Router, useHistory } from 'react-router-dom';
 import { Dashboard } from './Dashboard';
 
 
+
 export const UserSelect: React.FC = () => {
 
-  const localStorageArray = JSON.parse(localStorage.getItem("userArray")!)
+  const todaysDate = new Date().toLocaleDateString();
 
   const pageHistory = useHistory()
 
@@ -43,7 +44,6 @@ export const UserSelect: React.FC = () => {
     } 
   };
 
-  
 
   return (
     <>

@@ -23,7 +23,6 @@ export const App: React.FC = () => {
 
   const [userAuthed, setuserAuthed] = useState<boolean>(false)
   const [isLogged, setisLogged] = useState<boolean>(false);
-  const [users, setusers] = useState<UsersType[]>([]);
   const [creatingNewUser, setcreatingNewUser] = useState<boolean>(false);
   const [loggedInUserSettings, setLoggedInUserSettings] = useState<UsersDBType>();
   const [dailyFood, setdailyFood] = useState<any[]>([]);
@@ -31,15 +30,11 @@ export const App: React.FC = () => {
 
 
   useEffect(() => {
-    setusers(JSON.parse(localStorage.getItem("userArray")!));
-  }, []);
-
-  useEffect(() => {
     console.log(creatingNewUser)
   }, [])
 
 
-  window.onunload = async () => {
+  const updateUsersDailyFood = async () =>{
     await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
       method: 'POST',
       body: JSON.stringify(dailyFood),
@@ -53,10 +48,13 @@ export const App: React.FC = () => {
       })
   }
 
+  window.onunload = async () => {
+    updateUsersDailyFood();
+  };
+
   return (
     <div>
       <UserAuthedContext.Provider value={{ userAuthed, setuserAuthed }}>
-        <UsersContext.Provider value={{ users, setusers }}>
           <IsLoggedContext.Provider value={{ isLogged, setisLogged }}>
             <CreatingNewUserContext.Provider value={{ creatingNewUser, setcreatingNewUser }}>
               <LoggedInUserSettingsContext.Provider value={{ loggedInUserSettings, setLoggedInUserSettings }}>
@@ -68,7 +66,7 @@ export const App: React.FC = () => {
                       <Route path='/tracker' component={Tracker} />
                       <Route path='/history' component={History} />
                       <Route path='/settings' component={SettingsForm} />
-                      <Route path="/dashboard" component={Dashboard} />
+                      <Route path="/dashboard" render={props => (<Dashboard logOutUpdate={updateUsersDailyFood}/>)} />
                     </Switch>
                   </Router>
                   </LoggedInIDContext.Provider>
@@ -76,9 +74,8 @@ export const App: React.FC = () => {
               </LoggedInUserSettingsContext.Provider>
             </CreatingNewUserContext.Provider>
           </IsLoggedContext.Provider>
-        </UsersContext.Provider>
       </UserAuthedContext.Provider>
-      <button onClick={() => { console.log(isLogged); console.log(users); console.log(creatingNewUser); console.log(loggedInUserSettings); }}>conole log stats</button>
+      <button onClick={() => { console.log(isLogged); console.log(loggedInUserSettings); }}>conole log stats</button>
     </div >
   );
 };
