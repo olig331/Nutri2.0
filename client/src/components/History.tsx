@@ -10,6 +10,7 @@ export const History:React.FC = () => {
 
   const {loggedInID, setloggedInID} = useContext(LoggedInIDContext);
 
+  // Pulls the users Current history from the Database this will be upToDate from the functions already run on the Dashboard on sign in 
   const pullHistoryFromDB = async () =>{
     const response = await fetch(`/history?userId=${loggedInID}`, {
       method: 'GET'
@@ -19,6 +20,7 @@ export const History:React.FC = () => {
     setdbhistory([...dbhistory].concat(data));
   }
 
+  // Running the function when the app Renders
   useEffect(()=>{
     pullHistoryFromDB()
   },[])

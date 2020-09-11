@@ -7,23 +7,22 @@ import { Dashboard } from './Dashboard';
 
 export const UserSelect: React.FC = () => {
 
-  const todaysDate = new Date().toLocaleDateString();
-
+  // For navigation through the application
   const pageHistory = useHistory()
 
   //STATE VARIABLES
   const [enterUserName, setenterUserName] = useState<string>("");
 
   // CONTEXT
-  const {loggedInID, setloggedInID} = useContext(LoggedInIDContext);
-  const {userAuthed, setuserAuthed} = useContext(UserAuthedContext);
+  const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
+  const { userAuthed, setuserAuthed } = useContext(UserAuthedContext);
   const { setcreatingNewUser } = useContext(CreatingNewUserContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
   const { setisLogged } = useContext(IsLoggedContext);
 
   // SETTING STATE FROM LOG IN INPUT 
-  const enteredUserName = (e: any) => {
-    setenterUserName(e.target.value);
+  const enteredUserName = (e: React.FormEvent<HTMLInputElement>) => {
+    setenterUserName(e.currentTarget.value);
   }
 
 
@@ -36,27 +35,20 @@ export const UserSelect: React.FC = () => {
     console.log(data)
     if (data !== null) {
       console.log("user Found")
-       setuserAuthed(true)
-       setloggedInID(data._id);
-       setLoggedInUserSettings(data)
-       logFunc()
-       pageHistory.replace("/dashboard")
-    } 
+      setuserAuthed(true)
+      setloggedInID(data._id);
+      setLoggedInUserSettings(data)
+      pageHistory.replace("/dashboard") // will navigate to /dashboard page on succesfull user auth
+    }
   };
-
-  function logFunc(){
-    console.log(loggedInUserSettings);
-    console.log(loggedInID);
-  };
-
 
   return (
     <>
       <div>
-          <input type="text" onChange={enteredUserName} />
-          <button onClick={()=>{login();}}>Log In</button>
+        <input type="text" onChange={enteredUserName} />
+        <button onClick={() => { login(); }}>Log In</button>
       </div>
-      <button onClick={()=>console.log(pageHistory)}></button>
+      <button onClick={() => console.log(pageHistory)}></button>
       <Link to="/setup">
         <button onClick={() => setcreatingNewUser(true)}>Create New User</button>
       </Link>

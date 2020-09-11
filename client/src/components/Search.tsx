@@ -6,23 +6,23 @@ interface passedProps {
 
 export const Search: React.FC<passedProps> = ({ addItem }) => {
 
-  const APP_ID: string = "fd252eb4";
-  const APP_KEY: string = "d4916eb493b2039e2b8fa3f54b096386";
-
+  // STATE
   const [itemsNutrition, setitemsNutrition] = useState<any[]>([]);
   const [searchInputValue, setsearchInputValue] = useState<string>("");
   const [showItemNutritionResults, setshowItemNutritionResults] = useState<boolean>(false);
 
+  // Nutrionix API CALL 
   const getItemNutrition = async () => {
-    const response = await fetch(`https://api.nutritionix.com/v1_1/search/${searchInputValue}?results=0:10&fields=item_name,brand_name,item_id,nf_calories,nf_protein,nf_sugars,nf_total_fat,nf_total_carbohydrate,nf_saturated_fat,nf_serving_weight_grams&appId=${APP_ID}&appKey=${APP_KEY}`);
+    const response = await fetch(`https://api.nutritionix.com/v1_1/search/${searchInputValue}?results=0:10&fields=item_name,brand_name,item_id,nf_calories,nf_protein,nf_sugars,nf_total_fat,nf_total_carbohydrate,nf_saturated_fat,nf_serving_weight_grams&appId=${process.env.REACT_APP_APP_ID}&appKey=${process.env.REACT_APP_APP_KEY}`);
 
     const data = await response.json();
     console.log(data.hits)
     setitemsNutrition(data.hits);
   }
 
-  const searchBarInput = (e: any) => {
-    setsearchInputValue(e.target.value);
+
+  const searchBarInput = (e: React.FormEvent<HTMLInputElement>) => {
+    setsearchInputValue(e.currentTarget.value);
   };
 
   const toggleShowItems = () => {

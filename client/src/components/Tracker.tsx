@@ -8,18 +8,22 @@ import { LoggedInUserSettingsContext, UsersContext, DailyFoodContext, LoggedInID
 
 
 export const Tracker: React.FC = () => {
-  
-  const {loggedInID} = useContext(LoggedInIDContext)
-  const {dailyFood, setdailyFood} = useContext(DailyFoodContext);
-  const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
+
+  //Context
+  const { loggedInID } = useContext(LoggedInIDContext)
+  const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
+  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
 
   console.log(loggedInUserSettings)
 
-  useEffect(()=>{
-   getDailyFood()
+  // Will pull from database when this page is rendered
+  useEffect(() => {
+    getDailyFood()
   }, [])
 
-  const getDailyFood = async () =>{
+
+  // Pull daily Food from the Database will only return If the data is the same date as when posted due to funtions on Dashboard
+  const getDailyFood = async () => {
     const response = await fetch(`http://localhost:5000/getDailyFood?userId=${loggedInID}`, {
       method: 'GET'
     })
@@ -29,28 +33,30 @@ export const Tracker: React.FC = () => {
     setdailyFood(data)
   }
 
+
+  //Add a search item to dailyFood State
   const addItemFromSearch = (item: responseItemsFields): void => {
     let copy = [...dailyFood]
-    if(copy.length === 0){
+    if (copy.length === 0) {
       copy.push(new Date().toLocaleDateString());
       copy.push(item)
       setdailyFood(copy);
-    } else{
+    } else {
       copy.push(item);
       setdailyFood(copy);
-    }    
+    }
     console.log(copy)
   };
 
+  // Remove an item from DailyFood 
   const removeItem = (indexOfItem: number): void => {
-
     let dailyFoodCopy = [...dailyFood]
     console.log(dailyFood);
     console.log(indexOfItem)
     if (indexOfItem === 0) {
       dailyFoodCopy.splice(indexOfItem, indexOfItem + 1);
     } else {
-      dailyFoodCopy.splice(indexOfItem + 1 , indexOfItem + 1);
+      dailyFoodCopy.splice(indexOfItem + 1, indexOfItem + 1);
     }
     setdailyFood(dailyFoodCopy);
   };
@@ -58,7 +64,7 @@ export const Tracker: React.FC = () => {
 
 
   return (
-    <> 
+    <>
       <Link to="/dashboard">
         <button>Dashboard</button>
       </Link>
@@ -67,14 +73,14 @@ export const Tracker: React.FC = () => {
       />
       <div>
         {dailyFood.slice(1).map((x: any, i: number) => (
-          <li key={i}>{i + 1}. {x.item_name}<button onClick={() => {removeItem(i)}}>X</button></li>
+          <li key={i}>{i + 1}. {x.item_name}<button onClick={() => { removeItem(i) }}>X</button></li>
         ))}
       </div>
       <Stats
         dailyFood={dailyFood}
       />
-      <button onClick={()=> console.log(loggedInUserSettings)}>check if updating user setting</button>
-      <button onClick={()=> console.log(dailyFood)}>dailyFood</button>
+      <button onClick={() => console.log(loggedInUserSettings)}>check if updating user setting</button>
+      <button onClick={() => console.log(dailyFood)}>dailyFood</button>
     </>
   );
 };

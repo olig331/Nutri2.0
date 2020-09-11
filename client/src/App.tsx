@@ -33,7 +33,7 @@ export const App: React.FC = () => {
     console.log(creatingNewUser)
   }, [])
 
-
+  // Function to take the current dailyFood state and setting it in the database
   const updateUsersDailyFood = async () =>{
     await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
       method: 'POST',
@@ -47,6 +47,7 @@ export const App: React.FC = () => {
       })
   }
 
+  //when the user exits the application without sighning out this function will save the DailyFood to the databse.
   window.onunload = async () => {
    await updateUsersDailyFood();
   };
