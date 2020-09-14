@@ -2,25 +2,46 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Search } from './Search';
 import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
-import { LoggedInUserSettingsContext, UsersContext, DailyFoodContext, LoggedInIDContext } from '../Context/Context';
+import { LoggedInUserSettingsContext,  DailyFoodContext, LoggedInIDContext } from '../Context/Context';
+import {rejects} from 'assert';
 
 
 
 
 export const Tracker: React.FC = () => {
 
+  console.log(new Date().toLocaleDateString())
+
   //Context
   const { loggedInID } = useContext(LoggedInIDContext)
   const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
 
-  console.log(loggedInUserSettings)
 
   // Will pull from database when this page is rendered
   useEffect(() => {
-    getDailyFood()
-  }, [])
+    console.log("running on mount first useEffect")
+    getDailyFood();
 
+    return () =>{
+      updateUsersDailyFood(dailyFood)
+    };
+  }, []);
+
+  const updateUsersDailyFood = async (input:any[]) =>{
+    console.log("this is input")
+    console.log(input);
+    const response = await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
+      method: 'POST',
+      headers:{
+        'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(input),
+    })
+    const data = await response.json()
+    console.log(data)
+  }
 
   // Pull daily Food from the Database will only return If the data is the same date as when posted due to funtions on Dashboard
   const getDailyFood = async () => {
@@ -56,7 +77,7 @@ export const Tracker: React.FC = () => {
     if (indexOfItem === 0) {
       dailyFoodCopy.splice(indexOfItem, indexOfItem + 1);
     } else {
-      dailyFoodCopy.splice(indexOfItem + 1, indexOfItem + 1);
+      dailyFoodCopy.splice(indexOfItem, indexOfItem);
     }
     setdailyFood(dailyFoodCopy);
   };
