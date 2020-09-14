@@ -1,18 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { IsLoggedContext, LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext } from '../Context/Context';
-import { rejects } from 'assert';
-import { compileFunction } from 'vm';
-import { isMethodDeclaration } from 'typescript';
-
-interface passedFunction {
-  logOutUpdate: () => void
-}
-
-export const Dashboard: React.FC<passedFunction> = ({ logOutUpdate }) => {
+import {  LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext, NavigatedFromTrackerContext, SignedOutContext } from '../Context/Context';
 
 
-  const pageHistory = useHistory()
+
+
+export const Dashboard: React.FC = () => {
+
+  // PAGE HISTORY HOOK FOR NAVIGATION 
+  const pageHistory:any = useHistory()
 
   //Date Variable for checking if dailyFood needs to be History
   const todaysDate = new Date().toLocaleDateString();
@@ -21,19 +17,39 @@ export const Dashboard: React.FC<passedFunction> = ({ logOutUpdate }) => {
   const [showPopUp, setshowpopUp] = useState<Boolean>(false);
 
   //CONTEXT 
+  const {navigatedFromTracker, setnavigatedFromTracker} = useContext(NavigatedFromTrackerContext)
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
-  const { isLogged, setisLogged } = useContext(IsLoggedContext);
   const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const {setsignedOut} = useContext (SignedOutContext)
+  
 
+  // IF USER HAS NAVIGATED FROM TRACKER USER DATA WILL BE UPDATED
+  useEffect(() =>{
+    if(navigatedFromTracker){
+      reFetchUserData()
+    }
+  },[])
+
+  // FUNCTION TO UPDATE DATA
+  const reFetchUserData = async ():Promise<void> =>{
+     const response =  await fetch(`/refetchUserData?userId=${loggedInID}`, {
+      method: 'GET'
+    })
+    const data = await response.json();
+    setLoggedInUserSettings(data);
+    setnavigatedFromTracker(false);
+  };
+
+  
   //when logout button is clicked state for displaying log out confirmation
-  const togglePopUp = () => {
+  const togglePopUp = ():void => {
     showPopUp ? setshowpopUp(false) : setshowpopUp(true);
   };
 
 
   // When History tab is clicked this function will update the databse and set the previous days DailyFood to the history
-  const updateHistory = async () => {
+  const updateHistory = async ():Promise<void> => {
     await fetch(`http://localhost:5000/updateUserHistory?userId=${loggedInID}`, {
       method: 'POST',
       body: JSON.stringify(loggedInUserSettings.usersDailyFood),
@@ -49,7 +65,7 @@ export const Dashboard: React.FC<passedFunction> = ({ logOutUpdate }) => {
 
 
   // Resetting the Databses DailyFood to empty Array when it is no longer the same day.
-  const resetFood = async () => {
+  const resetFood = async ():Promise<void> => {
     await fetch(`http://localhost:5000/resetFood?userId=${loggedInID}`, {
       method: 'POST',
       body: JSON.stringify([])
@@ -61,23 +77,27 @@ export const Dashboard: React.FC<passedFunction> = ({ logOutUpdate }) => {
       .catch(err => {
         console.log(err)
       })
+  };
+
+  const refresh =():void =>{
+    window.location.reload();
   }
 
 
   return (
     <div>
       <Link to="/tracker">
-        <div onClick={() => loggedInUserSettings.usersDailyFood[0] === todaysDate
-          ? console.log("dates equal no update needed")
-          : resetFood()}>Tracker</div>
+        <div onClick={()=>loggedInUserSettings.usersDailyFood[0] === todaysDate
+        ? console.log("dates are equal")
+        : resetFood()}>Tracker</div>
       </Link>
 
 
 
       <div onClick={() => {
-        loggedInUserSettings.usersDailyFood[0] !== todaysDate
+        loggedInUserSettings.usersDailyFood[0] !== todaysDate && loggedInUserSettings.usersDailyFood.length > 0
           ? updateHistory()
-          : console.log("dates eqaul")
+          : pageHistory.replace('/history')
       }}>
         History
       </div>
@@ -91,7 +111,7 @@ export const Dashboard: React.FC<passedFunction> = ({ logOutUpdate }) => {
             <>
               <h5>Changing User will log you out. Are you sure you wish to continue?</h5>
               <Link to="/">
-                <button onClick={logOutUpdate}>Log Out</button>
+                <button onClick={setsignedOut(true)}>Log Out</button>
               </Link>
               <button onClick={togglePopUp}>Go Back</button>
             </>

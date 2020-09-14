@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { UsersSettingsContext, IsLoggedContext, LoggedInUserSettingsContext } from '../Context/Context';
+import { UsersSettingsContext, LoggedInUserSettingsContext, LoggedInIDContext, UserAuthedContext } from '../Context/Context';
 import { Link } from 'react-router-dom';
 import { rejects } from 'assert';
 
@@ -9,10 +9,11 @@ export const SettingsForm: React.FC = () => {
 
   const ageArray: number[] = Array.from(Array(100), (_, i) => i + 1)
 
-  const { isLogged, setisLogged } = useContext(IsLoggedContext);
+  const {userAuthed} = useContext(UserAuthedContext)
   const { userSettings, setuserSettings } = useContext(UsersSettingsContext);
   const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
-  
+  const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
+
 
   const handleSettingsOnChange = (e: any) => {
     var nestedCopy = { ...userSettings.usersPersonalSettings }
@@ -24,8 +25,8 @@ export const SettingsForm: React.FC = () => {
   };
 
   // ADD NEW USER TO MONGODB 
-  const userSetUpComplete = async () => {
-   return fetch("http://localhost:5000/createUser?", {
+  const userSetUpComplete = async ():Promise<void> => {
+   await fetch("http://localhost:5000/createUser?", {
       method: 'POST',
       body: JSON.stringify(userSettings),
       mode: "no-cors"
@@ -39,17 +40,27 @@ export const SettingsForm: React.FC = () => {
   };
 
 
-
-  const saveUserSettings = (): void => {
-    console.log("hello")
-  }
+  const saveUserSettings = async ():Promise<void> => {
+    console.log(userSettings.usersPersonalSettings)
+    await fetch(`/updateUsersSettings?userId=${loggedInID}`, {
+      method: 'POST',
+      body: JSON.stringify(userSettings.usersPersonalSettings)
+    })
+    .then(res =>{
+      console.log(res.text())
+    })
+    .catch(err =>{
+      console.log(err);
+      rejects(err);
+    });
+  };
 
   
 
 
   return (
     <>
-      {isLogged?<Link to="/dashboard"><button>Dashboard</button></Link>:null}
+      {userAuthed?<Link to="/dashboard"><button>Dashboard</button></Link>:null}
       <div>
         <h5>SETTINGS TAB </h5>
         {/* GENDER SECTION */}
@@ -61,7 +72,7 @@ export const SettingsForm: React.FC = () => {
             value="male"
             type="radio"
             onChange={handleSettingsOnChange}
-            defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.gender === "male"}
+            defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "male"}
           />
         Female:
         <input
@@ -69,13 +80,13 @@ export const SettingsForm: React.FC = () => {
             value="female"
             type="radio"
             onChange={handleSettingsOnChange}
-            defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.gender === "female"}
+            defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "female"}
           />
         </label>
         {/* AGE SECTION */}
         <label>
           Age:
-        <select required name="age" defaultValue={isLogged? loggedInUserSettings.usersPersonalSettings.age:1} onChange={handleSettingsOnChange}>
+        <select required name="age" defaultValue={userAuthed? loggedInUserSettings.usersPersonalSettings.age:1} onChange={handleSettingsOnChange}>
             {ageArray.map((x: number) => (
               <option key={x} value={x}>{x}</option>
             ))}
@@ -84,47 +95,47 @@ export const SettingsForm: React.FC = () => {
         {/* WEIGHT SECTION */}
         <label>
           Weight:
-        <input type="number" name="weight" defaultValue={isLogged? loggedInUserSettings.usersPersonalSettings.weight: 0} onChange={handleSettingsOnChange} required />
+        <input type="number" name="weight" defaultValue={userAuthed? loggedInUserSettings.usersPersonalSettings.weight: 0} onChange={handleSettingsOnChange} required />
         LBS:
-        <input type="radio" name="weightUnit" value="lbs" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.weightUnit ==="lbs"} onChange={handleSettingsOnChange} required />
+        <input type="radio" name="weightUnit" value="lbs" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit ==="lbs"} onChange={handleSettingsOnChange} required />
         KG:
-        <input type="radio" name="weightUnit" value="kg" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.weightUnit ==="kg"} onChange={handleSettingsOnChange} required />
+        <input type="radio" name="weightUnit" value="kg" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit ==="kg"} onChange={handleSettingsOnChange} required />
         </label>
         {/* HEIGHT SECTION */}
         <label>
           Height:
-          <input type="number" name="height"  defaultValue={isLogged? loggedInUserSettings.usersPersonalSettings.height: 0} onChange={handleSettingsOnChange} required />
+          <input type="number" name="height"  defaultValue={userAuthed? loggedInUserSettings.usersPersonalSettings.height: 0} onChange={handleSettingsOnChange} required />
           Inch:
-          <input type="radio" name="heightUnit" value="inches" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.heightUnit ==="inches"} onChange={handleSettingsOnChange} required />
+          <input type="radio" name="heightUnit" value="inches" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit ==="inches"} onChange={handleSettingsOnChange} required />
           CM:
-          <input type="radio" name="heightUnit" value="cm" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.heightUnit ==="cm"} onChange={handleSettingsOnChange} required />
+          <input type="radio" name="heightUnit" value="cm" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit ==="cm"} onChange={handleSettingsOnChange} required />
         </label>
         {/* GOAL SECTION */}
         <label>
           Goal: {"  "}
         Lose:
-        <input type="radio" name="goal" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.goal ==="lose"} onChange={handleSettingsOnChange} value="lose" required />
+        <input type="radio" name="goal" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal ==="lose"} onChange={handleSettingsOnChange} value="lose" required />
         Maintain:
-        <input type="radio" name="goal" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.goal ==="maintain"} onChange={handleSettingsOnChange} value="maintain" required />
+        <input type="radio" name="goal" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal ==="maintain"} onChange={handleSettingsOnChange} value="maintain" required />
         Gain:
-        <input type="radio" name="goal" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.goal ==="gain"} onChange={handleSettingsOnChange} value="gain" required />
+        <input type="radio" name="goal" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal ==="gain"} onChange={handleSettingsOnChange} value="gain" required />
         </label>
         {/* ACTIVITY LEVEL SECTION */}
         <label>
           Activity: {" "}
         Sedatory:
-        <input type="radio" name="activityLevel" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.activityLevel ==="sedatory"} onChange={handleSettingsOnChange} value="sedatory" required />
+        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel ==="sedatory"} onChange={handleSettingsOnChange} value="sedatory" required />
         Light:
-        <input type="radio" name="activityLevel" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.activityLevel ==="light"} onChange={handleSettingsOnChange} value="light" required />
+        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel ==="light"} onChange={handleSettingsOnChange} value="light" required />
         Medium:
-        <input type="radio" name="activityLevel" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.activityLevel ==="medium"} onChange={handleSettingsOnChange} value="medium" required />
+        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel ==="medium"} onChange={handleSettingsOnChange} value="medium" required />
         High:
-        <input type="radio" name="activityLevel" defaultChecked={isLogged && loggedInUserSettings.usersPersonalSettings.activityLevel ==="high"} onChange={handleSettingsOnChange} value="high" required />
+        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel ==="high"} onChange={handleSettingsOnChange} value="high" required />
         </label>.
         <Link to="/">
-          <button onClick={isLogged ? saveUserSettings : userSetUpComplete}>{isLogged ? "Save Settings" : "Complete Set Up"}</button>
+          <button onClick={userAuthed ? saveUserSettings : userSetUpComplete}>{userAuthed ? "Save Settings" : "Complete Set Up"}</button>
         </Link>
-        <button onClick={() => {console.log(userSettings); console.log(isLogged); console.log(loggedInUserSettings.usersPersonalSettings.gender); console.log(loggedInUserSettings)}}>Check Settings</button>
+        <button onClick={() => {console.log(userSettings); console.log(userAuthed); console.log(loggedInUserSettings.usersPersonalSettings.gender); console.log(loggedInUserSettings)}}>Check Settings</button>
       </div>
     </>
   )

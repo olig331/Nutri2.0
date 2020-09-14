@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
@@ -16,7 +17,8 @@ app.use(express.json({
   type: ['application/json', 'text/plain']
 }))
 
-
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json())
 
 
 //IMPORT ROUTES
@@ -64,13 +66,13 @@ app.post('/updateUsersFood', async  (req, res)=>{
     {$set: {usersDailyFood: req.body}}
   )
   .then(user =>{
-    console.log(user.usersDailyFood)
-    res.staus(200).json(user.usersDailyFood)
+    res.status(200).json(user.usersDailyFood)
   })
   .catch(err =>{
     res.status(500).json({
       message: err
-    })
+    });
+    console.log(err);
   })
 })
 
@@ -118,6 +120,33 @@ app.get('/history', async (req, res)=>{
     res.status(500).json({
       message: err
     })
+  });
+});
+
+app.get('/refetchUserData', async (req, res)=>{
+  User.findOne({_id: req.query.userId})
+  .then(user =>{
+    res.status(200).json(user)
+  })
+  .catch((err) =>{
+    res.status(500).json({
+      message: err
+    });
+  });
+});
+
+app.post('/updateUsersSettings', async (req, res)=>{
+  User.updateOne(
+    {_id: req.query.userId},
+    {$set: {usersPersonalSettings: req.body}}
+  )
+  .then(res =>{
+    res.status(200).json(res)
+  })
+  .catch(err =>{
+    res.status(500).json({
+      message: err
+    });
   });
 });
 

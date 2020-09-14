@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState, Component } from 'react';
-import { IsLoggedContext, UsersContext, CreatingNewUserContext, LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext } from '../Context/Context';
-import { Link, Route, Redirect, Router, useHistory } from 'react-router-dom';
-import { Dashboard } from './Dashboard';
+import React, { useContext, useState, useEffect } from 'react';
+import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, SignedOutContext } from '../Context/Context';
+import { Link, useHistory } from 'react-router-dom';
 
 
 
@@ -16,9 +15,8 @@ export const UserSelect: React.FC = () => {
   // CONTEXT
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
   const { userAuthed, setuserAuthed } = useContext(UserAuthedContext);
-  const { setcreatingNewUser } = useContext(CreatingNewUserContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
-  const { setisLogged } = useContext(IsLoggedContext);
+  const { signedOut, setsignedOut } = useContext(SignedOutContext)
 
   // SETTING STATE FROM LOG IN INPUT 
   const enteredUserName = (e: React.FormEvent<HTMLInputElement>) => {
@@ -42,6 +40,14 @@ export const UserSelect: React.FC = () => {
     }
   };
 
+  useEffect(()=>{
+    signedOut? refreshApp(): console.log("no refresh needed")
+  },[])
+
+  const refreshApp = () =>{
+    window.location.reload()
+  }
+
   return (
     <>
       <div>
@@ -50,7 +56,7 @@ export const UserSelect: React.FC = () => {
       </div>
       <button onClick={() => console.log(pageHistory)}></button>
       <Link to="/setup">
-        <button onClick={() => setcreatingNewUser(true)}>Create New User</button>
+        <button>Create New User</button>
       </Link>
     </>
   );

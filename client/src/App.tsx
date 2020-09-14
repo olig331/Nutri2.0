@@ -4,78 +4,76 @@ import { Tracker } from './components/Tracker';
 import { UserSetUp } from './components/UserSetUp';
 import { History } from './components/History';
 import './style/style.css';
-import { UsersContext, IsLoggedContext, CreatingNewUserContext, LoggedInUserSettingsContext, DailyFoodContext, UserAuthedContext, LoggedInIDContext } from './Context/Context';
+import { UsersContext,  LoggedInUserSettingsContext, DailyFoodContext, UserAuthedContext, LoggedInIDContext, NavigatedFromTrackerContext, UsersSettingsContext, SignedOutContext } from './Context/Context';
 import { UserSelect } from './components/UserSelect';
 import { SettingsForm } from './components/SettingsForm';
-import { rejects } from 'assert';
-
-
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-
-
-interface passedItems {
-  component: any,
-  authed: any
-  path: any
-}
+import { Stats } from './components/Stats';
 
 export const App: React.FC = () => {
 
   const [userAuthed, setuserAuthed] = useState<boolean>(false)
-  const [isLogged, setisLogged] = useState<boolean>(false);
-  const [creatingNewUser, setcreatingNewUser] = useState<boolean>(false);
+  const [signedOut, setsignedOut] = useState<boolean>(false);
   const [loggedInUserSettings, setLoggedInUserSettings] = useState<UsersDBType>();
   const [dailyFood, setdailyFood] = useState<any[]>([]);
   const [loggedInID, setloggedInID] = useState<string>("");
+  const [navigatedFromTracker, setnavigatedFromTracker] = useState<boolean>(false)
+  const [userSettings, setuserSettings] = useState<UsersType>({
+    userName: "",
+    userPicture: "",
+    usersPersonalSettings: {
+      gender: "",
+      age: 0,
+      weight: 0,
+      weightUnit: "",
+      height: 0,
+      heightUnit: "",
+      goal: "",
+      activityLevel: ""
+    },
+    usersDailyFood: [],
+    usersHistory: []
+  });
 
-
-  useEffect(() => {
-    console.log(creatingNewUser)
-  }, [])
-
-  // Function to take the current dailyFood state and setting it in the database
-  const updateUsersDailyFood = async () =>{
-    await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
-      method: 'POST',
-      body: JSON.stringify(dailyFood)
-    })
-      .then(response => {
-        return response.text()
-      })
-      .catch((error) => {
-        rejects(error)
-      })
+  function stats(){
+    console.log(userAuthed)
+    console.log(loggedInUserSettings)
+    console.log(dailyFood)
+    console.log(loggedInID)
+    console.log(navigatedFromTracker)
+    console.log(userSettings)
   }
 
-  //when the user exits the application without sighning out this function will save the DailyFood to the databse.
-  window.onunload = async () => {
-   await updateUsersDailyFood();
-  };
+  //Icons made by <a href="https://www.flaticon.com/authors/dighital" title="Dighital">Dighital</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
   return (
     <div>
-      <UserAuthedContext.Provider value={{ userAuthed, setuserAuthed }}>
-          <IsLoggedContext.Provider value={{ isLogged, setisLogged }}>
-            <CreatingNewUserContext.Provider value={{ creatingNewUser, setcreatingNewUser }}>
+      
+      <UsersSettingsContext.Provider value={{ userSettings, setuserSettings }}>
+        <NavigatedFromTrackerContext.Provider value={{ navigatedFromTracker, setnavigatedFromTracker }}>
+          <UserAuthedContext.Provider value={{ userAuthed, setuserAuthed }}>
               <LoggedInUserSettingsContext.Provider value={{ loggedInUserSettings, setLoggedInUserSettings }}>
                 <DailyFoodContext.Provider value={{ dailyFood, setdailyFood }}>
-                  <LoggedInIDContext.Provider value={{ loggedInID, setloggedInID }}><Router>
-                    <Switch>
-                      <Route exact path='/' component={UserSelect} />
-                      <Route path='/setup' component={UserSetUp} />
-                      <Route path='/tracker' component={Tracker} />
-                      <Route path='/history' render={props => (<History />)} />
-                      <Route path='/settings' component={SettingsForm} />
-                      <Route path="/dashboard" render={props => (<Dashboard logOutUpdate={updateUsersDailyFood}/>)} />
-                    </Switch>
-                  </Router>
+                  <LoggedInIDContext.Provider value={{ loggedInID, setloggedInID }}>
+                  <SignedOutContext.Provider value={{signedOut, setsignedOut}}>
+                    <Router>
+                      <Switch>
+                        <Route exact path='/' component={UserSelect} />
+                        <Route path='/setup' component={UserSetUp} />
+                        <Route path='/tracker' component={Tracker} />
+                        <Route path='/history' render={props => (<History />)} />
+                        <Route path='/settings' component={SettingsForm} />
+                        <Route path="/dashboard" render={props => (<Dashboard />)} />
+                      </Switch>
+                    </Router>
+                    </SignedOutContext.Provider>
                   </LoggedInIDContext.Provider>
                 </DailyFoodContext.Provider>
               </LoggedInUserSettingsContext.Provider>
-            </CreatingNewUserContext.Provider>
-          </IsLoggedContext.Provider>
-      </UserAuthedContext.Provider>
-      <button onClick={() => { console.log(isLogged); console.log(loggedInUserSettings); }}>conole log stats</button>
+          </UserAuthedContext.Provider>
+        </NavigatedFromTrackerContext.Provider>
+      </UsersSettingsContext.Provider>
+      <button onClick={stats}>All State</button>
     </div >
   );
 };

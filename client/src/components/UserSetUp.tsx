@@ -1,37 +1,23 @@
 import React, { useContext, useState } from 'react';
 import { SettingsForm } from './SettingsForm';
-import { UsersSettingsContext, UsersContext, CreatingNewUserContext } from '../Context/Context';
-import { Link } from 'react-router-dom';
-import { rejects } from 'assert';
-import { runInNewContext } from 'vm';
-import { nextTick } from 'process';
-
-
+import { UsersSettingsContext } from '../Context/Context';
 
 export const UserSetUp: React.FC = () => {
+
+  const importAll = (r:any) => {
+    return r.keys().map(r);
+  }
+  //if ts contex error --- npm i -D @types/webpack-env 
+  const images = importAll(require.context('./', false, /\.(png|jpe?g|svg)$/)); 
 
   //STATE
   const [nameComplete, setnameComplete] = useState<boolean>(false); // State for Rendering Settings page on compeltion of Username 
   const [uniqueName, setuniqueName] = useState<boolean>(true); // State for when a entered Username in set up is valid(unique) 
-  const [userSettings, setuserSettings] = useState<UsersType>({
-    userName: "",
-    userPicture: "",
-    usersPersonalSettings: {
-      gender: "",
-      age: 0,
-      weight: 0,
-      weightUnit: "",
-      height: 0,
-      heightUnit: "",
-      goal: "",
-      activityLevel: ""
-    },
-    usersDailyFood: [],
-    usersHistory: []
-  });
 
+  //CONTEXT
+  const { userSettings, setuserSettings } = useContext(UsersSettingsContext)
 
-
+  
   const next = () => {
     setnameComplete(true);
   }
@@ -73,9 +59,7 @@ export const UserSetUp: React.FC = () => {
         </div>
         )
         :
-        <UsersSettingsContext.Provider value={{ userSettings, setuserSettings }}>
-          <SettingsForm />
-        </UsersSettingsContext.Provider>
+        <SettingsForm />
       }
     </>
   );

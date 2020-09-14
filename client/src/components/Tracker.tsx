@@ -2,10 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Search } from './Search';
 import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
-import { LoggedInUserSettingsContext,  DailyFoodContext, LoggedInIDContext } from '../Context/Context';
-import {rejects} from 'assert';
-
-
+import { LoggedInUserSettingsContext,  DailyFoodContext, LoggedInIDContext, NavigatedFromTrackerContext } from '../Context/Context';
 
 
 export const Tracker: React.FC = () => {
@@ -16,31 +13,27 @@ export const Tracker: React.FC = () => {
   const { loggedInID } = useContext(LoggedInIDContext)
   const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const {navigatedFromTracker, setnavigatedFromTracker} = useContext(NavigatedFromTrackerContext)
 
 
   // Will pull from database when this page is rendered
   useEffect(() => {
     console.log("running on mount first useEffect")
     getDailyFood();
-
-    return () =>{
-      updateUsersDailyFood(dailyFood)
-    };
   }, []);
 
-  const updateUsersDailyFood = async (input:any[]) =>{
-    console.log("this is input")
-    console.log(input);
-    const response = await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
-      method: 'POST',
-      headers:{
-        'Accept': 'application/json',
-      'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(input),
-    })
-    const data = await response.json()
-    console.log(data)
+  const updateUsersDailyFood = async () =>{
+      await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
+        method: 'POST',
+        body: JSON.stringify(dailyFood),
+      })
+      .then(res =>{
+        console.log(res)
+        setdailyFood([])
+      })
+      .catch(err =>{
+        console.log(err)
+      })
   }
 
   // Pull daily Food from the Database will only return If the data is the same date as when posted due to funtions on Dashboard
@@ -54,6 +47,10 @@ export const Tracker: React.FC = () => {
     setdailyFood(data)
   }
 
+  
+   window.onunload = () => {
+     updateUsersDailyFood();
+   };
 
   //Add a search item to dailyFood State
   const addItemFromSearch = (item: responseItemsFields): void => {
@@ -72,13 +69,9 @@ export const Tracker: React.FC = () => {
   // Remove an item from DailyFood 
   const removeItem = (indexOfItem: number): void => {
     let dailyFoodCopy = [...dailyFood]
-    console.log(dailyFood);
+    console.log(dailyFoodCopy);
     console.log(indexOfItem)
-    if (indexOfItem === 0) {
-      dailyFoodCopy.splice(indexOfItem, indexOfItem + 1);
-    } else {
-      dailyFoodCopy.splice(indexOfItem, indexOfItem);
-    }
+    dailyFoodCopy.splice(indexOfItem +1, 1)
     setdailyFood(dailyFoodCopy);
   };
 
@@ -87,7 +80,7 @@ export const Tracker: React.FC = () => {
   return (
     <>
       <Link to="/dashboard">
-        <button>Dashboard</button>
+        <button onClick={()=>{updateUsersDailyFood(); setnavigatedFromTracker(true)}}>Dashboard</button>
       </Link>
       <Search
         addItem={addItemFromSearch}
