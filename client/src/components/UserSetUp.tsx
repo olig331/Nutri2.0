@@ -93,6 +93,10 @@ export const UserSetUp: React.FC = () => {
             name="userName"
             onChange={settingName}
           />
+          <input type="password"
+            name="userPassword"
+            onChange={settingName}
+          />
           <span>{!uniqueName ? "User name is taken" : ""}</span>
           <button disabled={!uniqueName} onClick={validateUserName}>Next {">>"}</button>
         </div>
