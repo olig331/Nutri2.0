@@ -13,7 +13,7 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: false
   },
-  userPassword:{
+  password:{
     type: String,
     required: true,
   },
@@ -65,13 +65,23 @@ UserSchema.pre('save', async function(next){
   const user = this
   try {
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(user.userPassword, salt)
-    user.userPassword = hashedPassword;
+    const hashedPassword = await bcrypt.hash(user.password, salt)
+    user.password = hashedPassword;
     next()
   } catch (error) {
     next(error)
   }
-})
+});
+
+UserSchema.methods.comparePassword = function(candidatePassword, cb){
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+    if(err){
+       return cb(err)
+    }
+
+    return cb(null, isMatch);
+  })
+}
 
 
 

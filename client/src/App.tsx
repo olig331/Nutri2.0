@@ -20,7 +20,8 @@ export const App: React.FC = () => {
   const [navigatedFromTracker, setnavigatedFromTracker] = useState<boolean>(false)
   const [userSettings, setuserSettings] = useState<UsersType>({
     userName: "",
-    userPicture: "",
+    userPicture: "/static/media/bear.3a7022d5.png",
+    password: "",
     usersPersonalSettings: {
       gender: "",
       age: 0,

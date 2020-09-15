@@ -11,6 +11,7 @@ export const UserSelect: React.FC = () => {
 
   //STATE VARIABLES
   const [enterUserName, setenterUserName] = useState<string>("");
+  const [password, setpassword] = useState<string>("")
 
   // CONTEXT
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
@@ -22,15 +23,20 @@ export const UserSelect: React.FC = () => {
   const enteredUserName = (e: React.FormEvent<HTMLInputElement>) => {
     setenterUserName(e.currentTarget.value);
   }
+  const enteredPassword = (e: React.FormEvent<HTMLInputElement>) => {
+    setpassword(e.currentTarget.value);
+  }
 
 
   // CHECK IF USER EXISTS ON DB ? LOGIN : REJECT 
   const login = async () => {
-    const response = await fetch(`http://localhost:5000/login?name=${enterUserName}`, {
-      method: "GET",
+    const response = await fetch(`http://localhost:5000/login`, {
+      method: "POST",
+      body: JSON.stringify({userName: enterUserName, passWord: password})
     })
-    const data = await response.json();
+    let data = await response.json();
     console.log(data)
+    delete data.password;
     if (data !== null) {
       console.log("user Found")
       setuserAuthed(true)
@@ -52,7 +58,8 @@ export const UserSelect: React.FC = () => {
     <>
       <div>
         <input type="text" onChange={enteredUserName} />
-        <button onClick={() => { login(); }}>Log In</button>
+        <input type="password" onChange={enteredPassword}/>
+        <button onClick={() => { login(); console.log(password)}}>Log In</button>
       </div>
       <button onClick={() => console.log(pageHistory)}></button>
       <Link to="/setup">

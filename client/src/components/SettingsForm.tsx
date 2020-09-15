@@ -26,10 +26,9 @@ export const SettingsForm: React.FC = () => {
 
   // ADD NEW USER TO MONGODB 
   const userSetUpComplete = async ():Promise<void> => {
-   await fetch("http://localhost:5000/createUser?", {
+   await fetch("http://localhost:5000/createUser", {
       method: 'POST',
       body: JSON.stringify(userSettings),
-      mode: "no-cors"
     })
     .then(response => {
       return response.text()
@@ -136,6 +135,7 @@ export const SettingsForm: React.FC = () => {
           <button onClick={userAuthed ? saveUserSettings : userSetUpComplete}>{userAuthed ? "Save Settings" : "Complete Set Up"}</button>
         </Link>
         <button onClick={() => {console.log(userSettings); console.log(userAuthed); console.log(loggedInUserSettings.usersPersonalSettings.gender); console.log(loggedInUserSettings)}}>Check Settings</button>
+        <button onClick={()=>console.log(userSettings)}>checkUserSettings</button>
       </div>
     </>
   )

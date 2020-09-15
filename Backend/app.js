@@ -1,10 +1,12 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
+const { deleteOne } = require('./models/User');
 const app = express();
 const User = require('./models/User');
 const router = require('./routes/createUser');
 require('dotenv').config();
+const bcrypt = require('bcrypt')
 
 app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', ['*']);
@@ -30,19 +32,61 @@ app.get('/', (req, res) => {
   res.send("Home")
 })
 
-app.get('/login', async (req, res) => {
-  User.findOne({ userName: req.query.name })
-    .then(users => {
-      console.log(users)
-      res.status(200).json(users)
+
+
+
+app.post('/login', function(req, res){
+  var username = req.body.userName;
+  var password = req.body.passWord;
+  console.log(username)
+  console.log(password)
+
+  const user = User.findOne({userName: username}, function(err, user){
+    if(err){
+      console.log(err)
+      return res.status(500).send();
+    }
+    if(!user){
+      res.status(404).send()
+    }
+    console.log(user)
+    user.comparePassword(password, function(err, isMatch){
+      if(isMatch){
+        return res.json(user);
+      }else{
+        return res.status(401).json("user not found").send();
+      }
+    });   
+  });
+});  
+
+
+
+  // console.log(req.query.password)
+  // const user = User.findOne({ userName: req.query.q.name, userPassword: passMatch(req.query.q.pass) })
+  //   .then(users => {
+  //     console.log(users)
+  //     res.status(200).json(users)
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //     res.status(500).json({
+  //       error: err
+  //     })
+  //   })
+
+
+app.get('/validateUserName', async (req, res) =>{
+  User.findOne({userName: req.query.userName})
+  .then(users =>{
+    res.status(200).json(users)
+  })
+  .catch(err =>{
+    res.status(500).json({
+      message: err
     })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      })
-    })
-});
+  })
+})
 
 app.get('/getDailyFood', async (req,res)=>{
   User.findOne({_id: req.query.userId})
