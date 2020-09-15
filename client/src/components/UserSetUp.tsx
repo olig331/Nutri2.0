@@ -26,11 +26,12 @@ export const UserSetUp: React.FC = () => {
 
   // Function access the databse and matches a username to the input Field if null is returned Validation failed
   const validateUserName = async () => {
-    const response = await fetch(`/login?name=${userSettings.userName}`, {
+    const response = await fetch(`/validateUserName?name=${userSettings.userName}`, {
       method: "get",
       mode: "no-cors",
     })
     const data = await response.json();
+    console.log(data)
     if (data === null) {
       setuniqueName(true)
       next();
@@ -93,8 +94,13 @@ export const UserSetUp: React.FC = () => {
             name="userName"
             onChange={settingName}
           />
+          <input type="password"
+            name="password"
+            onChange={settingName}
+          />
           <span>{!uniqueName ? "User name is taken" : ""}</span>
           <button disabled={!uniqueName} onClick={validateUserName}>Next {">>"}</button>
+          <button onClick={()=>console.log(userSettings)}>check password in settings</button>
         </div>
         )
         :

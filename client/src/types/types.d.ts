@@ -45,6 +45,7 @@ type UserInfo = {
 type UsersType = {
   userName: string,
   userPicture: string,
+  password: string,
   usersPersonalSettings:{
     gender:string,
     age: number,

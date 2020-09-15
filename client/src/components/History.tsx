@@ -65,7 +65,7 @@ export const History: React.FC = () => {
       }
 
       <div>
-        {ready
+        {ready && dbhistory.length >=1 
           ? renderHistoryPerDay(dbhistory[historyCount])
           : ""
         }

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 //import Schema from 'mongoose'
+const  bcrypt = require('bcrypt');
+
+
 
 const UserSchema = mongoose.Schema({
   userName: {
@@ -9,6 +12,10 @@ const UserSchema = mongoose.Schema({
   userPicture: {
     type: String,
     required: false
+  },
+  password:{
+    type: String,
+    required: true,
   },
   usersPersonalSettings: {
     gender: {
@@ -53,5 +60,29 @@ const UserSchema = mongoose.Schema({
     required: false
   }
 })
+
+UserSchema.pre('save', async function(next){
+  const user = this
+  try {
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(user.password, salt)
+    user.password = hashedPassword;
+    next()
+  } catch (error) {
+    next(error)
+  }
+});
+
+UserSchema.methods.comparePassword = function(candidatePassword, cb){
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+    if(err){
+       return cb(err)
+    }
+
+    return cb(null, isMatch);
+  })
+}
+
+
 
 module.exports = mongoose.model('User', UserSchema);
