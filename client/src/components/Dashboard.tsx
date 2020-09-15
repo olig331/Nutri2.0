@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {  LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext, NavigatedFromTrackerContext, SignedOutContext } from '../Context/Context';
+import { WelcomeUser } from './WelcomeUser';
 
 
 
@@ -14,7 +15,8 @@ export const Dashboard: React.FC = () => {
   const todaysDate = new Date().toLocaleDateString();
 
   // Toggle Pop Up State
-  const [showPopUp, setshowpopUp] = useState<Boolean>(false);
+  const [showPopUp, setshowpopUp] = useState<boolean>(false);
+  const [finishLoad, setfinishLoad] = useState<boolean>(false);
 
   //CONTEXT 
   const {navigatedFromTracker, setnavigatedFromTracker} = useContext(NavigatedFromTrackerContext)
@@ -83,9 +85,16 @@ export const Dashboard: React.FC = () => {
     window.location.reload();
   }
 
+  setTimeout(() => {
+    setfinishLoad(true)
+  }, 1500);
 
   return (
     <div>
+      {!finishLoad ?
+      <WelcomeUser />
+      :
+      <>
       <Link to="/tracker">
         <div onClick={()=>loggedInUserSettings.usersDailyFood[0] === todaysDate
         ? console.log("dates are equal")
@@ -120,6 +129,8 @@ export const Dashboard: React.FC = () => {
         }
       </div>
       <button onClick={() => { console.log(loggedInUserSettings); console.log(loggedInID) }}>Check status</button>
+      </>
+      }
     </div>
   );
 }; 

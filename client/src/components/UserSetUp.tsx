@@ -1,7 +1,7 @@
 import React, {useRef, useContext, useState, useEffect } from 'react';
 import { SettingsForm } from './SettingsForm';
 import { UsersSettingsContext } from '../Context/Context';
-import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 
 export const UserSetUp: React.FC = () => {
 
@@ -16,6 +16,8 @@ export const UserSetUp: React.FC = () => {
   const [nameComplete, setnameComplete] = useState<boolean>(false); // State for Rendering Settings page on compeltion of Username 
   const [uniqueName, setuniqueName] = useState<boolean>(true); // State for when a entered Username in set up is valid(unique) 
   const [showImgPopUp, setshowImgPopUp] = useState<boolean>(false);
+  const [confirmPassword, setconfirmPassword] = useState<string>("");
+  const [passwordsMatch, setpasswordsMatch] = useState<boolean>(true);
 
   //CONTEXT
   const { userSettings, setuserSettings } = useContext(UsersSettingsContext)
@@ -52,6 +54,15 @@ export const UserSetUp: React.FC = () => {
     setuserSettings(userSettingsCopy);
   };
 
+  const passwordMatcher = (e: React.FormEvent<HTMLInputElement>) =>{
+    if(userSettings.password !== e.currentTarget.value){
+      setpasswordsMatch(false)
+    }else{
+      setpasswordsMatch(true)
+    }
+    setconfirmPassword(e.currentTarget.value);
+  }
+
   // const handleClick = (e: MouseEvent) =>{
   //   if(node.current.contains(e.target as Node)){
   //     setshowImgPopUp(false);  
@@ -73,9 +84,12 @@ export const UserSetUp: React.FC = () => {
     showImgPopUp ? setshowImgPopUp(false) : setshowImgPopUp(true);
   }
 
+  console.log(nameComplete)
+  console.log(passwordsMatch)
+
   return (
     <>
-      {!nameComplete
+      {nameComplete === false || passwordsMatch === false
         ?
         (<div >
           <img style={{ width: "75px", height: "75px" }} src={userSettings.userPicture === "" ? images[0] : userSettings.userPicture } alt="User Avatar" />
@@ -89,18 +103,46 @@ export const UserSetUp: React.FC = () => {
               ))}
             </div>
             : ""
-          }
+          } <br/>
+          <label htmlFor="userName">User name</label>
           <input type="text"
             name="userName"
             onChange={settingName}
-          />
+            required
+          /> 
+          {!uniqueName ? <label htmlFor="userName">Username is taken</label> : ""}
+          <br/>
+          <label htmlFor="email">Email</label>
+          <input type="text"
+            name="email"
+            onChange={settingName}
+            required
+          /> 
+          <br/>
+          <label htmlFor="password">password</label>
           <input type="password"
             name="password"
             onChange={settingName}
+            required
           />
+          {!passwordsMatch ? <label style={{color:"red"}} htmlFor="confirmPassword">X</label> : ""}
+          <br/>
+          <label htmlFor="confirmPassword">confirm password</label>
+          <input 
+            name="confirmPassword" 
+            type="password"
+            required 
+            onChange={passwordMatcher}
+          />
+          {!passwordsMatch ? <label style={{color:"red"}} htmlFor="confirmPassword">X</label> : ""}
+
+          <br/>
+
           <span>{!uniqueName ? "User name is taken" : ""}</span>
-          <button disabled={!uniqueName} onClick={validateUserName}>Next {">>"}</button>
-          <button onClick={()=>console.log(userSettings)}>check password in settings</button>
+          <button onClick={validateUserName}>Next {">>"}</button>
+          <Link to="/">
+            <button>Back to Login</button>
+          </Link>
         </div>
         )
         :

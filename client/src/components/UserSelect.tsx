@@ -12,6 +12,7 @@ export const UserSelect: React.FC = () => {
   //STATE VARIABLES
   const [enterUserName, setenterUserName] = useState<string>("");
   const [password, setpassword] = useState<string>("")
+  const [loginattemptfailed, setloginattemptfailed] = useState<boolean>(false);
 
   // CONTEXT
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
@@ -22,9 +23,11 @@ export const UserSelect: React.FC = () => {
   // SETTING STATE FROM LOG IN INPUT 
   const enteredUserName = (e: React.FormEvent<HTMLInputElement>) => {
     setenterUserName(e.currentTarget.value);
+    setloginattemptfailed(false);
   }
   const enteredPassword = (e: React.FormEvent<HTMLInputElement>) => {
     setpassword(e.currentTarget.value);
+    setloginattemptfailed(false);
   }
 
 
@@ -32,36 +35,65 @@ export const UserSelect: React.FC = () => {
   const login = async () => {
     const response = await fetch(`http://localhost:5000/login`, {
       method: "POST",
-      body: JSON.stringify({userName: enterUserName, passWord: password})
+      body: JSON.stringify({ userName: enterUserName, passWord: password })
     })
     let data = await response.json();
     console.log(data)
     delete data.password;
-    if (data !== null) {
+    if (data !== "401") {
       console.log("user Found")
       setuserAuthed(true)
       setloggedInID(data._id);
       setLoggedInUserSettings(data)
       pageHistory.replace("/dashboard") // will navigate to /dashboard page on succesfull user auth
+    } else {
+      setloginattemptfailed(true)
     }
   };
 
-  useEffect(()=>{
-    signedOut? refreshApp(): console.log("no refresh needed")
-  },[])
+  useEffect(() => {
+    signedOut ? refreshApp() : console.log("no refresh needed")
+  }, [])
 
-  const refreshApp = () =>{
+  const refreshApp = () => {
     window.location.reload()
   }
 
   return (
     <>
       <div>
-        <input type="text" onChange={enteredUserName} />
-        <input type="password" onChange={enteredPassword}/>
-        <button onClick={() => { login(); console.log(password)}}>Log In</button>
+        <label 
+          htmlFor="userName">
+          User Name
+        </label>
+        <input 
+        style={loginattemptfailed ? { outline: "1.5px solid", outlineColor:"red"} : {outlineColor:"none"}}
+          type="text" 
+          name="userName" 
+          onChange={enteredUserName}
+        />
+          <br />
+        <label 
+          htmlFor="password">
+          password
+        </label>
+        <input 
+          style={loginattemptfailed ? {outline: "1.5px solid", outlineColor:"red"} : {outlineColor:"none"}}
+          type="password" 
+          name="password" 
+          onChange={enteredPassword} 
+        />
+          <br />
+        <button 
+          onClick={() => { login(); console.log(password) }}>
+          Log In
+        </button>
+
+        {loginattemptfailed 
+          ? <h5>User name or password is incorrect</h5>
+          : ""
+        }
       </div>
-      <button onClick={() => console.log(pageHistory)}></button>
       <Link to="/setup">
         <button>Create New User</button>
       </Link>

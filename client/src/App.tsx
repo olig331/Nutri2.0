@@ -22,6 +22,7 @@ export const App: React.FC = () => {
     userName: "",
     userPicture: "/static/media/bear.3a7022d5.png",
     password: "",
+    email: "",
     usersPersonalSettings: {
       gender: "",
       age: 0,
@@ -74,7 +75,6 @@ export const App: React.FC = () => {
           </UserAuthedContext.Provider>
         </NavigatedFromTrackerContext.Provider>
       </UsersSettingsContext.Provider>
-      <button onClick={stats}>All State</button>
     </div >
   );
 };
