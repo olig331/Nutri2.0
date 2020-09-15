@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+//import Schema from 'mongoose'
 
 const UserSchema = mongoose.Schema({
   userName: {
@@ -48,7 +49,7 @@ const UserSchema = mongoose.Schema({
     required: false
   },
   usersHistory: {
-    type: Array,
+    type: mongoose.Schema.Types.Mixed,
     required: false
   }
 })

@@ -37,8 +37,7 @@ export const App: React.FC = () => {
   const updateUsersDailyFood = async () =>{
     await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
       method: 'POST',
-      body: JSON.stringify(dailyFood),
-      mode: "no-cors"
+      body: JSON.stringify(dailyFood)
     })
       .then(response => {
         return response.text()
@@ -49,7 +48,7 @@ export const App: React.FC = () => {
   }
 
   window.onunload = async () => {
-    updateUsersDailyFood();
+   await updateUsersDailyFood();
   };
 
   return (
@@ -64,7 +63,7 @@ export const App: React.FC = () => {
                       <Route exact path='/' component={UserSelect} />
                       <Route path='/setup' component={UserSetUp} />
                       <Route path='/tracker' component={Tracker} />
-                      <Route path='/history' component={History} />
+                      <Route path='/history' render={props => (<History />)} />
                       <Route path='/settings' component={SettingsForm} />
                       <Route path="/dashboard" render={props => (<Dashboard logOutUpdate={updateUsersDailyFood}/>)} />
                     </Switch>

@@ -18,7 +18,7 @@ router.post('/', async (req, res)=>{
       activityLevel: req.body.usersPersonalSettings.activityLevel
     },
     usersDailyFood: req.body.usersDailyFood,
-    usersHistory: req.body.usersHistory
+    usersHistory: []
   });
   try{
     const savedData = await user.save()

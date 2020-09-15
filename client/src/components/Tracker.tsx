@@ -2,23 +2,32 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Search } from './Search';
 import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
-import { LoggedInUserSettingsContext, UsersContext, DailyFoodContext } from '../Context/Context';
-import { log } from 'util';
+import { LoggedInUserSettingsContext, UsersContext, DailyFoodContext, LoggedInIDContext } from '../Context/Context';
+
 
 
 
 export const Tracker: React.FC = () => {
   
+  const {loggedInID} = useContext(LoggedInIDContext)
   const {dailyFood, setdailyFood} = useContext(DailyFoodContext);
   const {loggedInUserSettings, setLoggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
   console.log(loggedInUserSettings)
 
   useEffect(()=>{
-    if(loggedInUserSettings  !==  undefined){
-      setdailyFood(loggedInUserSettings.usersDailyFood)
-    }
+   getDailyFood()
   }, [])
+
+  const getDailyFood = async () =>{
+    const response = await fetch(`http://localhost:5000/getDailyFood?userId=${loggedInID}`, {
+      method: 'GET'
+    })
+    const data = await response.json()
+    console.log("data should be shown from get dailyfood")
+    console.log(data)
+    setdailyFood(data)
+  }
 
   const addItemFromSearch = (item: responseItemsFields): void => {
     let copy = [...dailyFood]
@@ -65,6 +74,7 @@ export const Tracker: React.FC = () => {
         dailyFood={dailyFood}
       />
       <button onClick={()=> console.log(loggedInUserSettings)}>check if updating user setting</button>
+      <button onClick={()=> console.log(dailyFood)}>dailyFood</button>
     </>
   );
 };

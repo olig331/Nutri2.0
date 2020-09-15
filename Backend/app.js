@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const User = require('./models/User');
+const router = require('./routes/createUser');
 require('dotenv').config();
 
 app.use((req, res, next) => {
@@ -19,11 +20,7 @@ app.use(express.json({
 
 
 //IMPORT ROUTES
-const postsRoute = require('./routes/posts');
 const creatingUserRoute = require('./routes/createUser');
-const router = require('./routes/createUser');
-
-app.use('/posts', postsRoute);
 
 app.use('/createUser', creatingUserRoute);
 
@@ -45,31 +42,84 @@ app.get('/login', async (req, res) => {
     })
 });
 
-app.patch('/updateUserHistory', async (req, res)=>{
-  try{
-    const userInfo = await User.updateOne(
-      {id: req.query.userId},
-      {$set:{usersHistory: req.body}}
-      );
-    res.json(userInfo)
-  }catch(err){
+app.get('/getDailyFood', async (req,res)=>{
+  User.findOne({_id: req.query.userId})
+  .then(found =>{
+    console.log(found)
+    res.status(200).json(found.usersDailyFood)
+  })
+  .catch(err =>{
     res.status(500).json({
       message: err
-    });
-  };
-});
-
-app.patch('/updateUserFood', async (req, res)=>{
-  try{
-    const updatedFood = await User.updateOne(
-      {id: req.query.userId},
-      {$set: {usersDailyFood: req.body}}
-    );
-    res.json(updatedFood);
-  }catch (err) {
-    res.json({message: err})
-  }
+    })
+  })
 })
+
+app.post('/updateUsersFood', async  (req, res)=>{
+  console.log("updating users Food")
+  console.log(req.body)
+  console.log(req.query.userId)
+  User.updateOne(
+    {_id: req.query.userId},
+    {$set: {usersDailyFood: req.body}}
+  )
+  .then(user =>{
+    console.log(user.usersDailyFood)
+    res.staus(200).json(user.usersDailyFood)
+  })
+  .catch(err =>{
+    res.status(500).json({
+      message: err
+    })
+  })
+})
+
+app.post('/resetFood', async (req, res)=>{
+    User.updateOne(
+      {_id: req.query.userId},
+      {$set: {usersDailyFood: req.body}}
+    )
+    .then(user =>{
+      console.log(user.usersDailyFood)
+      res.status(200).json(user.usersDailyFood)
+    })
+    .catch(err =>{
+      res.status(500).json({
+        message: err
+      })
+    })
+})
+
+app.post('/updateUserHistory', async (req, res)=>{
+  console.log(req.query.userId);
+  console.log(req.body)
+  User.updateOne(
+      {_id: req.query.userId},
+      {$addToSet: {usersHistory: [...req.body]}},
+  )
+    .then(user =>{
+      console.log(user)
+      res.json("user updated")
+    })
+    .catch(err =>{
+    res.json({
+      message: err
+    })
+  })
+})
+
+app.get('/history', async (req, res)=>{
+  User.findOne({_id: req.query.userId})
+  .then(history =>{
+    console.log(history.usersHistory)
+    res.status(200).json(history.usersHistory)
+  })
+  .catch(err =>{
+    res.status(500).json({
+      message: err
+    })
+  });
+});
 
 //CONNTECT TO DB
 mongoose.connect(
