@@ -81,13 +81,15 @@ export const Dashboard: React.FC = () => {
       })
   };
 
-  const refresh =():void =>{
-    window.location.reload();
-  }
 
-  setTimeout(() => {
-    setfinishLoad(true)
-  }, 1500);
+  useEffect(()=>{
+    if(!finishLoad){
+      setTimeout(() => {
+        setfinishLoad(true)
+      }, 1500);
+    }
+  },[])
+
 
   return (
     <div>

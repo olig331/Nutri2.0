@@ -9,6 +9,7 @@ import { UserSelect } from './components/UserSelect';
 import { SettingsForm } from './components/SettingsForm';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Stats } from './components/Stats';
+import { NewPassword } from './components/NewPassword';
 
 export const App: React.FC = () => {
 
@@ -66,6 +67,7 @@ export const App: React.FC = () => {
                         <Route path='/history' render={props => (<History />)} />
                         <Route path='/settings' component={SettingsForm} />
                         <Route path="/dashboard" render={props => (<Dashboard />)} />
+                        <Route path="/:token" component={NewPassword} />
                       </Switch>
                     </Router>
                     </SignedOutContext.Provider>
