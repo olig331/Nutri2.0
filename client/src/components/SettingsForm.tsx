@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { UsersSettingsContext, LoggedInUserSettingsContext, LoggedInIDContext, UserAuthedContext } from '../Context/Context';
 import { Link, useHistory } from 'react-router-dom';
 import { rejects } from 'assert';
+import { UserInfo } from './UserInfo';
 
 
 
@@ -57,8 +58,9 @@ export const SettingsForm: React.FC = () => {
 
 
   return (
-    <>
-      {userAuthed ? <Link to="/dashboard"><button>Dashboard</button></Link> : null}
+    <> 
+     
+      {userAuthed ? (<><UserInfo /> <Link to="/dashboard"><button>Dashboard</button></Link></>) : null}
       <div>
         <h5>SETTINGS TAB </h5>
         {/* GENDER SECTION */}

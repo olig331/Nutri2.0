@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, SignedOutContext } from '../Context/Context';
+import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
 import { Link, useHistory } from 'react-router-dom';
 import { Console } from 'console';
 
@@ -21,6 +21,7 @@ export const UserSelect: React.FC = () => {
   const [passwordResetUserName, setpasswordResetUsername] = useState<string>("");
 
   // CONTEXT
+  const { navigatedFromLogin, setnavigatedFromLogin } = useContext(NavigatedFromLoginContext)
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
   const { userAuthed, setuserAuthed } = useContext(UserAuthedContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
@@ -85,6 +86,7 @@ export const UserSelect: React.FC = () => {
       setuserAuthed(true)
       setloggedInID(data._id);
       setLoggedInUserSettings(data)
+      setnavigatedFromLogin(true)
       pageHistory.replace("/dashboard") // will navigate to /dashboard page on succesfull user auth
     } else {
       setloginattemptfailed(true)
@@ -139,7 +141,7 @@ export const UserSelect: React.FC = () => {
       </Link>
 
       <button onClick={() => setforgotUserNamePopUp(true)}>Forgot Username</button>
-      <button onClick={()=> setforgotPasswordPopUp(true)}>Forgot password</button>
+      <button onClick={() => setforgotPasswordPopUp(true)}>Forgot password</button>
 
       {forgotUserNamePopUp
         ? <div>
