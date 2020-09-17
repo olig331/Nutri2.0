@@ -1,7 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
 import { Link, useHistory } from 'react-router-dom';
-import { Console } from 'console';
+import Logo from '../imgs/NutriLogo.png'
+import { RiUserAddLine } from 'react-icons/ri';
+import Nutribackground from '../imgs/Nutribackground.jpg'
+
 
 
 
@@ -101,82 +104,83 @@ export const UserSelect: React.FC = () => {
     window.location.reload()
   }
 
+
   return (
-    <>
-      <div>
-        <label
-          htmlFor="userName">
-          User Name
-        </label>
+    <div className="user_select_parent">
+
+      <div className="login_inputs">
+        <img src={Logo} alt="Logo Img" />
+        <br />
         <input
-          style={loginattemptfailed ? { outline: "1.5px solid", outlineColor: "red" } : { outlineColor: "none" }}
+          style={loginattemptfailed ? {border:"1px solid red"} : { outlineColor: "none" }}
           type="text"
           name="userName"
+          placeholder="Username"
           onChange={enteredUserName}
         />
         <br />
-        <label
-          htmlFor="password">
-          password
-        </label>
         <input
-          style={loginattemptfailed ? { outline: "1.5px solid", outlineColor: "red" } : { outlineColor: "none" }}
+          style={loginattemptfailed ? {border:"1px solid red"} : { outlineColor: "none" }}
           type="password"
           name="password"
+          placeholder="Password"
           onChange={enteredPassword}
         />
         <br />
-        <button
+        <button className="login_button"
           onClick={() => { login(); console.log(password) }}>
           Log In
         </button>
 
-        {loginattemptfailed
-          ? <h5>User name or password is incorrect</h5>
-          : ""
-        }
+        <Link to="/setup" style={{ textDecoration: 'none' }}>
+          <div className="create_user">
+            <span><RiUserAddLine /></span>
+            <h5>Sign Up</h5>
+          </div>
+        </Link>
+
       </div>
-      <Link to="/setup">
-        <button>Create New User</button>
-      </Link>
 
-      <button onClick={() => setforgotUserNamePopUp(true)}>Forgot Username</button>
-      <button onClick={() => setforgotPasswordPopUp(true)}>Forgot password</button>
-
-      {forgotUserNamePopUp
-        ? <div>
-          <button onClick={() => setforgotUserNamePopUp(false)}>X</button>
-          <h4>Enter Email address to recieve email containing User Name</h4>
-          <input type="text"
-            onChange={forgotProccess}
-          />
-          <button
-            onClick={retreieveUserName}>
-            Send Mail
+      <div className="forgot_details">
+        <button className="forgot_button" onClick={() => setforgotUserNamePopUp(true)}>Forgot Username</button>
+        <button className="forgot_button" onClick={() => setforgotPasswordPopUp(true)}>Forgot password</button>
+      </div>
+      <div>
+        {forgotUserNamePopUp
+          ? <div>
+            <button onClick={() => setforgotUserNamePopUp(false)}>X</button>
+            <h4>Enter Email address to recieve email containing User Name</h4>
+            <input type="text"
+              onChange={forgotProccess}
+            />
+            <button
+              onClick={retreieveUserName}>
+              Send Mail
             </button>
-          <h5>{responseFromMailReq}</h5>
-        </div>
-        : ""}
+            <h5>{responseFromMailReq}</h5>
+          </div>
+          : ""}
 
-      {forgotPasswordPopUp
-        ? <div>
-          <button onClick={() => setforgotPasswordPopUp(false)}>X</button>
-          <br />
-          <label htmlFor="forgot_email">Email</label>
-          <input
-            name="enterEmail"
-            type="text"
-            onChange={forgotProccess}
-          />
-          <br />
-          <label htmlFor="forgot_username"></label>
-          <input type="text"
-            onChange={forgotProccessUserName}
-          />
-          <button onClick={passwordReset}>Send Password Reset Email</button>
-          <h5>{responseFromMailReq}</h5>
-        </div>
-        : ""}
-    </>
+        {forgotPasswordPopUp
+          ? <div>
+            <button onClick={() => setforgotPasswordPopUp(false)}>X</button>
+            <br />
+            <label htmlFor="forgot_email">Email</label>
+            <input
+              name="enterEmail"
+              type="text"
+              onChange={forgotProccess}
+            />
+            <br />
+            <label htmlFor="forgot_username"></label>
+            <input type="text"
+              onChange={forgotProccessUserName}
+            />
+            <button onClick={passwordReset}>Send Password Reset Email</button>
+            <h5>{responseFromMailReq}</h5>
+          </div>
+          : ""}
+      </div>
+    </div>
   );
 };

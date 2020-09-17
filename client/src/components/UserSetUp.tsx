@@ -91,7 +91,7 @@ export const UserSetUp: React.FC = () => {
     <>
       {nameComplete === false || passwordsMatch === false
         ?
-        (<div >
+        (<div>
           <img style={{ width: "75px", height: "75px" }} src={userSettings.userPicture === "" ? images[0] : userSettings.userPicture } alt="User Avatar" />
           <button onClick={toggleShowImg}>{showImgPopUp?"Close":"Choose Avatar"}</button>
           {showImgPopUp

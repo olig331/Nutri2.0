@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { Stats } from './components/Stats';
 import { NewPassword } from './components/NewPassword';
 
+
 export const App: React.FC = () => {
 
   const [navigatedFromLogin, setnavigatedFromLogin] = useState<boolean>(false);
@@ -51,7 +52,7 @@ export const App: React.FC = () => {
   //Icons made by <a href="https://www.flaticon.com/authors/dighital" title="Dighital">Dighital</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
   return (
-    <div>
+    <div className="app">
       <NavigatedFromLoginContext.Provider value={{ navigatedFromLogin, setnavigatedFromLogin }}>
         <UsersSettingsContext.Provider value={{ userSettings, setuserSettings }}>
           <NavigatedFromTrackerContext.Provider value={{ navigatedFromTracker, setnavigatedFromTracker }}>
