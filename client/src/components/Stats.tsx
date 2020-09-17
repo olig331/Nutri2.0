@@ -79,6 +79,9 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
         : bmr)
   }
 
+
+
+
   const helperFunc = (name:string) =>{
     let multiplier: number = 1
     let divider: number = 1

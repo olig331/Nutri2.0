@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { isConstructorDeclaration } from 'typescript';
 import { LoggedInUserSettingsContext, LoggedInIDContext } from '../Context/Context';
+import { UserInfo } from './UserInfo';
 
 
 export const History: React.FC = () => {
@@ -52,6 +53,7 @@ export const History: React.FC = () => {
 
   return (
     <div>
+      <UserInfo />
       <Link to="/dashboard">
         <button>Dashboard</button>
       </Link>

@@ -5,6 +5,8 @@ const { deleteOne } = require('./models/User');
 const app = express();
 const User = require('./models/User');
 const router = require('./routes/createUser');
+const nodemailer = require('nodemailer')
+const crypto = require('crypto')
 require('dotenv').config();
 const bcrypt = require('bcrypt')
 
@@ -44,17 +46,17 @@ app.post('/login', function(req, res){
   const user = User.findOne({userName: username}, function(err, user){
     if(err){
       console.log(err)
-      return res.status(500).send();
+      return res.json("401")
     }
     if(!user){
-      res.status(404).send()
+      return res.json("401")
     }
     console.log(user)
     user.comparePassword(password, function(err, isMatch){
       if(isMatch){
         return res.json(user);
       }else{
-        return res.status(401).json("user not found").send();
+        return res.json("401")
       }
     });   
   });
@@ -179,20 +181,163 @@ app.get('/refetchUserData', async (req, res)=>{
   });
 });
 
-app.post('/updateUsersSettings', async (req, res)=>{
-  User.updateOne(
-    {_id: req.query.userId},
-    {$set: {usersPersonalSettings: req.body}}
-  )
-  .then(res =>{
-    res.status(200).json(res)
-  })
-  .catch(err =>{
-    res.status(500).json({
-      message: err
-    });
+app.post('/updateUsersSettings', async function (req, res) {
+    console.log(req.query.userId);
+    console.log(req.body);
+    User.updateOne(
+      { _id: req.query.userId },
+      { $set: { usersPersonalSettings: { ...req.body } } }
+    )
+      .then(response => {
+        res.json({
+          status: 200,
+          message: "settings updates"
+        });
+      })
+      .catch(err => {
+        console.log(err)
+        res.json({
+          status: 500,
+          message: "updateFailed"
+        });
+      });
   });
-});
+
+  console.log(process.env.EMAIL)
+  console.log(process.env.PASSWORD)
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  
+  
+  app.post('/forgotUserName', async function(req, res){
+    const emailAddress = req.body.email
+    const user = await User.findOne({email: req.body.email})
+      if(user !== null){
+        var mailOptions = {
+          from: process.env.EMAIL,
+          to: emailAddress,
+          subject: "Forgotten User Name | Nutri",
+          text: `Your Nutri User name is: ${user.userName}`
+        }
+
+        transporter.sendMail(mailOptions, function(err, info){
+          if(err){
+            console.log(err)
+            res.json({
+              status:401,
+              message: "Email failed to send error on our Side"
+            })
+          } else {
+            console.log("email sent:" + info.response );
+            res.json({
+              status:200,
+              message:`User Found email sent to ${req.body.email}`
+            })
+          }
+        })
+      }else{
+        res.json({
+          status: 404,
+          message: "No User found with entered Email"
+        })
+      }
+  });
+
+
+  app.post('/forgotPassword', async function(req, res){
+    const name = req.body.name;
+    const mail = req.body.email;
+    crypto.randomBytes(32, (err, buffer)=>{
+      if(err){
+        console.log(err)
+      }
+      console.log(buffer)
+      const token = buffer.toString("hex")
+      console.log(token) 
+
+    User.findOne({userName: name, email: mail})
+      .then(user =>{
+        if(!user){
+          return res.json({
+            status: 404,
+            message: "No user found with Entered User name and email"
+          })
+        }
+        user.resetToken = token
+        user.expireToken = Date.now() + 1800000
+        user.save().then((result)=>{
+          transporter.sendMail({
+            from: process.env.EMAIL,
+            to: mail,
+            subject: "Password Reset | Nutri",
+            html: `
+              <p>Your requested password reset</p>
+              <h5>Click on this <a href="http://localhost:3000/${token}">link<a/> to reset password</h5>
+            `
+          })
+          res.json({
+            status: 200,
+            message: "Password Reset email Sent please check your inbox"
+          })
+        })
+      })
+    })
+  })
+
+  app.post('/newUserPassword', (req, res)=>{
+    const newPassword = req.body.password;
+    const sentToken = req.body.token
+    console.log(sentToken)
+    console.log(newPassword)
+    console.log(typeof(sentToken))
+    const user = User.findOne({resetToken: sentToken, expireToken:{$gt: Date.now()}})
+    console.log("this is user below")
+    console.log(user)
+    console.log("end of user")
+    
+      if(user !== null){
+        bcrypt.hash(newPassword, 10)
+          .then(hashedPassword=>{
+            User.updateOne({resetToken: sentToken, expireToken:{$gt: Date.now()}},  
+                      {$set: {password: hashedPassword, resetToken: undefined, expireToken: undefined}} 
+            )
+            // user.password = hashedPassword
+            // user.resetToken = undefined
+            // user.expireToken = undefined          
+            // user.save()
+            .then((saveduser)=>{
+              res.json({
+                status: 200,
+                message: "password Updated Success"
+              })
+            })
+          })
+      }else{
+         res.json({
+          status:422,
+          message: "30 minute password reset time expired please try again"
+        })
+      }
+  })
+
+
+  // app.post('reset-password', (req, res)=>{
+  //   crypto.randomBytes(32, (err, buffer)=>{
+  //     if(err){
+  //       console.log(err)
+  //     }
+  //     console.log(buffer)
+  //     const token = buffer.toString("hex")
+  //     console.log(token)
+  //   })
+  // })
 
 //CONNTECT TO DB
 mongoose.connect(

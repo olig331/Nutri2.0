@@ -17,6 +17,12 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  resetToken:String,
+  expireToken: Date,
+  email:{
+    type: String,
+    required: true,
+  },
   usersPersonalSettings: {
     gender: {
       type: String,

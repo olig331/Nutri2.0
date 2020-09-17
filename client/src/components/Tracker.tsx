@@ -3,6 +3,7 @@ import { Search } from './Search';
 import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
 import { LoggedInUserSettingsContext,  DailyFoodContext, LoggedInIDContext, NavigatedFromTrackerContext } from '../Context/Context';
+import { UserInfo } from './UserInfo';
 
 
 export const Tracker: React.FC = () => {
@@ -79,6 +80,7 @@ export const Tracker: React.FC = () => {
 
   return (
     <>
+      <UserInfo/>
       <Link to="/dashboard">
         <button onClick={()=>{updateUsersDailyFood(); setnavigatedFromTracker(true)}}>Dashboard</button>
       </Link>

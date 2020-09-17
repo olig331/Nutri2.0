@@ -1,3 +1,4 @@
+import { create } from 'domain';
 import { createContext } from 'react';
 
 export const UserAuthedContext:any = createContext(false)
@@ -8,3 +9,4 @@ export const LoggedInUserSettingsContext: any = createContext({});
 export const LoggedInIDContext:any = createContext("");
 export const NavigatedFromTrackerContext:any = createContext(false)
 export const SignedOutContext:any = createContext(false)
+export const NavigatedFromLoginContext:any = createContext(false);
