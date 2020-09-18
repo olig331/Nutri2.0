@@ -2,6 +2,8 @@ import React, {useRef, useContext, useState, useEffect } from 'react';
 import { SettingsForm } from './SettingsForm';
 import { UsersSettingsContext } from '../Context/Context';
 import {Link} from 'react-router-dom';
+import {AiFillCloseCircle} from 'react-icons/ai'
+import { GrLinkNext } from "react-icons/gr";
 
 export const UserSetUp: React.FC = () => {
 
@@ -91,44 +93,57 @@ export const UserSetUp: React.FC = () => {
     <>
       {nameComplete === false || passwordsMatch === false
         ?
-        (<div>
-          <img style={{ width: "75px", height: "75px" }} src={userSettings.userPicture === "" ? images[0] : userSettings.userPicture } alt="User Avatar" />
-          <button onClick={toggleShowImg}>{showImgPopUp?"Close":"Choose Avatar"}</button>
+        (<div className="setup_parent">
+          <div className="setup_items">
+          <img className="avatar_selector" onClick={toggleShowImg} src={userSettings.userPicture === "" ? images[0] : userSettings.userPicture } alt="User Avatar" />
+          <br/>
+          <br/>
           {showImgPopUp
             ?
-            <div>
+            <div className="avatar_popup_window">
+              <span className="close_avatar" onClick={toggleShowImg}><AiFillCloseCircle/></span>
               {/* // <div ref={node}> */}
               {images.map((src: string, index: number) => (
-                <img key={index} onClick={() => selectAvatar(src)} style={{ width: "75px", height: "75px" }} src={src} />
+                <img key={index} onClick={() => {selectAvatar(src); toggleShowImg()}} style={{ width: "75px", height: "75px" }} src={src} />
               ))}
             </div>
             : ""
           } <br/>
-          <label htmlFor="userName">User name</label>
-          <input type="text"
+         
+          <input 
+            style={!uniqueName ?{border:"1.5px solid red"}: {outline:"none"}}
+            placeholder="Enter username..."
+            type="text"
             name="userName"
             onChange={settingName}
             required
           /> 
-          {!uniqueName ? <label htmlFor="userName">Username is taken</label> : ""}
+          {!uniqueName ? <label htmlFor="userName">Username taken</label> : ""}
           <br/>
-          <label htmlFor="email">Email</label>
-          <input type="text"
+         
+          <input
+            placeholder="Enter email..." 
+            type="text"
             name="email"
             onChange={settingName}
             required
           /> 
           <br/>
-          <label htmlFor="password">password</label>
-          <input type="password"
+          
+          <input 
+            style={!passwordsMatch ?{border:"1.5px solid red"}:{outline:"none"}}
+            placeholder="Create password..."
+            type="password"
             name="password"
             onChange={settingName}
             required
           />
           {!passwordsMatch ? <label style={{color:"red"}} htmlFor="confirmPassword">X</label> : ""}
           <br/>
-          <label htmlFor="confirmPassword">confirm password</label>
+        
           <input 
+            style={!passwordsMatch ?{border:"1.5px solid red"}:{outline:"none"}}
+            placeholder="Confirm password..."
             name="confirmPassword" 
             type="password"
             required 
@@ -139,10 +154,12 @@ export const UserSetUp: React.FC = () => {
           <br/>
 
           <span>{!uniqueName ? "User name is taken" : ""}</span>
-          <button onClick={validateUserName}>Next {">>"}</button>
-          <Link to="/">
-            <button>Back to Login</button>
+          <button onClick={validateUserName}>Continue</button>
+          <br/>
+          <Link style={{textDecoration:"none"}} to="/">
+            <button className="back_to_login_button">Back to Login</button>
           </Link>
+          </div>
         </div>
         )
         :

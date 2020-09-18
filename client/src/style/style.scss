@@ -15,8 +15,12 @@ html{
   padding: 0;
   margin: 0;
   height: 100%;
-
 }
+
+.app{
+  height: 100%;
+}
+
 
 //VARIBALES
 $box-shadow-dark-large: 4px 10px 40px rgba(75, 75, 75, 0.75);
@@ -50,6 +54,24 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
   outline: none;
   transition: 0.3s ease-in-out;
 }
+@mixin setupPagesPositioning{
+  position: absolute;
+  top: 12%;
+  transform: translateY(-12%);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@mixin menuItem{
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  border: 2px solid black;
+  height: 10rem;
+  width: 10rem;
+}
+
+// END OF MIXNS
 
 
 .progress_bar{
@@ -64,20 +86,15 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
   border-radius: inherit;
   transition: width .3s ease-in;
 }
-.app{
-  height: 100%;
-}
 
+
+// LOGIN PAGE 
 .user_select_parent{
   background: url("../imgs/Nutribackground.jpg") no-repeat center fixed;
   background-size: cover;
   height: 100%;
   .login_inputs{
-    position: absolute;
-    top: 12%;
-    transform: translateY(-12%);
-    left: 50%;
-    transform: translateX(-50%);
+    @include setupPagesPositioning();
     img{
       width: 150px;
       height: 150px;
@@ -98,9 +115,6 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
         transform: scale(0.95);
       }
     }
-
-
-    
 
     .create_user{
       display: flex;
@@ -123,18 +137,246 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
       }
     }
   }
-  .forgot_details{
-    position: absolute;
-    top: 70%;
-    transform: translateY(-70%);
-    left: 50%;
-    transform: translateX(-50%);
+
+  .forgot_button{
+    @include loginPageButtons();
+    width: 157px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin: 2px;
+    &:hover{
+      transition: 0.3s ease-in-out;
+      cursor: pointer;
+      background-color: rgb(33, 153, 143);
+    }
+    &:active{
+      transition: 0.1s ease-in-out;
+      transform: scale(0.95);
+    } 
+  }
+}
+// END OF LOGIN
+
+//FORGOT USERNAME
+.forgot_username_parent{
+  height: 100%;
+  background: url("../imgs/Nutribackground.jpg") no-repeat center fixed;
+  background-size: cover;
+  .items{
+    @include setupPagesPositioning();
+    img{
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
     input{
       @include loginInputs();
     }
-    .forgot_button{
-      
-      width: 164px;
+    button{
+      @include loginPageButtons();
+      &:hover{
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+        background-color: rgb(33, 153, 143);
+      }
+      &:active{
+        transition: 0.1s ease-in-out;
+        transform: scale(0.95);
+      } 
+    }
+    .forgot_username_message_area{
+      text-align: center;
+      color: white;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;   
+    }
+    .back_to_login {
+      margin-top: 3rem;
+    }
+  }
+}
+// END OF FORGOT USERNAME
+
+// FORGOT PASSWORD 
+.forgot_password_parent{
+  height: 100%;
+  background: url("../imgs/Nutribackground.jpg") no-repeat center fixed;
+  background-size: cover;
+
+  .reset_password_items{
+    @include setupPagesPositioning();
+
+    img{
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
+    input{
+      @include loginInputs();
+    }
+    button{
+      @include loginPageButtons();
+      &:hover{
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+        background-color: rgb(33, 153, 143);
+      }
+      &:active{
+        transition: 0.1s ease-in-out;
+        transform: scale(0.95);
+      } 
+    }
+    .forgot_password_message_area{
+      text-align: center;
+      color: white;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;   
+    }
+    .back_to_login {
+      margin-top: 3rem;
+    }
+  }
+}
+// END OF FORGOT PASSWORD
+
+//USER SET UP
+
+.setup_parent{
+  height: 100%;
+  background: url("../imgs/Nutribackground.jpg") no-repeat center fixed;
+  background-size: cover;
+  .setup_items{
+    position: absolute;
+    top: 14%;
+    transform: translateY(-14%);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .avatar_selector{
+      width: 110px;
+      height: 110px;
+      margin: 0 auto;
+      transition: 0.1  ease-in-out;
+    &:hover{
+      transition: 0.1  ease-in-out;
+      cursor: pointer;
+    }
+    &:active{
+      transition: 0.1  ease-in-out;
+      transform: scale(0.96);
+    }
+  }
+  .avatar_popup_window{
+    position: absolute;
+    background-color: rgba(133, 133, 133, 0.95);
+    min-width: 400px;
+    padding: 10px;
+    border-radius: 10px;
+    img{
+      margin: 2px;
+      &:hover{
+        cursor: pointer;
+      }
+    }
+    .close_avatar{
+      display: flex;
+      align-self: flex-start;
+      font-size: 2rem;
+      color: white;
+      transition: 0.2s ease-in-out;
+      &:hover{
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
+        transform: scale(1.01);
+      }
+    }
+  }
+
+  input{
+    @include loginInputs();
+  }
+  button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @include loginPageButtons();
+    &:hover{
+      transition: 0.3s ease-in-out;
+      cursor: pointer;
+      background-color: rgb(33, 153, 143);
+    }
+    &:active{
+      transition: 0.1s ease-in-out;
+      transform: scale(0.95);
+    } 
+  }
+  .back_to_login_button{
+    margin-top: 3rem;
+  }
+}
+
+
+.dashboard_parent{
+  height: 100%;
+  background: url("../imgs/Nutribackground.jpg") no-repeat center fixed;
+  background-size: cover;
+  .inner_dash{
+    display: grid;
+    grid-template-columns: 0.1fr 1fr 1fr 0.1fr;
+    grid-template-rows:  1fr 1fr ;
+    grid-column-gap: 2rem;
+    grid-row-gap: 12px;
+   
+      .menu_item{
+        background-color: rgb(219, 217, 217);
+        border-radius: 10px;
+        transition: 0.4s ease-in-out;
+        border: 1px solid white ;
+        display: flex;
+        margin: 1rem 0.5rem;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1.5rem;
+        opacity: 0.85;
+        font-size: 10rem;
+        box-shadow: 2px 4px 6px rgb(150 , 150 , 150 );
+        color: rgb(29, 133, 124);
+        span{
+          color: rgb(83, 83, 83);
+          font-size: 1.3rem;
+        }
+        &:hover{
+          transition: 0.4s ease-in-out;
+          cursor: pointer;
+          transform: scale(1.05);
+        }
+      }
+      .tracker{
+        grid-row: 1/2;
+        grid-column: 2/3;     
+      }
+      .history{
+        grid-row: 1/2;
+        grid-column: 3/4;     
+      }
+      .settings{
+        grid-row: 2/3;
+        grid-column: 2/3;    
+      }
+      .change_user{
+        grid-row: 2/3;
+        grid-column: 3/4;
+      }
+    .log_out_popup{
+      position: absolute;
+      grid-row: 1/3;
+      grid-column: 2 / 4;
+      justify-content: center;
+      align-items: center;
+      z-index: 101;
+      background-color: green;
+
     }
   }
 }

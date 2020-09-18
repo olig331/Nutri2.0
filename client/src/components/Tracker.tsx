@@ -95,8 +95,6 @@ export const Tracker: React.FC = () => {
       <Stats
         dailyFood={dailyFood}
       />
-      <button onClick={() => console.log(loggedInUserSettings)}>check if updating user setting</button>
-      <button onClick={() => console.log(dailyFood)}>dailyFood</button>
     </>
   );
 };

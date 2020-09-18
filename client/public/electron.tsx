@@ -1,4 +1,4 @@
-const electron = require('electron');
+	const electron = require('electron');
 	const app = electron.app;
 	const BrowserWindow = electron.BrowserWindow;
 
@@ -13,7 +13,7 @@ const electron = require('electron');
 		if (isDev) {
 			// Open the DevTools.
 			//BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-			
+			mainWindow.webContents.openDevTools();
 		}
 			mainWindow.on('closed', () => mainWindow = null);
 			mainWindow.setMenu(null);

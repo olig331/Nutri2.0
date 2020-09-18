@@ -21,5 +21,10 @@
   },
   "include": [
     "src"
+  ],
+  "types": [
+    "webpack-env",
+    "@types",
+    "node_modules/@types/node"
   ]
 }

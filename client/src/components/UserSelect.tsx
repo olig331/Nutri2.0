@@ -3,8 +3,6 @@ import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, Sign
 import { Link, useHistory } from 'react-router-dom';
 import Logo from '../imgs/NutriLogo.png'
 import { RiUserAddLine } from 'react-icons/ri';
-import Nutribackground from '../imgs/Nutribackground.jpg'
-
 
 
 
@@ -17,11 +15,7 @@ export const UserSelect: React.FC = () => {
   const [enterUserName, setenterUserName] = useState<string>("");
   const [password, setpassword] = useState<string>("")
   const [loginattemptfailed, setloginattemptfailed] = useState<boolean>(false);
-  const [forgotUserNamePopUp, setforgotUserNamePopUp] = useState<boolean>(false);
-  const [forgotDeatilsEmail, setforgotDetailsEmail] = useState<string>("");
-  const [responseFromMailReq, setresponseFromMailReq] = useState<string>("");
   const [forgotPasswordPopUp, setforgotPasswordPopUp] = useState<boolean>(false)
-  const [passwordResetUserName, setpasswordResetUsername] = useState<string>("");
 
   // CONTEXT
   const { navigatedFromLogin, setnavigatedFromLogin } = useContext(NavigatedFromLoginContext)
@@ -35,45 +29,13 @@ export const UserSelect: React.FC = () => {
     setenterUserName(e.currentTarget.value);
     setloginattemptfailed(false);
   }
+
+  // SETTING STATE FOR ENTERED PASSWORD
   const enteredPassword = (e: React.FormEvent<HTMLInputElement>) => {
     setpassword(e.currentTarget.value);
     setloginattemptfailed(false);
   }
 
-  // Getting user Email for lost Account details
-  const forgotProccess = (e: React.FormEvent<HTMLInputElement>) => {
-    setforgotDetailsEmail(e.currentTarget.value);
-    setresponseFromMailReq("")
-  }
-
-  const forgotProccessUserName = (e: React.FormEvent<HTMLInputElement>) => {
-    setpasswordResetUsername(e.currentTarget.value);
-    setresponseFromMailReq("")
-  }
-
-  const retreieveUserName = async () => {
-    const response = await fetch('http://localhost:5000/forgotUserName', {
-      method: "POST",
-      body: JSON.stringify({
-        email: forgotDeatilsEmail
-      })
-    })
-    const data = await response.json()
-    console.log(data)
-    setresponseFromMailReq(data.message);
-  };
-
-  const passwordReset = async () => {
-    const response = await fetch('http://localhost:5000/forgotPassword', {
-      method: "POST",
-      body: JSON.stringify({
-        email: forgotDeatilsEmail,
-        name: passwordResetUserName
-      })
-    });
-    const data = await response.json();
-    console.log(data);
-  }
 
   // CHECK IF USER EXISTS ON DB ? LOGIN : REJECT 
   const login = async () => {
@@ -96,9 +58,13 @@ export const UserSelect: React.FC = () => {
     }
   };
 
+
+  // if user signed out calling refresh to set all app state back to default
   useEffect(() => {
     signedOut ? refreshApp() : console.log("no refresh needed")
   }, [])
+
+
 
   const refreshApp = () => {
     window.location.reload()
@@ -110,76 +76,63 @@ export const UserSelect: React.FC = () => {
 
       <div className="login_inputs">
         <img src={Logo} alt="Logo Img" />
+
         <br />
+        
         <input
-          style={loginattemptfailed ? {border:"1px solid red"} : { outlineColor: "none" }}
+          style={loginattemptfailed ? { border: "1px solid red" } : { outlineColor: "none" }}
           type="text"
           name="userName"
           placeholder="Username"
           onChange={enteredUserName}
         />
+
         <br />
+
         <input
-          style={loginattemptfailed ? {border:"1px solid red"} : { outlineColor: "none" }}
+          style={loginattemptfailed ? { border: "1px solid red" } : { outlineColor: "none" }}
           type="password"
           name="password"
           placeholder="Password"
           onChange={enteredPassword}
         />
+
         <br />
-        <button className="login_button"
-          onClick={() => { login(); console.log(password) }}>
+
+        <button 
+          className="login_button"
+          onClick={() => {
+            login(); 
+            console.log(password) 
+          }}>
           Log In
         </button>
 
-        <Link to="/setup" style={{ textDecoration: 'none' }}>
-          <div className="create_user">
-            <span><RiUserAddLine /></span>
+        <Link to="/setup" 
+          style={{ textDecoration: 'none' }}>
+          <div 
+            className="create_user">
+            <span>
+              <RiUserAddLine />
+            </span>
             <h5>Sign Up</h5>
           </div>
         </Link>
 
-      </div>
+        <Link to="forgotUserName">
+          <button 
+            className="forgot_button">
+            Forgot Username
+          </button>
+        </Link>
 
-      <div className="forgot_details">
-        <button className="forgot_button" onClick={() => setforgotUserNamePopUp(true)}>Forgot Username</button>
-        <button className="forgot_button" onClick={() => setforgotPasswordPopUp(true)}>Forgot password</button>
-      </div>
-      <div>
-        {forgotUserNamePopUp
-          ? <div>
-            <button onClick={() => setforgotUserNamePopUp(false)}>X</button>
-            <h4>Enter Email address to recieve email containing User Name</h4>
-            <input type="text"
-              onChange={forgotProccess}
-            />
-            <button
-              onClick={retreieveUserName}>
-              Send Mail
-            </button>
-            <h5>{responseFromMailReq}</h5>
-          </div>
-          : ""}
+        <Link to="/forgotPassword">
+          <button 
+            className="forgot_button" >
+            Forgot password
+          </button>
+        </Link>
 
-        {forgotPasswordPopUp
-          ? <div>
-            <button onClick={() => setforgotPasswordPopUp(false)}>X</button>
-            <br />
-            <label htmlFor="forgot_email">Email</label>
-            <input
-              name="enterEmail"
-              type="text"
-              onChange={forgotProccess}
-            />
-            <br />
-            <label htmlFor="forgot_username"></label>
-            <input type="text"
-              onChange={forgotProccessUserName}
-            />
-            <button onClick={passwordReset}>Send Password Reset Email</button>
-            <h5>{responseFromMailReq}</h5>
-          </div>
-          : ""}
       </div>
     </div>
   );

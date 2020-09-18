@@ -267,7 +267,7 @@ app.post('/updateUsersSettings', async function (req, res) {
         if(!user){
           return res.json({
             status: 404,
-            message: "No user found with Entered User name and email"
+            message: "No user found with entered details"
           })
         }
         user.resetToken = token
@@ -294,24 +294,13 @@ app.post('/updateUsersSettings', async function (req, res) {
   app.post('/newUserPassword', (req, res)=>{
     const newPassword = req.body.password;
     const sentToken = req.body.token
-    console.log(sentToken)
-    console.log(newPassword)
-    console.log(typeof(sentToken))
     const user = User.findOne({resetToken: sentToken, expireToken:{$gt: Date.now()}})
-    console.log("this is user below")
-    console.log(user)
-    console.log("end of user")
-    
       if(user !== null){
         bcrypt.hash(newPassword, 10)
           .then(hashedPassword=>{
             User.updateOne({resetToken: sentToken, expireToken:{$gt: Date.now()}},  
                       {$set: {password: hashedPassword, resetToken: undefined, expireToken: undefined}} 
             )
-            // user.password = hashedPassword
-            // user.resetToken = undefined
-            // user.expireToken = undefined          
-            // user.save()
             .then((saveduser)=>{
               res.json({
                 status: 200,
@@ -322,7 +311,7 @@ app.post('/updateUsersSettings', async function (req, res) {
       }else{
          res.json({
           status:422,
-          message: "30 minute password reset time expired please try again"
+          message: "password Reset Failed please try again "
         })
       }
   })

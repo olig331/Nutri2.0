@@ -3,7 +3,9 @@ import { Link, useHistory } from 'react-router-dom';
 import { LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext, NavigatedFromTrackerContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
 import { WelcomeUser } from './WelcomeUser';
 import { UserInfo } from './UserInfo';
-
+import { BsPencilSquare, BsCalendar } from "react-icons/bs";
+import {GiCog} from 'react-icons/gi';
+import {FaUserAlt} from 'react-icons/fa';
 
 
 
@@ -96,46 +98,57 @@ export const Dashboard: React.FC = () => {
 
 
   return (
-    <div>
-      {!finishLoad  && navigatedFromLogin === true?
-        <WelcomeUser />
-        :
-        <>
-          <UserInfo />
-          <Link to="/tracker">
-            <div onClick={() => loggedInUserSettings.usersDailyFood[0] === todaysDate
-              ? console.log("dates are equal")
-              : resetFood()}>Tracker</div>
-          </Link>
-
-          <div onClick={() => {
-            loggedInUserSettings.usersDailyFood[0] !== todaysDate && loggedInUserSettings.usersDailyFood.length > 0
+    <div className="dashboard_parent">
+     <div className="inner_dash">
+        <div
+          className="tracker menu_item"
+          onClick={() => loggedInUserSettings.usersDailyFood[0] === todaysDate
+            ? pageHistory.replace("/tracker")
+            : resetFood()}>
+          <BsPencilSquare/>
+          <span>Tracker</span>
+        </div>
+  
+        <div
+          className="history menu_item"
+          onClick={() => {
+            loggedInUserSettings.usersDailyFood[0] !== todaysDate
+              && loggedInUserSettings.usersDailyFood.length > 0
               ? updateHistory()
               : pageHistory.replace('/history')
           }}>
-            History
-      </div>
-
-          <Link to="/settings">
-            <div >Settings</div>
-          </Link>
-          <div onClick={togglePopUp}>Change User
+            <BsCalendar />
+          <span>History</span>
+        </div>
+  
+        <div
+          className="settings menu_item"
+          onClick={() => pageHistory.replace('/settings')}
+          >
+          <GiCog/>
+          <span>Settings</span>
+        </div>
+  
+        <div
+          className="change_user menu_item"
+          onClick={togglePopUp}>
+          <FaUserAlt/>
+          <span>Change User</span>
+        </div>
+  
         {showPopUp
-              ? (
-                <>
-                  <h5>Changing User will log you out. Are you sure you wish to continue?</h5>
-                  <Link to="/">
-                    <button onClick={setsignedOut(true)}>Log Out</button>
-                  </Link>
-                  <button onClick={togglePopUp}>Go Back</button>
-                </>
-              )
-              : null
-            }
-          </div>
-          <button onClick={() => { console.log(loggedInUserSettings); console.log(loggedInID) }}>Check status</button>
-        </>
-      }
+          ? (
+            <div className="log_out_popup">
+              <h5>Changing User will log you out. Are you sure you wish to continue?</h5>
+              <Link to="/">
+                <button onClick={setsignedOut(true)}>Log Out</button>
+              </Link>
+              <button onClick={togglePopUp}>Go Back</button>
+            </div>
+          )
+          : null
+        }
+     </div>
     </div>
   );
 }; 
