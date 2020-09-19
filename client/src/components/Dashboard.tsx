@@ -4,8 +4,8 @@ import { LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext, Navig
 import { WelcomeUser } from './WelcomeUser';
 import { UserInfo } from './UserInfo';
 import { BsPencilSquare, BsCalendar } from "react-icons/bs";
-import {GiCog} from 'react-icons/gi';
-import {FaUserAlt} from 'react-icons/fa';
+import { GiCog } from 'react-icons/gi';
+import { FaUserAlt } from 'react-icons/fa';
 
 
 
@@ -99,16 +99,17 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard_parent">
-     <div className="inner_dash">
+      <div className="user_info"><UserInfo/></div>
+      <div className="inner_dash">
         <div
           className="tracker menu_item"
           onClick={() => loggedInUserSettings.usersDailyFood[0] === todaysDate
             ? pageHistory.replace("/tracker")
             : resetFood()}>
-          <BsPencilSquare/>
+          <BsPencilSquare />
           <span>Tracker</span>
         </div>
-  
+
         <div
           className="history menu_item"
           onClick={() => {
@@ -117,29 +118,31 @@ export const Dashboard: React.FC = () => {
               ? updateHistory()
               : pageHistory.replace('/history')
           }}>
-            <BsCalendar />
+          <BsCalendar />
           <span>History</span>
         </div>
-  
+          <br/>
         <div
           className="settings menu_item"
           onClick={() => pageHistory.replace('/settings')}
-          >
-          <GiCog/>
+        >
+          <GiCog />
           <span>Settings</span>
         </div>
-  
+
         <div
           className="change_user menu_item"
           onClick={togglePopUp}>
-          <FaUserAlt/>
+          <FaUserAlt />
           <span>Change User</span>
         </div>
-  
+      </div>
+
+      <div>
         {showPopUp
           ? (
             <div className="log_out_popup">
-              <h5>Changing User will log you out. Are you sure you wish to continue?</h5>
+              <h5>Are you sure you want to log out</h5>
               <Link to="/">
                 <button onClick={setsignedOut(true)}>Log Out</button>
               </Link>
@@ -147,8 +150,7 @@ export const Dashboard: React.FC = () => {
             </div>
           )
           : null
-        }
-     </div>
+        }</div>
     </div>
   );
 }; 

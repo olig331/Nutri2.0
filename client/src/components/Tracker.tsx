@@ -4,6 +4,7 @@ import { Stats } from './Stats';
 import { Link } from 'react-router-dom';
 import { LoggedInUserSettingsContext,  DailyFoodContext, LoggedInIDContext, NavigatedFromTrackerContext } from '../Context/Context';
 import { UserInfo } from './UserInfo';
+import {BsChevronDoubleUp} from 'react-icons/bs';
 
 
 export const Tracker: React.FC = () => {
@@ -15,6 +16,8 @@ export const Tracker: React.FC = () => {
   const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
   const {navigatedFromTracker, setnavigatedFromTracker} = useContext(NavigatedFromTrackerContext)
+
+  const [showDailyFood, setshowDailyFood] = useState<boolean>(false)
 
 
   // Will pull from database when this page is rendered
@@ -76,25 +79,35 @@ export const Tracker: React.FC = () => {
     setdailyFood(dailyFoodCopy);
   };
 
+  const toggleShowDailyFood = () =>{
+    showDailyFood ? setshowDailyFood(false) : setshowDailyFood(true);
+  }
 
 
   return (
-    <>
-      <UserInfo/>
+    <div className="tracker_parent">
+      <div className="user_info">
+        <UserInfo/>
+      </div>
       <Link to="/dashboard">
         <button onClick={()=>{updateUsersDailyFood(); setnavigatedFromTracker(true)}}>Dashboard</button>
       </Link>
-      <Search
-        addItem={addItemFromSearch}
-      />
-      <div>
+      <div className="search">
+        <Search
+          addItem={addItemFromSearch}
+        />
+      </div>
+      <div className={showDailyFood ? "daily_food_show": "daily_food_hide"} style={dailyFood.length <= 1?{opacity:"0"}: {backgroundColor:"rgba(119, 119, 119, 0.664)"}}>
         {dailyFood.slice(1).map((x: any, i: number) => (
           <li key={i}>{i + 1}. {x.item_name}<button onClick={() => { removeItem(i) }}>X</button></li>
         ))}
       </div>
-      <Stats
-        dailyFood={dailyFood}
-      />
-    </>
+      <div className="stats">
+        <Stats
+          dailyFood={dailyFood}
+        />
+      </div>
+      <div onClick={toggleShowDailyFood} className="show_daily_food"><BsChevronDoubleUp/></div>
+    </div>
   );
 };

@@ -33,12 +33,15 @@ export const Search: React.FC<passedProps> = ({ addItem }) => {
   return (
     <>
       <input type="text" placeholder="Search..." onChange={searchBarInput} />
+      
+      <br/>
       <button
+        className="search_close_btn"
         onClick={() => { getItemNutrition(); toggleShowItems(); }}>{showItemNutritionResults
           ? "Close"
           : "Search"}
       </button>
-
+      <div className="search_response" style={showItemNutritionResults?{overflowY:"scroll", backgroundColor:"rgba(255, 255, 255, 0.913)"}: {display:"none"}}>
       {itemsNutrition.map((item: responseItems, index: number) => (
         showItemNutritionResults
           ? (
@@ -58,6 +61,7 @@ export const Search: React.FC<passedProps> = ({ addItem }) => {
           )
           : null
       ))}
+      </div>
     </>
   );
 };

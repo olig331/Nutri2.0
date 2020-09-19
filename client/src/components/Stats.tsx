@@ -44,7 +44,7 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
         ? total += x[nutrientName]
         : console.log("Property Not Found")
     });
-    return total; 
+    return total;
   };
 
   const usersCalculatedIntake = () => {
@@ -82,61 +82,65 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
 
 
 
-  const helperFunc = (name:string) =>{
+  const helperFunc = (name: string) => {
     let multiplier: number = 1
     let divider: number = 1
-    if(name === "nf_protein"){
+    if (name === "nf_protein") {
       multiplier = 0.4
       divider = 4
     }
-    if(name === "nf_total_carbohydrate"){
+    if (name === "nf_total_carbohydrate") {
       multiplier = 0.3
       divider = 4
     }
-    if(name === "nf_total_fat"){
+    if (name === "nf_total_fat") {
       multiplier = 0.3
       divider = 9
     }
-    if(name === "nf_saturated_fat"){
+    if (name === "nf_saturated_fat") {
       multiplier = 0.1
       divider = 9
     }
-    if(name === "nf_sugars"){
+    if (name === "nf_sugars") {
       multiplier = 0.15
       divider = 4
     }
-  
-    return  Math.round((usersCalculatedIntake() * multiplier) / divider)
+
+    return Math.round((usersCalculatedIntake() * multiplier) / divider)
   }
 
 
   return (
-    <div>
-      <>
-        <h5>Calories: {Math.round(getNutrientTotal("nf_calories"))} - {helperFunc("calories")} KCal</h5>
-        <ProgressBar percent={getNutrientPercent("nf_calories")} />
-      </>
-      <>
-        <h5>Protein: {Math.round(getNutrientTotal("nf_protein"))}g - {helperFunc("nf_protein")}g</h5>
-        <ProgressBar percent={getNutrientPercent("nf_protein")} />
-      </>
-      <>
-        <h5>Carbohydrates: {Math.round(getNutrientTotal("nf_total_carbohydrate"))}g - {helperFunc("nf_total_carbohydrate")}g </h5>
-        <ProgressBar percent={getNutrientPercent("nf_total_carbohydrate")} />
-      </>
-      <>
-        <h5>Fat: {Math.round(getNutrientTotal("nf_total_fat"))}g - {helperFunc("nf_total_fat")}g</h5>
-        <ProgressBar percent={getNutrientPercent("nf_total_fat")} />
-      </>
-      <>
-        <h5>Saturated Fat: {Math.round(getNutrientTotal("nf_saturated_fat"))}g - {helperFunc("nf_saturated_fat")}g</h5>
-        <ProgressBar percent={getNutrientPercent("nf_saturated_fat")} />
-      </>
-      <>
-        <h5>Sugars: {Math.round(getNutrientTotal("nf_sugars"))}g - {helperFunc("nf_sugars")}g</h5>
-        <ProgressBar percent={getNutrientPercent("nf_sugars")} />
-      </>
-    </div>
+    <>
+      <div className="set_1">
+        <>
+          <h5>Calories: {Math.round(getNutrientTotal("nf_calories"))} - {helperFunc("calories")} KCal</h5>
+          <ProgressBar percent={getNutrientPercent("nf_calories")} />
+        </>
+        <>
+          <h5>Protein: {Math.round(getNutrientTotal("nf_protein"))}g - {helperFunc("nf_protein")}g</h5>
+          <ProgressBar percent={getNutrientPercent("nf_protein")} />
+        </>
+        <>
+          <h5>Carbohydrates: {Math.round(getNutrientTotal("nf_total_carbohydrate"))}g - {helperFunc("nf_total_carbohydrate")}g </h5>
+          <ProgressBar percent={getNutrientPercent("nf_total_carbohydrate")} />
+        </>
+      </div>
+      <div className="set_2">
+        <>
+          <h5>Fat: {Math.round(getNutrientTotal("nf_total_fat"))}g - {helperFunc("nf_total_fat")}g</h5>
+          <ProgressBar percent={getNutrientPercent("nf_total_fat")} />
+        </>
+        <>
+          <h5>Saturated Fat: {Math.round(getNutrientTotal("nf_saturated_fat"))}g - {helperFunc("nf_saturated_fat")}g</h5>
+          <ProgressBar percent={getNutrientPercent("nf_saturated_fat")} />
+        </>
+        <>
+          <h5>Sugars: {Math.round(getNutrientTotal("nf_sugars"))}g - {helperFunc("nf_sugars")}g</h5>
+          <ProgressBar percent={getNutrientPercent("nf_sugars")} />
+        </>
+      </div>
+    </>
   );
 };
 
