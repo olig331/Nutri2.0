@@ -8,7 +8,7 @@ export const UserInfo: React.FC = () => {
 
   return (
     <>
-      <h5>{loggedInUserSettings.userName} <img style={{width: "35px", height:"35px"}} src={loggedInUserSettings.userPicture} alt=""/></h5>
+      <h1 className="user_info_message">Logged in as  {loggedInUserSettings.userName} <img style={{width: "40px", height:"40px"}} src={loggedInUserSettings.userPicture} alt=""/></h1>
     </>
   )
 }

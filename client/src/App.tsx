@@ -4,12 +4,14 @@ import { Tracker } from './components/Tracker';
 import { UserSetUp } from './components/UserSetUp';
 import { History } from './components/History';
 import './style/style.css';
-import { UsersContext, LoggedInUserSettingsContext, DailyFoodContext, UserAuthedContext, LoggedInIDContext, NavigatedFromTrackerContext, UsersSettingsContext, SignedOutContext, NavigatedFromLoginContext } from './Context/Context';
+import { LoggedInUserSettingsContext, DailyFoodContext, UserAuthedContext, LoggedInIDContext, NavigatedFromTrackerContext, UsersSettingsContext, SignedOutContext, NavigatedFromLoginContext } from './Context/Context';
 import { UserSelect } from './components/UserSelect';
 import { SettingsForm } from './components/SettingsForm';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { Stats } from './components/Stats';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { NewPassword } from './components/NewPassword';
+import { ForgotUserName } from './components/ForgotUserName';
+import { ForgotPassword } from './components/ForgotPassword';
+
 
 export const App: React.FC = () => {
 
@@ -51,7 +53,7 @@ export const App: React.FC = () => {
   //Icons made by <a href="https://www.flaticon.com/authors/dighital" title="Dighital">Dighital</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
   return (
-    <div>
+    <div className="app">
       <NavigatedFromLoginContext.Provider value={{ navigatedFromLogin, setnavigatedFromLogin }}>
         <UsersSettingsContext.Provider value={{ userSettings, setuserSettings }}>
           <NavigatedFromTrackerContext.Provider value={{ navigatedFromTracker, setnavigatedFromTracker }}>
@@ -63,6 +65,8 @@ export const App: React.FC = () => {
                       <Router>
                         <Switch>
                           <Route exact path='/' component={UserSelect} />
+                          <Route path="/forgotUserName" component={ForgotUserName} />
+                          <Route path="/forgotPassword" component={ForgotPassword} />
                           <Route path='/setup' component={UserSetUp} />
                           <Route path='/tracker' component={Tracker} />
                           <Route path='/history' render={props => (<History />)} />
