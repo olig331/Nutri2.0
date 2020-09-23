@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { LoggedInUserSettingsContext,  DailyFoodContext, LoggedInIDContext, NavigatedFromTrackerContext } from '../Context/Context';
 import { UserInfo } from './UserInfo';
 import {BsChevronDoubleUp} from 'react-icons/bs';
+import {RiDashboardFill} from 'react-icons/ri'
+import {TiDelete} from 'react-icons/ti';
 
 
 export const Tracker: React.FC = () => {
@@ -90,16 +92,19 @@ export const Tracker: React.FC = () => {
         <UserInfo/>
       </div>
       <Link to="/dashboard">
-        <button onClick={()=>{updateUsersDailyFood(); setnavigatedFromTracker(true)}}>Dashboard</button>
+        <div 
+          onClick={()=>{updateUsersDailyFood(); setnavigatedFromTracker(true)}}className="dashboard_button">
+          <RiDashboardFill/>
+        </div>
       </Link>
       <div className="search">
         <Search
           addItem={addItemFromSearch}
         />
       </div>
-      <div className={showDailyFood ? "daily_food_show": "daily_food_hide"} style={dailyFood.length <= 1?{opacity:"0"}: {backgroundColor:"rgba(119, 119, 119, 0.664)"}}>
+      <div className="daily_food" style={dailyFood.length <= 1?{opacity:"0"}: {backgroundColor:"rgba(119, 119, 119, 0.664)"}}>
         {dailyFood.slice(1).map((x: any, i: number) => (
-          <li key={i}>{i + 1}. {x.item_name}<button onClick={() => { removeItem(i) }}>X</button></li>
+          <li key={i}>{i + 1}. {x.item_name}<span className="remove_item" onClick={() => { removeItem(i) }}><TiDelete/></span></li>
         ))}
       </div>
       <div className="stats">

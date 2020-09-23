@@ -468,18 +468,29 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
   }
   .daily_food{
     position: absolute;
-    top: 10%;
-    transform: translateY(-10%);
-    right: 2%;
-    transform: translateX(-2%);
+    top: 12%;
+    transform: translateY(-12%);
+    right: 0.5%;
+    transform: translateX(-0.5%);
     padding: 20px;
-    max-width: 200px;
+    min-width: 200px;
     border-radius: 10px;
     height: auto;
     max-height: 70%;
     background-color: rgba(119, 119, 119, 0.664);
     z-index: 1;
     box-shadow: $box-shadow-dark-large;
+    .remove_item{
+      color: red;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      &:hover{
+        cursor: pointer;
+        transform: scale(1.02);
+      }
+    }
   }
   .show_daily_food{
     position: absolute;
@@ -497,7 +508,7 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
   z-index:100 ;
   height: 100%;
   border-radius: 10px;
-  min-width: 550px;
+  min-width: 500px;
 }
 
 
@@ -516,4 +527,135 @@ $box-shadow-dark-small: 4px 6px 5px rgba(75, 75, 75, 0.75);
 }
 .daily_food_hide{
   opacity: 0;
+}
+
+.settings_form_parent{
+  height: 100%;
+  background: url("../imgs/trackerBackground.jpg") no-repeat center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .settings_table_container{
+    background-color: rgba(255, 255, 255, 0.553);
+    border-radius: 10px;
+    padding: 3rem;
+    table{ 
+      color: #333;
+      font-size: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      border-collapse: collapse;
+      input{
+        @include loginInputs();
+        width: 100px;
+        height: 25px;
+      }
+      tr{
+        border-bottom: 1px solid black;
+        min-width: 100px;
+        height: 50px;
+        td{
+          
+          min-width: 100px;
+          height: 50px;
+        }      
+      }
+      .radio{
+        padding: 0 6px;
+        height: 19px;
+        width: 19px;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+      label{
+        margin: 0 5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .age_dropdown{
+        @include loginInputs();
+        width: 121px;
+        height: 32px;
+      }
+    }
+    .finish_button{
+      @include loginPageButtons();
+      width: 100%;
+      margin-top: 10px;
+      &:hover{
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+        background-color: rgb(33, 153, 143);
+      }
+      &:active{
+        transition: 0.1s ease-in-out;
+        transform: scale(0.95);
+      } 
+    }
+  }
+}
+
+.dashboard_button{
+  position: absolute;
+  top: 2%;
+  transform: translateY(-2%);
+  left: 2%;
+  transform: translateX(-2%);
+  color: #333;
+  font-size: 4rem;
+  display: flex;
+  flex-direction: column;
+  &:hover{
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    color:  rgba(158, 158, 158, 0.808);
+  }
+  &:active{
+    transition: 0.1s ease-in-out;
+    transform: scale(0.95);
+  } 
+}
+
+.history_parent{
+  background: url("../imgs/trackerBackground.jpg") no-repeat center fixed;
+  background-size: cover;
+  height: 100%;
+  .food_history_container{
+    position: absolute;
+    top: 15%;
+    transform: translateY(-15%);
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    .food_history{
+      font-size: 1.2rem;
+      min-width: 500px;
+      height: 70%;
+      display: inline-flex;
+      justify-content: center;
+      text-align: center;
+      .history_arrow{
+        font-size: 3rem;
+        color: #444;
+      }
+    }
+  }
+  .set_1{
+    position: absolute;
+    top: 15%;
+    transform: translateY(-15%);
+    left: 2%;
+    transform: translateX(-2%);
+  }
+
+  .set_2{
+    position: absolute;
+    top: 15%;
+    transform: translateY(-15%);
+    right: 2%;
+    transform: translateX(-2%);
+  }
 }

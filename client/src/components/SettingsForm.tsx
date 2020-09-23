@@ -3,6 +3,8 @@ import { UsersSettingsContext, LoggedInUserSettingsContext, LoggedInIDContext, U
 import { Link, useHistory } from 'react-router-dom';
 import { rejects } from 'assert';
 import { UserInfo } from './UserInfo';
+import {RiDashboardFill} from 'react-icons/ri'
+import {BsArrowLeftShort} from 'react-icons/bs';
 
 
 
@@ -58,84 +60,244 @@ export const SettingsForm: React.FC = () => {
 
 
   return (
-    <> 
-     
-      {userAuthed ? (<><UserInfo /> <Link to="/dashboard"><button>Dashboard</button></Link></>) : null}
-      <div>
-        <h5>SETTINGS TAB </h5>
-        {/* GENDER SECTION */}
-        <label>
-          Gender:
-          Male:
-        <input
-            name="gender"
-            value="male"
-            type="radio"
-            onChange={handleSettingsOnChange}
-            defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "male"}
-          />
-        Female:
-        <input
-            name="gender"
-            value="female"
-            type="radio"
-            onChange={handleSettingsOnChange}
-            defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "female"}
-          />
-        </label>
-        {/* AGE SECTION */}
-        <label>
-          Age:
-        <select required name="age" defaultValue={userAuthed ? loggedInUserSettings.usersPersonalSettings.age : 1} onChange={handleSettingsOnChange}>
-            {ageArray.map((x: number) => (
-              <option key={x} value={x}>{x}</option>
-            ))}
-          </select>
-        </label>
-        {/* WEIGHT SECTION */}
-        <label>
-          Weight:
-        <input type="number" name="weight" defaultValue={userAuthed ? loggedInUserSettings.usersPersonalSettings.weight : 0} onChange={handleSettingsOnChange} required />
-        LBS:
-        <input type="radio" name="weightUnit" value="lbs" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit === "lbs"} onChange={handleSettingsOnChange} required />
-        KG:
-        <input type="radio" name="weightUnit" value="kg" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit === "kg"} onChange={handleSettingsOnChange} required />
-        </label>
-        {/* HEIGHT SECTION */}
-        <label>
-          Height:
-          <input type="number" name="height" defaultValue={userAuthed ? loggedInUserSettings.usersPersonalSettings.height : 0} onChange={handleSettingsOnChange} required />
-          Inch:
-          <input type="radio" name="heightUnit" value="inches" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit === "inches"} onChange={handleSettingsOnChange} required />
-          CM:
-          <input type="radio" name="heightUnit" value="cm" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit === "cm"} onChange={handleSettingsOnChange} required />
-        </label>
-        {/* GOAL SECTION */}
-        <label>
-          Goal: {"  "}
-        Lose:
-        <input type="radio" name="goal" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "lose"} onChange={handleSettingsOnChange} value="lose" required />
-        Maintain:
-        <input type="radio" name="goal" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "maintain"} onChange={handleSettingsOnChange} value="maintain" required />
-        Gain:
-        <input type="radio" name="goal" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "gain"} onChange={handleSettingsOnChange} value="gain" required />
-        </label>
-        {/* ACTIVITY LEVEL SECTION */}
-        <label>
-          Activity: {" "}
-        Sedatory:
-        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "sedatory"} onChange={handleSettingsOnChange} value="sedatory" required />
-        Light:
-        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "light"} onChange={handleSettingsOnChange} value="light" required />
-        Medium:
-        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "medium"} onChange={handleSettingsOnChange} value="medium" required />
-        High:
-        <input type="radio" name="activityLevel" defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "high"} onChange={handleSettingsOnChange} value="high" required />
-        </label>.
-          <button onClick={userAuthed ? saveUserSettings : userSetUpComplete}>{userAuthed ? "Save Settings" : "Complete Set Up"}</button>
-        <button onClick={() => { console.log(userSettings); console.log(userAuthed); console.log(loggedInUserSettings.usersPersonalSettings.gender); console.log(loggedInUserSettings) }}>Check Settings</button>
-        <button onClick={() => console.log(userSettings)}>checkUserSettings</button>
+    <div className="settings_form_parent">
+      {userAuthed ? (<><div className="user_info"><UserInfo /></div> <Link to="/dashboard"><div className="dashboard_button"><RiDashboardFill/></div></Link></>) : null}
+      <div className="settings_table_container">
+        <table>
+          {/* GENDER SECTION */}
+          <tr>
+            <td>Gender</td>
+            <td className="right_side">
+              <label>
+                Male:
+                <input
+                  className="radio"
+                  name="gender"
+                  value="male"
+                  type="radio"
+                  onChange={handleSettingsOnChange}
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "male"}
+                />
+              </label>
+              <label>
+                Female:
+                <input
+                  className="radio"
+                  name="gender"
+                  value="female"
+                  type="radio"
+                  onChange={handleSettingsOnChange}
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "female"}
+                />
+              </label>
+            </td>
+          </tr>
+          {/* AGE SECTION */}
+          <tr>
+            <td>Age</td>
+            <td className="right_side">
+              <label>
+                <select
+                  className="age_dropdown"
+                  required
+                  name="age"
+                  defaultValue={userAuthed ? loggedInUserSettings.usersPersonalSettings.age : 1} onChange={handleSettingsOnChange}>
+                  {ageArray.map((x: number) => (
+                    <option key={x} value={x}>{x}</option>
+                  ))}
+                </select>
+              </label>
+            </td>
+          </tr>
+          {/* WEIGHT SECTION */}
+          <tr>
+            <td>Weight</td>
+            <td className="right_side">
+              <label>
+                <input
+                  type="number"
+                  name="weight"
+                  onChange={handleSettingsOnChange}
+                  required
+                  defaultValue={userAuthed
+                    ? loggedInUserSettings.usersPersonalSettings.weight
+                    : 0}
+                />
+              </label>
+              <label>
+                LBS:
+            <input
+                  className="radio"
+                  type="radio"
+                  name="weightUnit"
+                  value="lbs"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit === "lbs"}
+                  onChange={handleSettingsOnChange}
+                  required
+                />
+              </label>
+              <label>
+                KG:
+            <input
+                  className="radio"
+                  type="radio"
+                  name="weightUnit"
+                  value="kg"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit === "kg"}
+                  onChange={handleSettingsOnChange}
+                  required
+                />
+              </label>
+            </td>
+          </tr>
+          {/* HEIGHT SECTION */}
+          <tr>
+            <td>Height</td>
+            <td className="right_side">
+              <label>
+                <input
+                  type="number"
+                  name="height"
+                  onChange={handleSettingsOnChange}
+                  required
+                  defaultValue={userAuthed
+                    ? loggedInUserSettings.usersPersonalSettings.height
+                    : 0}
+                />
+              </label>
+              <label>
+                Inch:
+            <input
+                  className="radio"
+                  type="radio"
+                  name="heightUnit"
+                  onChange={handleSettingsOnChange}
+                  required
+                  value="inches"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit === "inches"}
+                />
+              </label>
+              <label>
+                CM:
+            <input
+                  className="radio"
+                  type="radio"
+                  name="heightUnit"
+                  value="cm"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit === "cm"}
+                  onChange={handleSettingsOnChange}
+                  required
+                />
+              </label>
+            </td>
+          </tr>
+          {/* GOAL SECTION */}
+          <tr>
+            <td>Goal</td>
+            <td className="right_side">
+              <label>
+                Lose:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="goal"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "lose"}
+                  onChange={handleSettingsOnChange}
+                  value="lose"
+                  required
+                />
+              </label>
+              <label>
+                Maintain:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="goal"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "maintain"}
+                  onChange={handleSettingsOnChange}
+                  value="maintain"
+                  required
+                />
+              </label>
+              <label>
+                Gain:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="goal"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "gain"}
+                  onChange={handleSettingsOnChange}
+                  value="gain"
+                  required
+                />
+              </label>
+            </td>
+          </tr>
+          {/* ACTIVITY LEVEL SECTION */}
+          <tr>
+            <td>Activity</td>
+            <td className="right_side">
+              <label>
+                Sedatory:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="activityLevel"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "sedatory"}
+                  onChange={handleSettingsOnChange}
+                  value="sedatory"
+                  required
+                />
+              </label>
+              <label>
+                Light:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="activityLevel"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "light"}
+                  onChange={handleSettingsOnChange}
+                  value="light"
+                  required
+                />
+              </label>
+              <label>
+                Medium:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="activityLevel"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "medium"}
+                  onChange={handleSettingsOnChange}
+                  value="medium"
+                  required
+                />
+              </label>
+              <label>
+                High:
+              <input
+                  className="radio"
+                  type="radio"
+                  name="activityLevel"
+                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "high"}
+                  onChange={handleSettingsOnChange}
+                  value="high"
+                  required
+                />
+              </label>
+            </td>
+          </tr>
+        </table>
+        <button
+          className="finish_button"
+          onClick={userAuthed
+            ? saveUserSettings
+            : userSetUpComplete}>
+          {userAuthed
+            ? "Save Settings"
+            : "Complete Set Up"}
+        </button>
       </div>
-    </>
+    </div>
   )
 }

@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import { isConstructorDeclaration } from 'typescript';
 import { LoggedInUserSettingsContext, LoggedInIDContext } from '../Context/Context';
 import { UserInfo } from './UserInfo';
-
+import { RiDashboardFill } from 'react-icons/ri';
+import { Stats } from './Stats';
+import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
 
 export const History: React.FC = () => {
+
+
 
   // Running the function when the app Renders
   useEffect(() => {
@@ -43,49 +47,55 @@ export const History: React.FC = () => {
     console.log(index)
     return (
       <div>
-        <h5>{index[0]}</h5>
-        {index.slice(1).map((x:any, i:number)=>(
-            <h5 key={i}>{x.item_name} {x.nf_calories}</h5>
-        ))}    
+        <h3 style={{color:"slateblue"}}>{index[0]}</h3>
+        {index.slice(1).map((x: any, i: number) => (
+          <h5 key={i}>{i +1}{x.item_name}Kcal</h5>
+        ))}
       </div>
     )
   }
 
+
   return (
-    <div>
-      <UserInfo />
+    <div className="history_parent">
+      <div className="user_info"> <UserInfo /></div>
       <Link to="/dashboard">
-        <button>Dashboard</button>
+        <div
+          className="dashboard_button">
+          <RiDashboardFill />
+        </div>
       </Link>
+      <div className="food_history_container">
+        <div className="food_history">
+          <div
+            style={historyCount === 0 || dbhistory === [] ? { opacity: "0", pointerEvents:"none" } : { opacity: "1" }}
+            className="history_arrow"
+            onClick={() => sethistoryCount(historyCount - 1)}>
+            <GoChevronLeft />
+          </div>
 
-      {historyCount === 0
-        ? null
-        : <button
-          onClick={() => sethistoryCount(historyCount - 1)}
-        >{`<`}
-        </button>
-      }
-
-      <div>
-        {ready && dbhistory.length >=1 
-          ? renderHistoryPerDay(dbhistory[historyCount])
-          : ""
-        }
+          <div>
+            {ready && dbhistory.length >= 1
+              ? renderHistoryPerDay(dbhistory[historyCount])
+              : ""
+            }
+          </div>
+          <div
+            style={historyCount === dbhistory.length - 1 ? { opacity: "0", pointerEvents:"none" } : { opacity: "1" }}
+            className="history_arrow"
+            onClick={() => sethistoryCount(historyCount + 1)}>
+            <GoChevronRight />
+          </div>
+        </div>
       </div>
-
-      {historyCount === dbhistory.length - 1
-        ? null
-        : <button
-          onClick={() => sethistoryCount(historyCount + 1)}
-        >{`>`}
-        </button>
+      {dbhistory[historyCount] === undefined ? null :
+        <Stats
+          dailyFood={dbhistory[historyCount]}
+        />
       }
-
-      <button onClick={() => { console.log(loggedInuserSettings); console.log(loggedInID) }}>Logged in from dash</button>
-
-
-      <button onClick={() => { console.log(dbhistory); console.log(historyCount) }}>history and indez</button>
     </div>
 
   )
 };
+
+

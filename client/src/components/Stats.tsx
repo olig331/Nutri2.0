@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { LoggedInUserSettingsContext } from '../Context/Context';
+import { DailyFoodContext, LoggedInUserSettingsContext } from '../Context/Context';
 
 interface passedProps {
   dailyFood: any[]

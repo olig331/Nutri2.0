@@ -78,13 +78,26 @@ app.post('/login', function(req, res){
   //   })
 
 
-app.get('/validateUserName', async (req, res) =>{
-  User.findOne({userName: req.query.userName})
+app.get('/validateUserName',(req, res) =>{
+  console.log(req.query.name)
+  console.log("validating user name")
+  User.findOne({userName: req.query.name})
   .then(users =>{
-    res.status(200).json(users)
+    if(users){
+      res.json({
+        status:401,
+        message:"username taken"
+      })
+    }else{
+      res.json({
+        status: 200,
+        message:"user name available"
+      })
+    }
   })
   .catch(err =>{
-    res.status(500).json({
+    res.json({
+      status:404,
       message: err
     })
   })
