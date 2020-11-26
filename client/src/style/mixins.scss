@@ -1,0 +1,60 @@
+$main-clr: #00b1b1;
+$hover-clr: #009696;
+$bg-clr: #52606e;
+
+@mixin inputBar(){
+  width: 350px;
+  height: 28px;
+  background-color: #52606e;
+  outline: none;
+  border: 1px solid #fff;
+  padding-left: 0.5rem;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 0.35rem;
+  font-family: 'Roboto Condensed';
+
+  &::placeholder{
+    font-family: 'Roboto Condensed';
+    letter-spacing: 0.1rem;
+    color: rgb(202, 194, 194);
+  }
+}
+  
+@mixin loginSetupButtons(){
+  position: relative;
+  font-family: 'Roboto Condensed';
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.2rem;
+  width: 363px;
+  border: none;
+  outline: none;
+  height: 29px;
+  margin-bottom: 0.35rem;
+  background-color: #00b1b1;
+  box-shadow: none;
+  color: whitesmoke;
+  font-size: 1.2rem;
+  letter-spacing: 0.15rem;
+  font-weight: 550;
+  &:hover{
+    transition: 0.2s linear;
+    cursor: pointer;
+    box-shadow: none;
+    color: #fff;
+    background-color: #009696;
+  }
+}
+
+@mixin columnFlex($direction){
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: $direction;
+}
+
+@mixin logoImgWH(){
+  width: 300px;
+  height: 300px;
+}

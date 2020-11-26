@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap");
+@import "./mixins.scss";
+
+.setup_parent {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  .setup_items {
+    @include columnFlex(column);
+    input {
+      @include inputBar();
+      //position: fixed;
+    }
+
+    .avatar_selector {
+      width: 100px;
+      height: 100px;
+    }
+
+    .avatar_popup_window{
+      @include columnFlex(row); 
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.923);
+      border-radius: 10px;
+      flex-wrap: wrap;
+      max-width: 380px;
+      z-index: 100;
+    }
+
+    button {
+      @include loginSetupButtons();
+    }
+  }
+}

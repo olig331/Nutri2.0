@@ -8,7 +8,11 @@
 	let mainWindow;
 
 	function createWindow() {
-		mainWindow = new BrowserWindow({width: 1120, height: 720});
+		mainWindow = new BrowserWindow({
+			minWidth: 1200, 
+			minHeight: 870,
+			icon: __dirname + "/logo.png"
+		});
 		mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
 		if (isDev) {
 			// Open the DevTools.
@@ -17,7 +21,7 @@
 		}
 			mainWindow.on('closed', () => mainWindow = null);
 			mainWindow.setMenu(null);
-			mainWindow.setResizable(false);
+			mainWindow.setResizable(true);
 	}
 
 

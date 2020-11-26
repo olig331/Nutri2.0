@@ -1,94 +1,114 @@
-import React, { useContext } from 'react';
-import { UsersSettingsContext, LoggedInUserSettingsContext, LoggedInIDContext, UserAuthedContext } from '../Context/Context';
-import { Link, useHistory } from 'react-router-dom';
-import { rejects } from 'assert';
-import { UserInfo } from './UserInfo';
-import {RiDashboardFill} from 'react-icons/ri'
-import {BsArrowLeftShort} from 'react-icons/bs';
-
-
+import React, { useContext } from "react";
+import {
+  UsersSettingsContext,
+  LoggedInUserSettingsContext,
+  LoggedInIDContext,
+  UserAuthedContext,
+} from "../Context/Context";
+import { Link, useHistory } from "react-router-dom";
+import { rejects } from "assert";
+import { UserInfo } from "./UserInfo";
+import { RiDashboardFill } from "react-icons/ri";
+import { BsArrowLeftShort } from "react-icons/bs";
+import '../style/settingsForm.css';
 
 export const SettingsForm: React.FC = () => {
-
-  const ageArray: number[] = Array.from(Array(100), (_, i) => i + 1)
+  const ageArray: number[] = Array.from(Array(100), (_, i) => i + 1);
 
   const pageHistory = useHistory();
 
-  const { userAuthed } = useContext(UserAuthedContext)
+  const { userAuthed } = useContext(UserAuthedContext);
   const { userSettings, setuserSettings } = useContext(UsersSettingsContext);
-  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(
+    LoggedInUserSettingsContext
+  );
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
 
-
   const handleSettingsOnChange = (e: any) => {
-    var nestedCopy = { ...userSettings.usersPersonalSettings }
+    var nestedCopy = { ...userSettings.usersPersonalSettings };
     console.log(nestedCopy);
     var fullCopy = { ...userSettings };
-    nestedCopy[e.target.name] = e.target.value
+    nestedCopy[e.target.name] = e.target.value;
     fullCopy.usersPersonalSettings = nestedCopy;
     setuserSettings(fullCopy);
   };
 
-  // ADD NEW USER TO MONGODB 
+  // ADD NEW USER TO MONGODB
   const userSetUpComplete = async (): Promise<void> => {
     await fetch("http://localhost:5000/createUser", {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(userSettings),
     })
-      .then(response => {
-        pageHistory.replace('/');
-        return response.text()
+      .then((response) => {
+        pageHistory.replace("/");
+        return response.text();
       })
       .catch((error) => {
-        rejects(error)
-      })
+        rejects(error);
+      });
   };
 
-
   const saveUserSettings = async (): Promise<void> => {
-    console.log(userSettings.usersPersonalSettings)
+    console.log(userSettings.usersPersonalSettings);
     const response = await fetch(`/updateUsersSettings?userId=${loggedInID}`, {
-      method: 'POST',
-      body: JSON.stringify(userSettings.usersPersonalSettings)
-    })
-    const data = await response.json()
-    console.log(data)
-    pageHistory.replace('/dashboard')
-  }
-
-
-
+      method: "POST",
+      body: JSON.stringify(userSettings.usersPersonalSettings),
+    });
+    const data = await response.json();
+    console.log(data);
+    pageHistory.replace("/dashboard");
+  };
 
   return (
     <div className="settings_form_parent">
-      {userAuthed ? (<><div className="user_info"><UserInfo /></div> <Link to="/dashboard"><div className="dashboard_button"><RiDashboardFill/></div></Link></>) : null}
+      {userAuthed ? (
+        <>
+          <div className="user_info">
+            <UserInfo />
+          </div>{" "}
+          <Link to="/dashboard">
+            <div className="dashboard_button">
+              <RiDashboardFill />
+            </div>
+          </Link>
+        </>
+      ) : null}
       <div className="settings_table_container">
         <table>
           {/* GENDER SECTION */}
           <tr>
             <td>Gender</td>
             <td className="right_side">
-              <label>
-                Male:
+              <label className="container">
+                Male
                 <input
                   className="radio"
                   name="gender"
                   value="male"
                   type="radio"
                   onChange={handleSettingsOnChange}
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "male"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.gender === "male"
+                  }
                 />
+                <span className="checkmark"></span>
               </label>
-              <label>
-                Female:
+              <label className="container">
+                Female
                 <input
                   className="radio"
                   name="gender"
                   value="female"
                   type="radio"
                   onChange={handleSettingsOnChange}
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.gender === "female"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.gender ===
+                      "female"
+                  }
                 />
+                 <span className="checkmark"></span>
               </label>
             </td>
           </tr>
@@ -101,9 +121,17 @@ export const SettingsForm: React.FC = () => {
                   className="age_dropdown"
                   required
                   name="age"
-                  defaultValue={userAuthed ? loggedInUserSettings.usersPersonalSettings.age : 1} onChange={handleSettingsOnChange}>
+                  defaultValue={
+                    userAuthed
+                      ? loggedInUserSettings.usersPersonalSettings.age
+                      : 1
+                  }
+                  onChange={handleSettingsOnChange}
+                >
                   {ageArray.map((x: number) => (
-                    <option key={x} value={x}>{x}</option>
+                    <option key={x} value={x}>
+                      {x}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -113,40 +141,52 @@ export const SettingsForm: React.FC = () => {
           <tr>
             <td>Weight</td>
             <td className="right_side">
-              <label>
+              <label className="field">
                 <input
                   type="number"
                   name="weight"
                   onChange={handleSettingsOnChange}
                   required
-                  defaultValue={userAuthed
-                    ? loggedInUserSettings.usersPersonalSettings.weight
-                    : 0}
+                  defaultValue={
+                    userAuthed
+                      ? loggedInUserSettings.usersPersonalSettings.weight
+                      : 0
+                  }
                 />
               </label>
-              <label>
-                LBS:
-            <input
+              <label className="container">
+                LBS
+                <input
                   className="radio"
                   type="radio"
                   name="weightUnit"
                   value="lbs"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit === "lbs"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.weightUnit ===
+                      "lbs"
+                  }
                   onChange={handleSettingsOnChange}
                   required
                 />
+                 <span className="checkmark"></span>
               </label>
-              <label>
-                KG:
-            <input
+              <label className="container">
+                KG
+                <input
                   className="radio"
                   type="radio"
                   name="weightUnit"
                   value="kg"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.weightUnit === "kg"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.weightUnit ===
+                      "kg"
+                  }
                   onChange={handleSettingsOnChange}
                   required
                 />
+                 <span className="checkmark"></span>
               </label>
             </td>
           </tr>
@@ -160,34 +200,46 @@ export const SettingsForm: React.FC = () => {
                   name="height"
                   onChange={handleSettingsOnChange}
                   required
-                  defaultValue={userAuthed
-                    ? loggedInUserSettings.usersPersonalSettings.height
-                    : 0}
-                />
+                  defaultValue={
+                    userAuthed
+                      ? loggedInUserSettings.usersPersonalSettings.height
+                      : 0
+                  }
+                />   
               </label>
-              <label>
-                Inch:
-            <input
+              <label className="container">
+                Inch
+                <input
                   className="radio"
                   type="radio"
                   name="heightUnit"
                   onChange={handleSettingsOnChange}
                   required
                   value="inches"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit === "inches"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.heightUnit ===
+                      "inches"
+                  }
                 />
+                 <span className="checkmark"></span>
               </label>
-              <label>
-                CM:
-            <input
+              <label className="container">
+                CM
+                <input
                   className="radio"
                   type="radio"
                   name="heightUnit"
                   value="cm"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.heightUnit === "cm"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.heightUnit ===
+                      "cm"
+                  }
                   onChange={handleSettingsOnChange}
                   required
                 />
+                 <span className="checkmark"></span>
               </label>
             </td>
           </tr>
@@ -195,109 +247,139 @@ export const SettingsForm: React.FC = () => {
           <tr>
             <td>Goal</td>
             <td className="right_side">
-              <label>
-                Lose:
-              <input
+              <label className="container">
+                Lose
+                <input
                   className="radio"
                   type="radio"
                   name="goal"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "lose"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.goal === "lose"
+                  }
                   onChange={handleSettingsOnChange}
                   value="lose"
                   required
                 />
+              <span className="checkmark"></span>
               </label>
-              <label>
-                Maintain:
-              <input
+              <label className="container">
+                Maintain
+                <input
                   className="radio"
                   type="radio"
                   name="goal"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "maintain"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.goal ===
+                      "maintain"
+                  }
                   onChange={handleSettingsOnChange}
                   value="maintain"
                   required
                 />
-              </label>
-              <label>
+                <span className="checkmark"></span>
+                </label>
+              <label className="container">
                 Gain:
-              <input
+                <input
                   className="radio"
                   type="radio"
                   name="goal"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.goal === "gain"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.goal === "gain"
+                  }
                   onChange={handleSettingsOnChange}
                   value="gain"
                   required
                 />
-              </label>
+                <span className="checkmark"></span>
+                </label>
             </td>
           </tr>
           {/* ACTIVITY LEVEL SECTION */}
           <tr>
             <td>Activity</td>
             <td className="right_side">
-              <label>
-                Sedatory:
-              <input
+              <label className="container">
+                Sedatory
+                <input
                   className="radio"
                   type="radio"
                   name="activityLevel"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "sedatory"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.activityLevel ===
+                      "sedatory"
+                  }
                   onChange={handleSettingsOnChange}
                   value="sedatory"
                   required
                 />
+                <span className="checkmark"></span>
               </label>
-              <label>
+              <label className="container">
                 Light:
-              <input
+                <input
                   className="radio"
                   type="radio"
                   name="activityLevel"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "light"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.activityLevel ===
+                      "light"
+                  }
                   onChange={handleSettingsOnChange}
                   value="light"
                   required
                 />
+                <span className="checkmark"></span>
               </label>
-              <label>
-                Medium:
-              <input
+              <label className="container">
+                Medium
+                <input
                   className="radio"
                   type="radio"
                   name="activityLevel"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "medium"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.activityLevel ===
+                      "medium"
+                  }
                   onChange={handleSettingsOnChange}
                   value="medium"
                   required
                 />
+                <span className="checkmark"></span>
               </label>
-              <label>
-                High:
-              <input
+              <label className="container">
+                High
+                <input
                   className="radio"
                   type="radio"
                   name="activityLevel"
-                  defaultChecked={userAuthed && loggedInUserSettings.usersPersonalSettings.activityLevel === "high"}
+                  defaultChecked={
+                    userAuthed &&
+                    loggedInUserSettings.usersPersonalSettings.activityLevel ===
+                      "high"
+                  }
                   onChange={handleSettingsOnChange}
                   value="high"
                   required
                 />
+                <span className="checkmark"></span>
               </label>
             </td>
           </tr>
         </table>
         <button
           className="finish_button"
-          onClick={userAuthed
-            ? saveUserSettings
-            : userSetUpComplete}>
-          {userAuthed
-            ? "Save Settings"
-            : "Complete Set Up"}
+          onClick={userAuthed ? saveUserSettings : userSetUpComplete}
+        >
+          {userAuthed ? "Save Settings" : "Complete Set Up"}
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

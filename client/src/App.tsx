@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { NewPassword } from './components/NewPassword';
 import { ForgotUserName } from './components/ForgotUserName';
 import { ForgotPassword } from './components/ForgotPassword';
-
+import './style/style.css'
 
 export const App: React.FC = () => {
 
@@ -40,17 +40,6 @@ export const App: React.FC = () => {
     usersDailyFood: [],
     usersHistory: []
   });
-
-  function stats() {
-    console.log(userAuthed)
-    console.log(loggedInUserSettings)
-    console.log(dailyFood)
-    console.log(loggedInID)
-    console.log(navigatedFromTracker)
-    console.log(userSettings)
-  }
-
-  //Icons made by <a href="https://www.flaticon.com/authors/dighital" title="Dighital">Dighital</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
   return (
     <div className="app">

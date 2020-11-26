@@ -6,7 +6,7 @@ import { UserInfo } from './UserInfo';
 import { BsPencilSquare, BsCalendar } from "react-icons/bs";
 import { GiCog } from 'react-icons/gi';
 import { FaUserAlt } from 'react-icons/fa';
-
+import '../style/dashboard.css';
 
 
 export const Dashboard: React.FC = () => {
