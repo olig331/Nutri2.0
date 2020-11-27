@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 //import Schema from 'mongoose'
-const  bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 
 
@@ -13,13 +13,13 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: false
   },
-  password:{
+  password: {
     type: String,
     required: true,
   },
-  resetToken:String,
+  resetToken: String,
   expireToken: Date,
-  email:{
+  email: {
     type: String,
     required: true,
   },
@@ -64,10 +64,14 @@ const UserSchema = mongoose.Schema({
   usersHistory: {
     type: mongoose.Schema.Types.Mixed,
     required: false
+  },
+  usersCustomFood: {
+    type: Array,
+    required: false,
   }
 })
 
-UserSchema.pre('save', async function(next){
+UserSchema.pre('save', async function (next) {
   const user = this
   try {
     const salt = await bcrypt.genSalt(10)
@@ -79,10 +83,10 @@ UserSchema.pre('save', async function(next){
   }
 });
 
-UserSchema.methods.comparePassword = function(candidatePassword, cb){
-  bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
-    if(err){
-       return cb(err)
+UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+    if (err) {
+      return cb(err)
     }
 
     return cb(null, isMatch);

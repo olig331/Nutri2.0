@@ -112,32 +112,37 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
 
   return (
     <>
-      <div className="set_1">
+      <div className="all_stats">
         <>
-          <h5>Calories: {Math.round(getNutrientTotal("nf_calories"))} - {helperFunc("calories")} KCal</h5>
-          <ProgressBar percent={getNutrientPercent("nf_calories")} />
-        </>
-        <>
-          <h5>Protein: {Math.round(getNutrientTotal("nf_protein"))}g - {helperFunc("nf_protein")}g</h5>
-          <ProgressBar percent={getNutrientPercent("nf_protein")} />
-        </>
-        <>
-          <h5>Carbohydrates: {Math.round(getNutrientTotal("nf_total_carbohydrate"))}g - {helperFunc("nf_total_carbohydrate")}g </h5>
-          <ProgressBar percent={getNutrientPercent("nf_total_carbohydrate")} />
-        </>
-      </div>
-      <div className="set_2">
-        <>
-          <h5>Fat: {Math.round(getNutrientTotal("nf_total_fat"))}g - {helperFunc("nf_total_fat")}g</h5>
-          <ProgressBar percent={getNutrientPercent("nf_total_fat")} />
-        </>
-        <>
-          <h5>Saturated Fat: {Math.round(getNutrientTotal("nf_saturated_fat"))}g - {helperFunc("nf_saturated_fat")}g</h5>
-          <ProgressBar percent={getNutrientPercent("nf_saturated_fat")} />
-        </>
-        <>
-          <h5>Sugars: {Math.round(getNutrientTotal("nf_sugars"))}g - {helperFunc("nf_sugars")}g</h5>
-          <ProgressBar percent={getNutrientPercent("nf_sugars")} />
+          <div className="bar">
+            <h5>Calories: {Math.round(getNutrientTotal("nf_calories"))} - {helperFunc("calories")} KCal</h5>
+            <ProgressBar percent={getNutrientPercent("nf_calories")} />
+          </div>
+      
+         <div className="bar">
+            <h5>Protein: {Math.round(getNutrientTotal("nf_protein"))}g - {helperFunc("nf_protein")}g</h5>
+            <ProgressBar percent={getNutrientPercent("nf_protein")} />
+         </div>
+       
+          <div className="bar">
+            <h5>Carbohydrates: {Math.round(getNutrientTotal("nf_total_carbohydrate"))}g - {helperFunc("nf_total_carbohydrate")}g </h5>
+            <ProgressBar percent={getNutrientPercent("nf_total_carbohydrate")} />
+          </div>
+        
+          <div className="bar">
+            <h5>Fat: {Math.round(getNutrientTotal("nf_total_fat"))}g - {helperFunc("nf_total_fat")}g</h5>
+            <ProgressBar percent={getNutrientPercent("nf_total_fat")} />
+          </div>
+       
+          <div className="bar">
+            <h5>Saturated Fat: {Math.round(getNutrientTotal("nf_saturated_fat"))}g - {helperFunc("nf_saturated_fat")}g</h5>
+            <ProgressBar percent={getNutrientPercent("nf_saturated_fat")} />
+          </div>
+       
+          <div className="bar">
+            <h5>Sugars: {Math.round(getNutrientTotal("nf_sugars"))}g - {helperFunc("nf_sugars")}g</h5>
+            <ProgressBar percent={getNutrientPercent("nf_sugars")} />
+          </div>
         </>
       </div>
     </>

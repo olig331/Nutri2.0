@@ -3,7 +3,7 @@ import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, Sign
 import { Link, useHistory } from 'react-router-dom';
 import Logo from '../imgs/NutriLogo.png'
 import { RiUserAddLine } from 'react-icons/ri';
-
+import '../style/userSelect.css';
 
 
 export const UserSelect: React.FC = () => {
@@ -57,6 +57,7 @@ export const UserSelect: React.FC = () => {
       setloginattemptfailed(true)
     }
   };
+ 
 
 
   // if user signed out calling refresh to set all app state back to default
@@ -77,7 +78,8 @@ export const UserSelect: React.FC = () => {
       <div className="login_inputs">
         <img src={Logo} alt="Logo Img" />
 
-        <br />
+        {/* Break quick fix for input bars staying aligned  */}
+        <br/>
         
         <input
           style={loginattemptfailed ? { border: "1px solid red" } : { outlineColor: "none" }}
@@ -87,7 +89,6 @@ export const UserSelect: React.FC = () => {
           onChange={enteredUserName}
         />
 
-        <br />
 
         <input
           style={loginattemptfailed ? { border: "1px solid red" } : { outlineColor: "none" }}
@@ -97,7 +98,7 @@ export const UserSelect: React.FC = () => {
           onChange={enteredPassword}
         />
 
-        <br />
+     
 
         <button 
           className="login_button"
@@ -108,6 +109,24 @@ export const UserSelect: React.FC = () => {
           Log In
         </button>
 
+
+
+        <div className= "forgot_buttons">
+          <Link to="forgotUserName">
+            <button 
+              className="forgot_button">
+              Forgot Username
+            </button>
+          </Link>
+  
+          <Link to="/forgotPassword">
+            <button 
+              className="forgot_button" >
+              Forgot password
+            </button>
+          </Link>
+        </div>
+
         <Link to="/setup" 
           style={{ textDecoration: 'none' }}>
           <div 
@@ -117,20 +136,6 @@ export const UserSelect: React.FC = () => {
             </span>
             <h5>Sign Up</h5>
           </div>
-        </Link>
-
-        <Link to="forgotUserName">
-          <button 
-            className="forgot_button">
-            Forgot Username
-          </button>
-        </Link>
-
-        <Link to="/forgotPassword">
-          <button 
-            className="forgot_button" >
-            Forgot password
-          </button>
         </Link>
 
       </div>

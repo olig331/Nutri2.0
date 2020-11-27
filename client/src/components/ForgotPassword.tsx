@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import Logo from '../imgs/NutriLogo.png';
+import '../style/forgotPassword.css';
 
 export const ForgotPassword: React.FC = () => {
 
@@ -34,9 +35,8 @@ export const ForgotPassword: React.FC = () => {
   return (
     <div className="forgot_password_parent">
       <div className="reset_password_items">
-        <img src={Logo} alt="Nutri Logo" /> <br />
-
-
+        <img src={Logo} alt="Nutri Logo" /> 
+        <br />
         <input
           style={responseFromMailReq === "No user found with entered details"
             ? { border: "1.5px solid red" } : { outline: "none" }}
@@ -45,7 +45,7 @@ export const ForgotPassword: React.FC = () => {
           type="text"
           onChange={forgotProccess}
         />
-        <br />
+    
         <label htmlFor="forgot_username"></label>
         <input
           style={responseFromMailReq === "No user found with entered details"
@@ -54,7 +54,7 @@ export const ForgotPassword: React.FC = () => {
           type="text"
           onChange={forgotProccessUserName}
         />
-        <br />
+     
         <button onClick={passwordReset}>Send Password Reset Email</button>
         <div className="forgot_password_message_area">
           <h5 style={responseFromMailReq === "No user found with entered details"
