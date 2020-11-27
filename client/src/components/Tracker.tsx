@@ -17,8 +17,6 @@ import { promises } from "dns";
 import { spawn } from "child_process";
 
 export const Tracker: React.FC = () => {
-  console.log(new Date().toLocaleDateString());
-
   //Context
   const { loggedInID } = useContext(LoggedInIDContext);
   const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
@@ -35,14 +33,14 @@ export const Tracker: React.FC = () => {
   };
 
   const defaultCustomAddVals: CustomAddObj = {
-    name: "",
-    weight: undefined,
-    cals: undefined,
-    protein: undefined,
-    carbs: undefined,
-    fat: undefined,
-    satFat: undefined,
-    sugar: undefined,
+    item_name: "",
+    nf_serving_weight_grams: undefined,
+    nf_calories: undefined,
+    nf_protein: undefined,
+    nf_total_carbohydrate: undefined,
+    nf_total_fat: undefined,
+    nf_saturated_fat: undefined,
+    nf_sugars: undefined,
   };
 
   const [
@@ -55,10 +53,11 @@ export const Tracker: React.FC = () => {
   const [showDailyFood, setshowDailyFood] = useState<boolean>(false);
   // CustomAddObjKeySafe is a type for matching keys the types are the same just they keys are type string
   // so they can be matched in the search componenet when passed through
-  const [customAddVals, setcustomAddVals] = useState<CustomAddObjKeySafe>({
+  const [customAddVals, setcustomAddVals] = useState<CustomAddObj>({
     ...defaultCustomAddVals,
   });
   const [itemAddedResMessage, setitemAddedResMessage] = useState<string>("");
+  const [CustomWeight, setCustomWeight] = useState<number>(0);
 
   useEffect(() => {
     setcustomResults(loggedInUserSettings.usersCustomFood);
@@ -77,24 +76,27 @@ export const Tracker: React.FC = () => {
   const realTimeSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const updatedList = customResults?.filter((item) => {
       return (
-        item.name.toLowerCase().search(e.currentTarget.value.toLowerCase()) !==
-        -1
+        item.item_name
+          .toLowerCase()
+          .search(e.currentTarget.value.toLowerCase()) !== -1
       );
     });
     console.log(updatedList);
     setFilterdResults(updatedList);
   };
 
-  const refetchCustomAdds = async ()=>{
-    const response = await fetch(`http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`, {
-      method: "GET"
-    });
+  const refetchCustomAdds = async () => {
+    const response = await fetch(
+      `http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`,
+      {
+        method: "GET",
+      }
+    );
     const data = await response.json();
-    console.log("this is refetch data V")
-    console.log(data)
+    console.log("this is refetch data V");
+    console.log(data);
     setcustomResults(data);
-  }
-
+  };
 
   const submitCustomItem = async (
     e: React.FormEvent<HTMLFormElement>
@@ -124,8 +126,8 @@ export const Tracker: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     fieldName: string
   ): void => {
-    var copy = { ...customAddVals };
-    if (fieldName !== "name") {
+    var copy: any = { ...customAddVals };
+    if (fieldName !== "item_name") {
       copy[fieldName] = parseInt(e.currentTarget.value);
     } else {
       copy[fieldName] = e.currentTarget.value;
@@ -175,47 +177,52 @@ export const Tracker: React.FC = () => {
     updateUsersDailyFood();
   };
 
-  const calcCustomWeightAdditions = (item:responseItemsFields, weight: number) =>{
-    let newItemVals = {...item};
-    let prevWeight:any = item.nf_serving_weight_grams
+  const calcCustomWeightAdditions = (
+    item: responseItemsFields | CustomAddObj,
+    weight: number
+  ) => {
+    let newItemVals = { ...item };
+    let prevWeight: any = item.nf_serving_weight_grams;
 
-    newItemVals.nf_calories = newItemVals.nf_calories 
-      ?  ((newItemVals.nf_calories / prevWeight) * weight )
+    newItemVals.nf_calories = newItemVals.nf_calories
+      ? (newItemVals.nf_calories / prevWeight) * weight
       : 0;
-    newItemVals.nf_protein = newItemVals.nf_protein 
-      ? ((newItemVals.nf_protein / prevWeight) * weight) 
+    newItemVals.nf_protein = newItemVals.nf_protein
+      ? (newItemVals.nf_protein / prevWeight) * weight
       : 0;
-    newItemVals.nf_total_carbohydrate = newItemVals.nf_total_carbohydrate 
-      ? ((newItemVals.nf_total_carbohydrate / prevWeight) * weight) 
+    newItemVals.nf_total_carbohydrate = newItemVals.nf_total_carbohydrate
+      ? (newItemVals.nf_total_carbohydrate / prevWeight) * weight
       : 0;
     newItemVals.nf_total_fat = newItemVals.nf_total_fat
-      ?((newItemVals.nf_total_fat / prevWeight) * weight)
-      :0;
+      ? (newItemVals.nf_total_fat / prevWeight) * weight
+      : 0;
     newItemVals.nf_saturated_fat = newItemVals.nf_saturated_fat
-      ?((newItemVals.nf_saturated_fat / prevWeight) * weight)
-      :0;
+      ? (newItemVals.nf_saturated_fat / prevWeight) * weight
+      : 0;
     newItemVals.nf_sugars = newItemVals.nf_sugars
-      ?((newItemVals.nf_sugars / prevWeight) * weight)
-      :0;
-    newItemVals.nf_serving_weight_grams = newItemVals.nf_serving_weight_grams ? weight.toString() : "0";
+      ? (newItemVals.nf_sugars / prevWeight) * weight
+      : 0;
+    newItemVals.nf_serving_weight_grams = newItemVals.nf_serving_weight_grams
+      ? weight.toString()
+      : "0";
 
-    let copy:any[] = [...dailyFood];
-    if(copy.length === 0){
+    let copy: any[] = [...dailyFood];
+    if (copy.length === 0) {
       copy.push(new Date().toLocaleDateString());
-      copy.push(newItemVals)
-      setdailyFood(copy)
+      copy.push(newItemVals);
+      setdailyFood(copy);
     } else {
-      copy.push(newItemVals)
+      copy.push(newItemVals);
       setdailyFood(copy);
     }
-    console.log(copy)
-  } 
+    console.log(copy);
+  };
 
   //Add a search item to dailyFood State
   const addApiItemFromSearch = (
-    item: responseItemsFields 
+    item: responseItemsFields | CustomAddObj
   ): void => {
-    let copy:any[] = [...dailyFood];
+    let copy: any[] = [...dailyFood];
     if (copy.length === 0) {
       copy.push(new Date().toLocaleDateString());
       copy.push(item);
@@ -268,19 +275,21 @@ export const Tracker: React.FC = () => {
           />
         </div>
         <div className="daily_food">
-          {dailyFood.slice(1).map((x: any, i: number) => (
-            <li key={i}>
-              {i + 1}. {x.item_name}
-              <span
-                className="remove_item"
-                onClick={() => {
-                  removeItem(i);
-                }}
-              >
-                <TiDelete />
-              </span>
-            </li>
-          ))}
+          <ul>
+            {dailyFood.slice(1).map((x: any, i: number) => (
+              <li key={i}>
+                <span
+                  className="remove_item"
+                  onClick={() => {
+                    removeItem(i);
+                  }}
+                >
+                  <TiDelete />
+                </span>
+                {x.item_name}
+              </li>
+            ))}
+          </ul>
         </div>
         {/* <div onClick={toggleShowDailyFood} className="show_daily_food">
           <BsChevronDoubleUp />
@@ -299,86 +308,100 @@ export const Tracker: React.FC = () => {
               <form onSubmit={submitCustomItem}>
                 <input
                   type="text"
-                  name="name"
+                  name="item_name"
                   placeholder="Name"
-                  value={customAddVals.name}
-                  onChange={(e) => handleCustomFoodOnChange(e, "name")}
+                  value={customAddVals.item_name}
+                  onChange={(e) => handleCustomFoodOnChange(e, "item_name")}
                   required
                 />
                 <input
-                  type="text"
-                  name="weight"
+                  type="number"
+                  name="nf_serving_weight_grams"
                   placeholder="Weight in grams"
                   value={
-                    customAddVals.weight !== undefined
-                      ? customAddVals.weight
+                    customAddVals.nf_serving_weight_grams !== undefined
+                      ? customAddVals.nf_serving_weight_grams
                       : ""
                   }
-                  onChange={(e) => handleCustomFoodOnChange(e, "weight")}
-                  required
-                />
-                <input
-                  type="number"
-                  name="cals"
-                  placeholder="calories"
-                  value={
-                    customAddVals.cals !== undefined ? customAddVals.cals : ""
+                  onChange={(e) =>
+                    handleCustomFoodOnChange(e, "nf_serving_weight_grams")
                   }
-                  onChange={(e) => handleCustomFoodOnChange(e, "cals")}
                   required
                 />
                 <input
                   type="number"
-                  name="protein"
+                  name="nf_calories"
+                  placeholder="Calories"
+                  value={
+                    customAddVals.nf_calories !== undefined
+                      ? customAddVals.nf_calories
+                      : ""
+                  }
+                  onChange={(e) => handleCustomFoodOnChange(e, "nf_calories")}
+                  required
+                />
+                <input
+                  type="number"
+                  name="nf_protein"
                   placeholder="Protein"
                   value={
-                    customAddVals.protein !== undefined
-                      ? customAddVals.protein
+                    customAddVals.nf_protein !== undefined
+                      ? customAddVals.nf_protein
                       : ""
                   }
-                  onChange={(e) => handleCustomFoodOnChange(e, "protein")}
+                  onChange={(e) => handleCustomFoodOnChange(e, "nf_protein")}
                   required
                 />
                 <input
                   type="number"
-                  name="carbs"
+                  name="nf_total_carbohydrate"
                   placeholder="Carbohydrates"
                   value={
-                    customAddVals.carbs !== undefined ? customAddVals.carbs : ""
-                  }
-                  onChange={(e) => handleCustomFoodOnChange(e, "carbs")}
-                  required
-                />
-                <input
-                  type="number"
-                  name="fat"
-                  placeholder="Fat"
-                  value={
-                    customAddVals.fat !== undefined ? customAddVals.fat : ""
-                  }
-                  onChange={(e) => handleCustomFoodOnChange(e, "fat")}
-                  required
-                />
-                <input
-                  type="number"
-                  name="satFat"
-                  placeholder="Saturated Fat"
-                  value={
-                    customAddVals.satFat !== undefined
-                      ? customAddVals.satFat
+                    customAddVals.nf_total_carbohydrate !== undefined
+                      ? customAddVals.nf_total_carbohydrate
                       : ""
                   }
-                  onChange={(e) => handleCustomFoodOnChange(e, "satFat")}
+                  onChange={(e) =>
+                    handleCustomFoodOnChange(e, "nf_total_carbohydrate")
+                  }
                   required
                 />
                 <input
                   type="number"
-                  name="sugar"
+                  name="nf_total_fat"
+                  placeholder="Fat"
+                  value={
+                    customAddVals.nf_total_fat !== undefined
+                      ? customAddVals.nf_total_fat
+                      : ""
+                  }
+                  onChange={(e) => handleCustomFoodOnChange(e, "nf_total_fat")}
+                  required
+                />
+                <input
+                  type="number"
+                  name="nf_saturated_fat"
+                  placeholder="Saturated Fat"
+                  value={
+                    customAddVals.nf_saturated_fat !== undefined
+                      ? customAddVals.nf_saturated_fat
+                      : ""
+                  }
+                  onChange={(e) =>
+                    handleCustomFoodOnChange(e, "nf_saturated_fat")
+                  }
+                  required
+                />
+                <input
+                  type="number"
+                  name="nf_sugars"
                   placeholder="Sugar"
                   value={
-                    customAddVals.sugar !== undefined ? customAddVals.sugar : ""
+                    customAddVals.nf_sugars !== undefined
+                      ? customAddVals.nf_sugars
+                      : ""
                   }
-                  onChange={(e) => handleCustomFoodOnChange(e, "sugar")}
+                  onChange={(e) => handleCustomFoodOnChange(e, "nf_sugars")}
                   required
                 />
                 <button type="submit" value="submit">
@@ -408,26 +431,81 @@ export const Tracker: React.FC = () => {
                 placeholder="Search custom foods"
                 onChange={realTimeSearch}
               />
-              <ul>
+              <ol>
                 {filteredResults !== undefined
                   ? filteredResults.map((item: CustomAddObj, index: number) => (
                       <div>
-                        <li key={index}>
-                          {item.name}{" "}
-                          <span>
-                            ({item.cals}Kcal | per{item.weight}g)
-                          </span>
+                        <div className="top_section">
+                          <li key={index}>
+                            {item.item_name}{" "}
+                            <span>
+                              ({item.nf_calories}Kcal | per
+                              {item.nf_serving_weight_grams}g)
+                            </span>
                           </li>
-                          <button>+</button>
-                        
+                          <button onClick={() => addApiItemFromSearch(item)}>
+                            +
+                          </button>
+                        </div>
+
+                        <div className="custom_weight_add">
+                          Custom serving size
+                          <input
+                            type="number"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) =>
+                              setCustomWeight(parseInt(e.currentTarget.value))
+                            }
+                          />
+                          <button
+                            onClick={() =>
+                              calcCustomWeightAdditions(item, CustomWeight)
+                            }
+                          >
+                            {"+"}
+                          </button>
+                        </div>
                       </div>
                     ))
-                  : ""}
-              </ul>
+                  : customResults?.map((item: any, index: number) => (
+                      <div>
+                        <div className="top_section">
+                          <li key={index}>
+                            {item.item_name}{" "}
+                            <span>
+                              ({item.nf_calories}Kcal | per
+                              {item.nf_serving_weight_grams}g)
+                            </span>
+                          </li>
+                          <button onClick={() => addApiItemFromSearch(item)}>
+                            +
+                          </button>
+                        </div>
+
+                        <div className="custom_weight_add">
+                          Custom serving size
+                          <input
+                            type="number"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) =>
+                              setCustomWeight(parseInt(e.currentTarget.value))
+                            }
+                          />
+                          <button
+                            onClick={() =>
+                              calcCustomWeightAdditions(item, CustomWeight)
+                            }
+                          >
+                            {"+"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+              </ol>
             </>
-          ) : (
-            ""
-          )}
+          ) : null}
         </div>
       </div>
     </div>

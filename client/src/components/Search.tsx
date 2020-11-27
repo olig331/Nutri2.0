@@ -30,7 +30,7 @@ export const Search: React.FC<passedProps> = ({
     console.log(customResults);
     if (customResults !== undefined) {
       customResults.map((item: CustomAddObj, index: number) => {
-        let temp: string = item.name;
+        let temp: string = item.item_name;
         console.log(temp);
         console.log(typeof temp);
         if (searchInputValue.match(temp)) {
@@ -60,7 +60,7 @@ export const Search: React.FC<passedProps> = ({
 
   return (
     <>
-      <input type="text" placeholder="Search..." onChange={searchBarInput} />
+      <input type="text" placeholder="Search for food..." onChange={searchBarInput} />
 
       <button
         className="search_close_btn"
@@ -85,9 +85,9 @@ export const Search: React.FC<passedProps> = ({
         {customItemsNutrition.map((item: CustomAddObj, index: number) => (
           <div key={index}>
             <h5>
-              <span>{item.name}</span>{" "}
+              <span>{item.item_name}</span>{" "}
               <span>
-                {item.cals}Kcal | per {item.weight}grams
+                {item.nf_calories}Kcal | per {item.nf_serving_weight_grams}grams
               </span>
             </h5>
             {/* <button onClick={() => addApiItem(item)}>+</button> */}

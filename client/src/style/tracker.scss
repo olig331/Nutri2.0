@@ -111,13 +111,14 @@
         display: flex;
         justify-content: flex-start;
         span {
-          transition: 0.2s linear;
+          margin-right: 0.15rem;
+          transition: 0.2s ease-out;
           font-size: 1.3rem;
           color: rgb(231, 103, 103);
           &:hover {
-            transition: 0.2s linear;
+            transition: 0.2s ease-in;
             cursor: pointer;
-            transform: scale(1.05);
+            transform: scale(1.04);
             color: red;
           }
         }
@@ -172,6 +173,13 @@
       span{
         font-size: 2.5rem;
         color: $main-clr;
+        transition: 0.2s ease-out;
+        &:hover{
+          //transform: translateY(-7px);
+          transition: 0.2 ease-in;
+          cursor: pointer;
+          color: $hover-clr;
+        }
       }
       input {
         @include inputBar();
@@ -183,7 +191,7 @@
         height: 23px;
         width: 462px;
       }
-      ul {
+      ol {
         list-style: none;
         max-height: 175px;
         overflow-y: scroll;
@@ -194,11 +202,33 @@
         margin: 0;
         padding: 0;
         div {
-          width: 100%;
+          //width: 100%;
           border:1.5px solid $bg-clr;
-          display: inline-flex;
-          justify-content: space-between;
+         color: black;
           //flex-direction: column;
+          .top_section{
+            border: none;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .custom_weight_add{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            border: none;
+            input{
+              margin-left: 0.4rem;
+              outline: none;
+              border: none;
+              width: 50px;
+              height: 17px;
+            }
+            button{
+              margin-left: 0.45rem;
+            }
+          }
           button {
             width: 25px;
             height: 25px;

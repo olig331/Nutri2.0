@@ -85,14 +85,14 @@ type PrivateRouteType = {
 };
 
 type CustomAddObj = {
-  name: string,
-  weight: number | undefined,
-  cals: number | undefined,
-  protein: number | undefined,
-  carbs: number | undefined,
-  fat: number | undefined,
-  satFat:number | undefined,
-  sugar: number | undefined
+  item_name: string,
+  nf_serving_weight_grams:  number | undefined,
+  nf_calories: number | undefined,
+  nf_protein: number | undefined,
+  nf_total_carbohydrate: number | undefined,
+  nf_total_fat: number | undefined,
+  nf_saturated_fat:number | undefined,
+  nf_sugars: number | undefined
 }
 
 type CustomAddObjKeySafe = {[key:string]:string | number | undefined}

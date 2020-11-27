@@ -9,8 +9,8 @@
 
 	function createWindow() {
 		mainWindow = new BrowserWindow({
-			minWidth: 1200, 
-			minHeight: 870,
+			minWidth: 1380, 
+			minHeight: 900,
 			icon: __dirname + "/logo.png"
 		});
 		mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);

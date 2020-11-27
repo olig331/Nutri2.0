@@ -26,6 +26,7 @@ body{
 
 
 .user_info{
+  color: whitesmoke;
   position: absolute;
   right: 1%;
   top: 1%;
@@ -38,6 +39,7 @@ body{
   left: 1%;
   top: 1%;
   transform: translate(-1%, -1%);
+  color: $main-clr;
   font-size: 3.5rem;
 }
 // html{

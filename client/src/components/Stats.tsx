@@ -40,6 +40,7 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
   const getNutrientTotal = (nutrientName: any) => {
     let total: number = 0;
     dailyFood.slice(1).map((x, i) => {
+      console.log(x)
       x.hasOwnProperty(nutrientName)
         ? total += x[nutrientName]
         : console.log("Property Not Found")
