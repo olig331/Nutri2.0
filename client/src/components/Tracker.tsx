@@ -14,6 +14,7 @@ import { RiDashboardFill } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
 import "../style/tracker.css";
 import { promises } from "dns";
+import { spawn } from "child_process";
 
 export const Tracker: React.FC = () => {
   console.log(new Date().toLocaleDateString());
@@ -44,21 +45,56 @@ export const Tracker: React.FC = () => {
     sugar: undefined,
   };
 
-  const [customSearchInput, setcustomSearchInput] = useState<String>("");
+  const [
+    showCustomFoodAdditions,
+    setshowCustomFoodAdditions,
+  ] = useState<boolean>(false);
+  const [filteredResults, setFilterdResults] = useState<any>();
   const [customResults, setcustomResults] = useState<CustomAddObj[]>();
   const [showcustomAdd, setshowcustomAdd] = useState<boolean>(false);
   const [showDailyFood, setshowDailyFood] = useState<boolean>(false);
+  // CustomAddObjKeySafe is a type for matching keys the types are the same just they keys are type string
+  // so they can be matched in the search componenet when passed through
   const [customAddVals, setcustomAddVals] = useState<CustomAddObjKeySafe>({
     ...defaultCustomAddVals,
   });
+  const [itemAddedResMessage, setitemAddedResMessage] = useState<string>("");
 
   useEffect(() => {
     setcustomResults(loggedInUserSettings.usersCustomFood);
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(customResults);
-  },[customResults])
+  }, [customResults]);
+
+  const toggleShowCustomFoodAdditions = (): void => {
+    showCustomFoodAdditions
+      ? setshowCustomFoodAdditions(false)
+      : setshowCustomFoodAdditions(true);
+  };
+
+  const realTimeSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const updatedList = customResults?.filter((item) => {
+      return (
+        item.name.toLowerCase().search(e.currentTarget.value.toLowerCase()) !==
+        -1
+      );
+    });
+    console.log(updatedList);
+    setFilterdResults(updatedList);
+  };
+
+  const refetchCustomAdds = async ()=>{
+    const response = await fetch(`http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`, {
+      method: "GET"
+    });
+    const data = await response.json();
+    console.log("this is refetch data V")
+    console.log(data)
+    setcustomResults(data);
+  }
+
 
   const submitCustomItem = async (
     e: React.FormEvent<HTMLFormElement>
@@ -73,6 +109,14 @@ export const Tracker: React.FC = () => {
       }),
     });
     const data = await response.json();
+    console.log(data);
+    setitemAddedResMessage(data.message);
+    refetchCustomAdds();
+
+    setTimeout(() => {
+      setitemAddedResMessage("");
+    }, 3500);
+
     setcustomAddVals({ ...defaultCustomAddVals });
   };
 
@@ -131,9 +175,47 @@ export const Tracker: React.FC = () => {
     updateUsersDailyFood();
   };
 
+  const calcCustomWeightAdditions = (item:responseItemsFields, weight: number) =>{
+    let newItemVals = {...item};
+    let prevWeight:any = item.nf_serving_weight_grams
+
+    newItemVals.nf_calories = newItemVals.nf_calories 
+      ?  ((newItemVals.nf_calories / prevWeight) * weight )
+      : 0;
+    newItemVals.nf_protein = newItemVals.nf_protein 
+      ? ((newItemVals.nf_protein / prevWeight) * weight) 
+      : 0;
+    newItemVals.nf_total_carbohydrate = newItemVals.nf_total_carbohydrate 
+      ? ((newItemVals.nf_total_carbohydrate / prevWeight) * weight) 
+      : 0;
+    newItemVals.nf_total_fat = newItemVals.nf_total_fat
+      ?((newItemVals.nf_total_fat / prevWeight) * weight)
+      :0;
+    newItemVals.nf_saturated_fat = newItemVals.nf_saturated_fat
+      ?((newItemVals.nf_saturated_fat / prevWeight) * weight)
+      :0;
+    newItemVals.nf_sugars = newItemVals.nf_sugars
+      ?((newItemVals.nf_sugars / prevWeight) * weight)
+      :0;
+    newItemVals.nf_serving_weight_grams = newItemVals.nf_serving_weight_grams ? weight.toString() : "0";
+
+    let copy:any[] = [...dailyFood];
+    if(copy.length === 0){
+      copy.push(new Date().toLocaleDateString());
+      copy.push(newItemVals)
+      setdailyFood(copy)
+    } else {
+      copy.push(newItemVals)
+      setdailyFood(copy);
+    }
+    console.log(copy)
+  } 
+
   //Add a search item to dailyFood State
-  const addApiItemFromSearch = (item: responseItemsFields | CustomAddObj): void => {
-    let copy = [...dailyFood];
+  const addApiItemFromSearch = (
+    item: responseItemsFields 
+  ): void => {
+    let copy:any[] = [...dailyFood];
     if (copy.length === 0) {
       copy.push(new Date().toLocaleDateString());
       copy.push(item);
@@ -144,7 +226,6 @@ export const Tracker: React.FC = () => {
     }
     console.log(copy);
   };
-
 
   // Remove an item from DailyFood
   const removeItem = (indexOfItem: number): void => {
@@ -181,7 +262,8 @@ export const Tracker: React.FC = () => {
       <div className="bottom_half">
         <div className="search">
           <Search
-            addApiItem={addApiItemFromSearch} 
+            customAdd={calcCustomWeightAdditions}
+            addApiItem={addApiItemFromSearch}
             customResults={customResults}
           />
         </div>
@@ -302,34 +384,50 @@ export const Tracker: React.FC = () => {
                 <button type="submit" value="submit">
                   Add Custom Item
                 </button>
+                <h5>{itemAddedResMessage}</h5>
               </form>
             </div>
           ) : (
             ""
           )}
         </div>
-        <div className="add_a_custom_food">
-          <input
-            type="text"
-            placeholder="Search custom foods"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setcustomSearchInput(e.currentTarget.value)
-            }
-          />
-          <button onClick={serchCustomFoods}>Search</button>
 
-          <ul>
-            {customResults !== undefined
-              ? customResults.map((item: CustomAddObj, index: number) => (
-                  <>
-                    <li key={index}>
-                      {item.name} ({item.cals}Kcal | per{item.weight}g)
-                    </li>
-                    <button>+</button>
-                  </>
-                ))
-              : null}
-          </ul>
+        <div className="add_a_custom_food">
+          {!showCustomFoodAdditions ? <h5>Add your custom Items</h5> : ""}
+          <span onClick={toggleShowCustomFoodAdditions}>
+            {showCustomFoodAdditions ? (
+              <BsChevronDoubleDown />
+            ) : (
+              <BsChevronDoubleUp />
+            )}
+          </span>
+          {showCustomFoodAdditions ? (
+            <>
+              <input
+                type="text"
+                placeholder="Search custom foods"
+                onChange={realTimeSearch}
+              />
+              <ul>
+                {filteredResults !== undefined
+                  ? filteredResults.map((item: CustomAddObj, index: number) => (
+                      <div>
+                        <li key={index}>
+                          {item.name}{" "}
+                          <span>
+                            ({item.cals}Kcal | per{item.weight}g)
+                          </span>
+                          </li>
+                          <button>+</button>
+                        
+                      </div>
+                    ))
+                  : ""}
+              </ul>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

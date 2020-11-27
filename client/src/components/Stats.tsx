@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { DailyFoodContext, LoggedInUserSettingsContext } from '../Context/Context';
+import React, { useContext } from 'react';
+import { LoggedInUserSettingsContext } from '../Context/Context';
 
 interface passedProps {
   dailyFood: any[]
@@ -7,7 +7,7 @@ interface passedProps {
 
 export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
 
-  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const { loggedInUserSettings } = useContext(LoggedInUserSettingsContext);
 
   const ProgressBar = (props: any) => {
     return (

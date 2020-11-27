@@ -77,6 +77,20 @@ app.post('/login', function (req, res) {
 //     })
 //   })
 
+app.get('/fetchCustomAdds', (req, res) => {
+  console.log(req.query.userId);
+  User.findOne({ _id: req.query.userId })
+    .then(user => {
+      res.status(200).json(user.usersCustomFood)
+    })
+    .catch((err) => {
+      res.json({
+        status: 400,
+        err: err,
+        message: "Error occoured"
+      })
+    })
+});
 
 app.get('/validateUserName', (req, res) => {
   console.log(req.query.name)
