@@ -1,4 +1,5 @@
 	const electron = require('electron');
+	const ipcMain = require('electron').ipcMain;
 	const app = electron.app;
 	const BrowserWindow = electron.BrowserWindow;
 
@@ -11,7 +12,11 @@
 		mainWindow = new BrowserWindow({
 			minWidth: 1380, 
 			minHeight: 900,
-			icon: __dirname + "/logo.png"
+			frame: false,
+			icon: __dirname + "/logo.png",
+			webPreferences: {
+				nodeIntegration: true,
+			}
 		});
 		mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
 		if (isDev) {
@@ -23,6 +28,23 @@
 			mainWindow.setMenu(null);
 			mainWindow.setResizable(true);
 	}
+
+
+	ipcMain.handle('minimize-event', () => {
+    mainWindow.minimize()
+})
+
+ipcMain.handle('maximize-event', () => {
+    mainWindow.maximize()
+})
+
+ipcMain.handle('unmaximize-event', () => {
+    mainWindow.unmaximize()
+})
+
+ipcMain.handle('close-event', () => {
+    app.quit()
+})
 
 
 	app.on('ready', createWindow);

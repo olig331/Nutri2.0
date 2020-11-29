@@ -142,7 +142,7 @@ export const Dashboard: React.FC = () => {
         {showPopUp
           ? (
             <div className="log_out_popup">
-              <h5>Are you sure you want to log out</h5>
+              <h5>Are you sure you want to log out?</h5>
               <Link to="/">
                 <button onClick={setsignedOut(true)}>Log Out</button>
               </Link>

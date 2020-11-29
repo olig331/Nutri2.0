@@ -37,4 +37,22 @@
       }
     }
   }
+  .log_out_popup{
+    background-color: $bg-clr;
+    padding: 2rem 4rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: whitesmoke;
+    font-size: 1.15rem;
+    letter-spacing: 0.075rem;
+    border-radius: 5px;
+    button{
+      margin: 0px 5px;
+      @include loginSetupButtons();
+      width: 100px;
+    }
+  }
 }

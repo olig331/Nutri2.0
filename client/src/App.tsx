@@ -12,6 +12,7 @@ import { NewPassword } from './components/NewPassword';
 import { ForgotUserName } from './components/ForgotUserName';
 import { ForgotPassword } from './components/ForgotPassword';
 import './style/style.css'
+import { CustomWindowToolBar } from './components/CustomWindowToolBar';
 
 export const App: React.FC = () => {
 
@@ -43,6 +44,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="app">
+      <CustomWindowToolBar />
       <NavigatedFromLoginContext.Provider value={{ navigatedFromLogin, setnavigatedFromLogin }}>
         <UsersSettingsContext.Provider value={{ userSettings, setuserSettings }}>
           <NavigatedFromTrackerContext.Provider value={{ navigatedFromTracker, setnavigatedFromTracker }}>

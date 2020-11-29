@@ -77,7 +77,7 @@ export const SettingsForm: React.FC = () => {
         <table>
           {/* GENDER SECTION */}
           <tr>
-            <td>Gender</td>
+            <td className="left_side">Gender</td>
             <td className="right_side">
               <label className="container">
                 Male
@@ -94,6 +94,7 @@ export const SettingsForm: React.FC = () => {
                 />
                 <span className="checkmark"></span>
               </label>
+              
               <label className="container">
                 Female
                 <input
@@ -114,7 +115,7 @@ export const SettingsForm: React.FC = () => {
           </tr>
           {/* AGE SECTION */}
           <tr>
-            <td>Age</td>
+            <td className="left_side">Age</td>
             <td className="right_side">
               <label>
                 <select
@@ -139,7 +140,7 @@ export const SettingsForm: React.FC = () => {
           </tr>
           {/* WEIGHT SECTION */}
           <tr>
-            <td>Weight</td>
+            <td className="left_side">Weight</td>
             <td className="right_side">
               <label className="field">
                 <input
@@ -192,7 +193,7 @@ export const SettingsForm: React.FC = () => {
           </tr>
           {/* HEIGHT SECTION */}
           <tr>
-            <td>Height</td>
+            <td className="left_side">Height</td>
             <td className="right_side">
               <label>
                 <input
@@ -245,7 +246,7 @@ export const SettingsForm: React.FC = () => {
           </tr>
           {/* GOAL SECTION */}
           <tr>
-            <td>Goal</td>
+            <td className="left_side">Goal</td>
             <td className="right_side">
               <label className="container">
                 Lose
@@ -300,8 +301,8 @@ export const SettingsForm: React.FC = () => {
           </tr>
           {/* ACTIVITY LEVEL SECTION */}
           <tr>
-            <td>Activity</td>
-            <td className="right_side">
+            <td className="left_side activity">Activity</td>
+            <td className="right_side activity">
               <label className="container">
                 Sedatory
                 <input

@@ -5,28 +5,7 @@
 
   .stats {
     .all_stats {
-      width: 100%;
-      display: inline-flex;
-      justify-content: center;
-      //margin-top: 30px;
-      padding-top: 60px;
-      padding-bottom: 20px;
-      height: 100%;
-      //border: 1px solid white;
-      background-color: rgba(26, 22, 22, 0.6);
-      .bar {
-        font-size: 1.05rem;
-        margin-right: 3rem;
-        display: flex;
-        flex-direction: column;
-        //border: 1px solid #fff;
-        h5 {
-          text-align: center;
-        }
-        &:nth-child(6) {
-          margin-right: 0rem;
-        }
-      }
+      @include stats();
     }
   }
 
@@ -124,6 +103,7 @@
         }
       }
     }
+    .create_a_custom_item{
     .custom_add {
       margin-top: -19px;
       grid-column: 1/2;
@@ -160,6 +140,7 @@
         }
       }
     }
+  }
     .add_a_custom_food {
       position: absolute;
       left: 50%;
