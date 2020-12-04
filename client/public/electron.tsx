@@ -43,7 +43,12 @@ ipcMain.handle('unmaximize-event', () => {
 })
 
 ipcMain.handle('close-event', () => {
-    app.quit()
+	app.on('window-all-closed', app.quit());
+	app.on('before-quit', () => {
+    mainWindow.removeAllListeners('close');
+    mainWindow.close();
+});
+    app.quit();
 })
 
 

@@ -2,7 +2,12 @@ import React,{useState, useContext, useEffect} from 'react'
 import { LoggedInIDContext, LoggedInUserSettingsContext } from '../Context/Context';
 import {BsChevronDoubleUp, BsChevronDoubleDown} from 'react-icons/bs';
 
-export const CreateCustomItem:React.FC = () => {
+interface passedFunc {
+  refetchCustomAdds:()=>void;
+  customResults: CustomAddObj[] | undefined
+}
+
+export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds, customResults}) => {
 
   const defaultCustomAddVals: CustomAddObj = {
     item_name: "",
@@ -19,28 +24,12 @@ export const CreateCustomItem:React.FC = () => {
   const {loggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
   const [showcustomAdd, setshowcustomAdd] = useState<boolean>(false);
-  const [customResults, setcustomResults] = useState<CustomAddObj[]>();
   const [itemAddedResMessage, setitemAddedResMessage] = useState<string>("");
   const [customAddVals, setcustomAddVals] = useState<CustomAddObj>({
        ...defaultCustomAddVals,
   });
 
-  useEffect(() => {
-    setcustomResults(loggedInUserSettings.usersCustomFood);
-  }, []);
-
-  const refetchCustomAdds = async () => {
-    const response = await fetch(
-      `http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`,
-      {
-        method: "GET",
-      }
-    );
-    const data = await response.json();
-    console.log("this is refetch data V");
-    console.log(data);
-    setcustomResults(data);
-  };
+ 
 
   const submitCustomItem = async (
     e: React.FormEvent<HTMLFormElement>

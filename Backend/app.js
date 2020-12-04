@@ -27,6 +27,7 @@ app.use(bodyParser.json())
 
 //IMPORT ROUTES
 const creatingUserRoute = require('./routes/createUser');
+const { response } = require('express');
 
 app.use('/createUser', creatingUserRoute);
 
@@ -316,6 +317,35 @@ app.post('/forgotPassword', async function (req, res) {
         })
       })
   })
+})
+
+app.post('/sendConfEmail', (req, res) => {
+  const data = req.body;
+
+  transporter.sendMail({
+    from: process.env.EMAIL,
+    to: data.email,
+    subject: "Welcome To Nurti",
+    html: `
+      <h1>Welcome ${data.userName}</h1>
+      <p>Thank you for signing up to Nutri</p>
+      <p>Your user name: ${data.userName}</p>
+    `
+  })
+    .then((response) => {
+      res.json({
+        status: 200,
+        message: response,
+        text: "Email Sent"
+      })
+    })
+    .catch(err => {
+      res.json({
+        status: 400,
+        message: err,
+        text: "There was an error"
+      })
+    })
 })
 
 app.post('/newUserPassword', (req, res) => {

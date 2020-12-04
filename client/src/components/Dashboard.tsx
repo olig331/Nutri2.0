@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext, NavigatedFromTrackerContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
-import { WelcomeUser } from './WelcomeUser';
 import { UserInfo } from './UserInfo';
 import { BsPencilSquare, BsCalendar } from "react-icons/bs";
 import { GiCog } from 'react-icons/gi';
@@ -23,8 +22,7 @@ export const Dashboard: React.FC = () => {
 
   //CONTEXT 
   const { navigatedFromTracker, setnavigatedFromTracker } = useContext(NavigatedFromTrackerContext)
-  const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
-  const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
+  const { loggedInID } = useContext(LoggedInIDContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
   const { setsignedOut } = useContext(SignedOutContext)
   const { navigatedFromLogin, setnavigatedFromLogin } = useContext(NavigatedFromLoginContext)

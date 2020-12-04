@@ -9,11 +9,11 @@ import {
   NavigatedFromTrackerContext,
 } from "../Context/Context";
 import { UserInfo } from "./UserInfo";
-import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs";
 import { RiDashboardFill } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
 import "../style/tracker.css";
 import { CreateCustomItem } from "./CreateCustomItem";
+import {AddACustomFood} from './AddACustomFood';
 
 
 export const Tracker: React.FC = () => {
@@ -23,115 +23,31 @@ export const Tracker: React.FC = () => {
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(
     LoggedInUserSettingsContext
   );
-  const { navigatedFromTracker, setnavigatedFromTracker } = useContext(
+  const { setnavigatedFromTracker } = useContext(
     NavigatedFromTrackerContext
   );
 
-  //Toggle showing the custom add form
-  // const toggleCustomAdd = (): void => {
-  //   showcustomAdd ? setshowcustomAdd(false) : setshowcustomAdd(true);
-  // };
-
-  // const defaultCustomAddVals: CustomAddObj = {
-  //   item_name: "",
-  //   nf_serving_weight_grams: undefined,
-  //   nf_calories: undefined,
-  //   nf_protein: undefined,
-  //   nf_total_carbohydrate: undefined,
-  //   nf_total_fat: undefined,
-  //   nf_saturated_fat: undefined,
-  //   nf_sugars: undefined,
-  // };
-
-  const [
-    showCustomFoodAdditions,
-    setshowCustomFoodAdditions,
-  ] = useState<boolean>(false);
-  const [filteredResults, setFilterdResults] = useState<any>();
+  // State
   const [customResults, setcustomResults] = useState<CustomAddObj[]>();
-  //const [showcustomAdd, setshowcustomAdd] = useState<boolean>(false);
-  const [showDailyFood, setshowDailyFood] = useState<boolean>(false);
-  // CustomAddObjKeySafe is a type for matching keys the types are the same just they keys are type string
-  // so they can be matched in the search componenet when passed through
-  // const [customAddVals, setcustomAddVals] = useState<CustomAddObj>({
-  //   ...defaultCustomAddVals,
-  // });
-  //const [itemAddedResMessage, setitemAddedResMessage] = useState<string>("");
-  const [CustomWeight, setCustomWeight] = useState<number>(0);
 
-  // useEffect(() => {
-  //   setcustomResults(loggedInUserSettings.usersCustomFood);
-  // }, []);
-
-
-  const toggleShowCustomFoodAdditions = (): void => {
-    showCustomFoodAdditions
-      ? setshowCustomFoodAdditions(false)
-      : setshowCustomFoodAdditions(true);
+  const refetchCustomAdds = async () => {
+    const response = await fetch(
+      `http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = await response.json();
+    console.log("this is refetch data V");
+    console.log(data);
+    setcustomResults(data);
   };
 
-  const realTimeSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const updatedList = customResults?.filter((item:any) => {
-      return (
-        item.item_name
-          .toLowerCase()
-          .search(e.currentTarget.value.toLowerCase()) !== -1
-      );
-    });
-    console.log(updatedList);
-    setFilterdResults(updatedList);
-  };
+  useEffect(() => {
+    setcustomResults(loggedInUserSettings.usersCustomFood);
+  }, []);
 
-  // const refetchCustomAdds = async () => {
-  //   const response = await fetch(
-  //     `http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   console.log("this is refetch data V");
-  //   console.log(data);
-  //   setcustomResults(data);
-  // };
-
-  // const submitCustomItem = async (
-  //   e: React.FormEvent<HTMLFormElement>
-  // ): Promise<void> => {
-  //   e.preventDefault();
-  //   console.log("submitted");
-  //   const response = await fetch("http://localhost:5000/addToCustomList", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       payload: customAddVals,
-  //       id: loggedInID,
-  //     }),
-  //   });
-  //   const data = await response.json();
-  //   console.log(data);
-  //   setitemAddedResMessage(data.message);
-  //   refetchCustomAdds();
-
-  //   setTimeout(() => {
-  //     setitemAddedResMessage("");
-  //   }, 3500);
-
-  //   setcustomAddVals({ ...defaultCustomAddVals });
-  // };
-
-  // const handleCustomFoodOnChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   fieldName: string
-  // ): void => {
-  //   var copy: any = { ...customAddVals };
-  //   if (fieldName !== "item_name") {
-  //     copy[fieldName] = parseInt(e.currentTarget.value);
-  //   } else {
-  //     copy[fieldName] = e.currentTarget.value;
-  //   }
-  //   setcustomAddVals(copy);
-  // };
-
+  
   // Will pull from database when this page is rendered
   useEffect(() => {
     console.log("running on mount first useEffect");
@@ -170,7 +86,7 @@ export const Tracker: React.FC = () => {
     setdailyFood(data);
   };
 
-  window.onunload = () => {
+  window.onbeforeunload = () => {
     updateUsersDailyFood();
   };
 
@@ -248,9 +164,6 @@ export const Tracker: React.FC = () => {
     setdailyFood(dailyFoodCopy);
   };
 
-  const toggleShowDailyFood = () => {
-    showDailyFood ? setshowDailyFood(false) : setshowDailyFood(true);
-  };
 
   return (
     <div className="tracker_parent">
@@ -285,7 +198,6 @@ export const Tracker: React.FC = () => {
           <Search
             customAdd={calcCustomWeightAdditions}
             addApiItem={addApiItemFromSearch}
-            customResults={customResults}
           />
         </div>
         {/*  */}
@@ -312,101 +224,19 @@ export const Tracker: React.FC = () => {
         
         {/* Creating a custom food ANCHOR */}
         <div className="create_a_custom_item">
-          <CreateCustomItem />
+          <CreateCustomItem 
+            refetchCustomAdds={refetchCustomAdds}
+            customResults={customResults}
+          />
         </div>
         {/*  */}
      
-        <div className="add_a_custom_food">
-          {!showCustomFoodAdditions ? <h5>Add your custom Items</h5> : ""}
-          <span onClick={toggleShowCustomFoodAdditions}>
-            {showCustomFoodAdditions ? (
-              <BsChevronDoubleDown />
-            ) : (
-              <BsChevronDoubleUp />
-            )}
-          </span>
-          {showCustomFoodAdditions ? (
-            <>
-              <input
-                type="text"
-                placeholder="Search custom foods"
-                onChange={realTimeSearch}
-              />
-              <ol>
-                {filteredResults !== undefined
-                  ? filteredResults.map((item: CustomAddObj, index: number) => (
-                      <div>
-                        <div className="top_section">
-                          <li key={index}>
-                            {item.item_name}{" "}
-                            <span>
-                              ({item.nf_calories}Kcal | per
-                              {item.nf_serving_weight_grams}g)
-                            </span>
-                          </li>
-                          <button onClick={() => addApiItemFromSearch(item)}>
-                            +
-                          </button>
-                        </div>
-
-                        <div className="custom_weight_add">
-                          Custom serving size
-                          <input
-                            type="number"
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) =>
-                              setCustomWeight(parseInt(e.currentTarget.value))
-                            }
-                          />
-                          <button
-                            onClick={() =>
-                              calcCustomWeightAdditions(item, CustomWeight)
-                            }
-                          >
-                            {"+"}
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  : customResults?.map((item: any, index: number) => (
-                      <div>
-                        <div className="top_section">
-                          <li key={index}>
-                            {item.item_name}{" "}
-                            <span>
-                              ({item.nf_calories}Kcal | per
-                              {item.nf_serving_weight_grams}g)
-                            </span>
-                          </li>
-                          <button onClick={() => addApiItemFromSearch(item)}>
-                            +
-                          </button>
-                        </div>
-
-                        <div className="custom_weight_add">
-                          Custom serving size
-                          <input
-                            type="number"
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) =>
-                              setCustomWeight(parseInt(e.currentTarget.value))
-                            }
-                          />
-                          <button
-                            onClick={() =>
-                              calcCustomWeightAdditions(item, CustomWeight)
-                            }
-                          >
-                            {"+"}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-              </ol>
-            </>
-          ) : null}
+        <div className="adding_a_custom_food_container">
+          <AddACustomFood
+            addApiItemFromSearch={addApiItemFromSearch}
+            calcCustomWeightAdditions={calcCustomWeightAdditions}
+            customResults={customResults}
+          />
         </div>
         {/*  */}
 

@@ -1,10 +1,8 @@
-import React, { useRef, useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { SettingsForm } from "./SettingsForm";
 import { UsersSettingsContext } from "../Context/Context";
 import { Link } from "react-router-dom";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { GrLinkNext } from "react-icons/gr";
-import { GiConsoleController } from "react-icons/gi";
 import { TiTick } from "react-icons/ti";
 import "../style/userSetUp.css";
 
@@ -19,6 +17,7 @@ export const UserSetUp: React.FC = () => {
   );
 
   //STATE
+  const [checkComplete, setcheckComplete] = useState<boolean>(false);
   const [nameComplete, setnameComplete] = useState<boolean>(false); // State for Rendering Settings page on compeltion of Username
   const [uniqueName, setuniqueName] = useState<boolean>(false); // State for when a entered Username in set up is valid(unique)
   const [showImgPopUp, setshowImgPopUp] = useState<boolean>(false);
@@ -36,7 +35,6 @@ export const UserSetUp: React.FC = () => {
 
   // Function access the databse and matches a username to the input Field if null is returned Validation failed
   const validateUserName = async () => {
-    checkEmail();
     const name = userSettings.userName;
     console.log(name);
     const response = await fetch(
@@ -49,13 +47,28 @@ export const UserSetUp: React.FC = () => {
     if (data.status === 200) {
       setuniqueName(true);
       next();
+      return true
     } else {
       setuniqueName(false);
+      return false
     }
   };
 
+  const validateForm = async ():Promise<void> =>{
+    if(await validateUserName() && passwordsMatch && checkEmail()){
+      console.log("tests passed")
+      setcheckComplete(true);
+    } 
+  } 
+
   // Setting username to be passed onto settings to complete setup
   const settingName = (e: React.FormEvent<HTMLInputElement>) => {
+    console.log(validEmail)
+    if([e.currentTarget.name].toString() === "email"){
+      if(e.currentTarget.value === ""){
+        setvalidEmail(undefined);
+      }
+    }
     setuserSettings({
       ...userSettings,
       [e.currentTarget.name]: e.currentTarget.value,
@@ -82,24 +95,24 @@ export const UserSetUp: React.FC = () => {
 
 
   // Check for a valid Email Adress
-  const checkEmail = (): void => {
+  const checkEmail = ():boolean => {
     const regex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (regex.test(userSettings.email)) {
       setvalidEmail(true);
+      return true;
     } else {
-      setvalidEmail(false);
+      setvalidEmail(false); 
+      return false;
     }
   };
 
-
-  
   const toggleShowImg = () => {
     showImgPopUp ? setshowImgPopUp(false) : setshowImgPopUp(true);
   };
 
   return (
     <>
-      {nameComplete === false || passwordsMatch === false ? (
+      {!checkComplete ?(
         <div className="setup_parent">
           <div className="setup_items">
             <img
@@ -163,11 +176,11 @@ export const UserSetUp: React.FC = () => {
             {/* Enter Email */}
             <input
               style={
-                !validEmail && userSettings.email !== ""
-                  ? { border: "1.5px solid red" }
-                  : validEmail && userSettings.email !== ""
-                  ? { border: "1.5px solid green" }
-                  : { outline: "none" }
+                validEmail === undefined 
+                  ? {border: "1px solid white"}
+                  : !validEmail && userSettings !== ""
+                  ? {border: "1.5px solid red"}
+                  : {border: "1.5px solid green"}
               }
               placeholder="Enter email..."
               type="text"
@@ -175,18 +188,17 @@ export const UserSetUp: React.FC = () => {
               onChange={settingName}
               required
             />
-            {!validEmail && userSettings.email !== "" ? (
-              <label style={{ color: "red" }} htmlFor="email">
-                Invalid Email
-              </label>
-            ) : validEmail && userSettings.email !== "" ? (
-              <label style={{ color: "green" }}>
-                <TiTick />
-              </label>
-            ) : (
-              ""
-            )}
-
+            {validEmail === undefined 
+                ? ""
+                : validEmail 
+                ? (<label style={{ color: "green" }} htmlFor="email">
+                     <TiTick />
+                   </label>)
+                : <label style={{ color: "red" }} htmlFor="email">
+                    Invalid Email
+                 </label>
+             }
+      
             {/* Create Password */}
             <input
               style={
@@ -234,7 +246,7 @@ export const UserSetUp: React.FC = () => {
               ""
             )}
 
-            <button onClick={validateUserName}>Continue</button>
+            <button onClick={validateForm}>Continue</button>
 
             <Link style={{ textDecoration: "none" }} to="/">
               <button className="back_to_login_button">Back to Login</button>

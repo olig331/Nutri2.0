@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
+import { TiDelete } from "react-icons/ti";
 
 interface passedProps {
   addApiItem: (item: responseItemsFields) => void;
-  customResults: CustomAddObj[] | undefined;
   customAdd: (item: responseItemsFields, weight: number) => void;
 }
 
-export const Search: React.FC<passedProps> = ({
-  addApiItem,
-  customResults,
-  customAdd,
-}) => {
+export const Search: React.FC<passedProps> = ({addApiItem,customAdd,}) => {
   // STATE
   const [customItemsNutrition, setcustomItemsNutrition] = useState<
     CustomAddObj[]
@@ -25,26 +21,12 @@ export const Search: React.FC<passedProps> = ({
 
   // Nutrionix API CALL
   const getItemNutrition = async () => {
-    let customData: CustomAddObj[] = [];
-
-    console.log(customResults);
-    if (customResults !== undefined) {
-      customResults.map((item: CustomAddObj, index: number) => {
-        let temp: string = item.item_name;
-        console.log(temp);
-        console.log(typeof temp);
-        if (searchInputValue.match(temp)) {
-          console.log("mathes");
-          customData.push(item);
-        }
-      });
-    }
+   
     const apiResponse = await fetch(
       `https://api.nutritionix.com/v1_1/search/${searchInputValue}?results=0:10&fields=item_name,brand_name,item_id,nf_calories,nf_protein,nf_sugars,nf_total_fat,nf_total_carbohydrate,nf_saturated_fat,nf_serving_weight_grams&appId=${process.env.REACT_APP_APP_ID}&appKey=${process.env.REACT_APP_APP_KEY}`
     );
 
     const apiData = await apiResponse.json();
-    setcustomItemsNutrition(customData);
     setapiItemsNutrition(apiData.hits);
   };
 
@@ -52,25 +34,31 @@ export const Search: React.FC<passedProps> = ({
     setsearchInputValue(e.currentTarget.value);
   };
 
-  const toggleShowItems = () => {
-    showItemNutritionResults
-      ? setshowItemNutritionResults(false)
-      : setshowItemNutritionResults(true);
-  };
 
   return (
     <>
-      <input type="text" placeholder="Search for food..." onChange={searchBarInput} />
+      <div className="search_bar">
+        <input 
+          value={searchInputValue}
+          type="text" 
+          placeholder="Search for food..." 
+          onChange={searchBarInput} 
+        />
+        <span onClick={() => setsearchInputValue("")}><TiDelete/></span>
+      </div>
 
-      <button
-        className="search_close_btn"
-        onClick={() => {
-          getItemNutrition();
-          toggleShowItems();
-        }}
-      >
-        {showItemNutritionResults ? "Close" : "Search"}
-      </button>
+      <div className="search_buttons">
+        <button
+          className="search_close_btn"
+          onClick={() => {
+            getItemNutrition();
+            setshowItemNutritionResults(true);
+          }}
+        >
+         Search
+        </button>
+        <button onClick={() =>setshowItemNutritionResults(false)}>Close</button>
+      </div>
       <div
         className="search_response"
         style={

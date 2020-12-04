@@ -13,6 +13,7 @@ import { ForgotUserName } from './components/ForgotUserName';
 import { ForgotPassword } from './components/ForgotPassword';
 import './style/style.css'
 import { CustomWindowToolBar } from './components/CustomWindowToolBar';
+import { SignUpComplete } from './components/SignUpComplete';
 
 export const App: React.FC = () => {
 
@@ -63,6 +64,7 @@ export const App: React.FC = () => {
                           <Route path='/history' render={props => (<History />)} />
                           <Route path='/settings' component={SettingsForm} />
                           <Route path="/dashboard" render={props => (<Dashboard />)} />
+                          <Route path="/signUpComplete" component={SignUpComplete}/>
                           <Route path="/:token" component={NewPassword} />
                         </Switch>
                       </Router>

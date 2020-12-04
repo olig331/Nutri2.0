@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   UsersSettingsContext,
   LoggedInUserSettingsContext,
@@ -8,7 +8,7 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import { rejects } from "assert";
 import { UserInfo } from "./UserInfo";
-import { RiDashboardFill } from "react-icons/ri";
+import { RiContrastDropLine, RiDashboardFill } from "react-icons/ri";
 import { BsArrowLeftShort } from "react-icons/bs";
 import '../style/settingsForm.css';
 
@@ -24,8 +24,12 @@ export const SettingsForm: React.FC = () => {
   );
   const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
 
+    
   const handleSettingsOnChange = (e: any) => {
-    var nestedCopy = { ...userSettings.usersPersonalSettings };
+    var nestedCopy = loggedInUserSettings === undefined
+      ? { ...userSettings.usersPersonalSettings }
+      : {...loggedInUserSettings.usersPersonalSettings};
+
     console.log(nestedCopy);
     var fullCopy = { ...userSettings };
     nestedCopy[e.target.name] = e.target.value;
@@ -40,13 +44,24 @@ export const SettingsForm: React.FC = () => {
       body: JSON.stringify(userSettings),
     })
       .then((response) => {
-        pageHistory.replace("/");
+        sendComfEmail()
+        pageHistory.replace("/SignUpComplete");
         return response.text();
       })
       .catch((error) => {
         rejects(error);
       });
   };
+
+  const sendComfEmail = async ():Promise<void> =>{
+    const response = await fetch("http://localhost:5000/sendConfEmail", {
+      method:"POST",
+      body: JSON.stringify(userSettings)
+    });
+    
+    const data = await response.json();
+    console.log(data);
+  }
 
   const saveUserSettings = async (): Promise<void> => {
     console.log(userSettings.usersPersonalSettings);
@@ -55,7 +70,11 @@ export const SettingsForm: React.FC = () => {
       body: JSON.stringify(userSettings.usersPersonalSettings),
     });
     const data = await response.json();
-    console.log(data);
+    if(data.status === 200){
+      let fullCopy = {...loggedInUserSettings}
+      fullCopy.usersPersonalSettings = userSettings.usersPersonalSettings;
+      setLoggedInUserSettings(fullCopy);
+    }
     pageHistory.replace("/dashboard");
   };
 
@@ -76,6 +95,7 @@ export const SettingsForm: React.FC = () => {
       <div className="settings_table_container">
         <table>
           {/* GENDER SECTION */}
+          <tbody>
           <tr>
             <td className="left_side">Gender</td>
             <td className="right_side">
@@ -373,6 +393,7 @@ export const SettingsForm: React.FC = () => {
               </label>
             </td>
           </tr>
+          </tbody>
         </table>
         <button
           className="finish_button"
