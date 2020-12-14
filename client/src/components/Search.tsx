@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import { TiDelete } from "react-icons/ti";
 
 interface passedProps {
@@ -7,20 +7,16 @@ interface passedProps {
 }
 
 export const Search: React.FC<passedProps> = ({addApiItem,customAdd,}) => {
+
   // STATE
-  const [customItemsNutrition, setcustomItemsNutrition] = useState<
-    CustomAddObj[]
-  >([]);
+  const [customItemsNutrition, setcustomItemsNutrition] = useState<CustomAddObj[]>([]);
   const [apiItemsNutrition, setapiItemsNutrition] = useState<any[]>([]);
   const [searchInputValue, setsearchInputValue] = useState<string>("");
-  const [
-    showItemNutritionResults,
-    setshowItemNutritionResults,
-  ] = useState<boolean>(false);
+  const [showItemNutritionResults, setshowItemNutritionResults] = useState<boolean>(false);
   const [customWeight, setCustomWeight] = useState<number>(0);
 
   // Nutrionix API CALL
-  const getItemNutrition = async () => {
+  const getItemNutrition = async ():Promise<void> => {
    
     const apiResponse = await fetch(
       `https://api.nutritionix.com/v1_1/search/${searchInputValue}?results=0:10&fields=item_name,brand_name,item_id,nf_calories,nf_protein,nf_sugars,nf_total_fat,nf_total_carbohydrate,nf_saturated_fat,nf_serving_weight_grams&appId=${process.env.REACT_APP_APP_ID}&appKey=${process.env.REACT_APP_APP_KEY}`
@@ -30,7 +26,9 @@ export const Search: React.FC<passedProps> = ({addApiItem,customAdd,}) => {
     setapiItemsNutrition(apiData.hits);
   };
 
-  const searchBarInput = (e: React.FormEvent<HTMLInputElement>) => {
+
+
+  const searchBarInput = (e: React.FormEvent<HTMLInputElement>):void => {
     setsearchInputValue(e.currentTarget.value);
   };
 

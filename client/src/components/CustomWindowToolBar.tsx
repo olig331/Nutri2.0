@@ -1,13 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import logo from "../imgs/NutriLogo.png";
 import { FaWindowMinimize, FaRegWindowMaximize } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
+import { DailyFoodContext, LoggedInIDContext } from "../Context/Context";
+import { useHistory } from "react-router-dom";
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
 export const CustomWindowToolBar: React.FC = () => {
+  const pageHistory = useHistory();
+  console.log(pageHistory);
+  //State
   const [isMax, setisMax] = useState<boolean>(false);
 
+  const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
+  const { loggedInID } = useContext(LoggedInIDContext);
+
+  const updateUsersDailyFood = async (): Promise<void> => {
+    if (dailyFood.length > 1) {
+      console.log("updateUserDailyFoodFunc");
+      await fetch(
+        `https://nutriserverside.herokuapp.com/updateUsersFood?userId=${loggedInID}`,
+        {
+          method: "POST",
+          body: JSON.stringify(dailyFood),
+        }
+      );
+      setdailyFood([]);
+      console.log("updated");
+      return;
+    } else {
+      return;
+    }
+  };
+
+  // Handlers interacting with the ipcMain API from electron.js in /public to trigger events
+  // (FYI) dragging the window is a CSS prop called  -webkit-app-region: drag; found in style.scss line 70~
   const minimizeHandler = () => {
     ipcRenderer.invoke("minimize-event");
   };
@@ -20,7 +48,8 @@ export const CustomWindowToolBar: React.FC = () => {
     ipcRenderer.invoke("unmaximize-event");
   };
 
-  const closeHandler = () => {
+  const closeHandler = async () => {
+    await updateUsersDailyFood();
     ipcRenderer.invoke("close-event");
   };
 
@@ -38,7 +67,8 @@ export const CustomWindowToolBar: React.FC = () => {
     <div className="custom_toolbar">
       <div className="title">
         <img src={logo} alt="Logo Icon" />
-        <span>Nutri{" "}</span> <span className="divider">|</span> Personal Nutritonal Tracking App
+        <span>Nutri </span> <span className="divider">|</span> Personal
+        Nutritonal Tracking App
       </div>
 
       <div className="title_buttons">

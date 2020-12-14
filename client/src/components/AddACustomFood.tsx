@@ -9,12 +9,10 @@ interface passedFuncs  {
 
 export const AddACustomFood:React.FC<passedFuncs> = ({addApiItemFromSearch, calcCustomWeightAdditions, customResults}) => {
 
+  //State
   const [filteredResults, setFilterdResults] = useState<any>();
   const [CustomWeight, setCustomWeight] = useState<number>(0);
-  const [
-    showCustomFoodAdditions,
-    setshowCustomFoodAdditions,
-  ] = useState<boolean>(false);
+  const [showCustomFoodAdditions, setshowCustomFoodAdditions,] = useState<boolean>(false);
 
   const realTimeSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const updatedList = customResults?.filter((item:any) => {
@@ -24,7 +22,7 @@ export const AddACustomFood:React.FC<passedFuncs> = ({addApiItemFromSearch, calc
           .search(e.currentTarget.value.toLowerCase()) !== -1
       );
     });
-    console.log(updatedList);
+    //console.log(updatedList);
     setFilterdResults(updatedList);
   };
 
@@ -128,5 +126,5 @@ export const AddACustomFood:React.FC<passedFuncs> = ({addApiItemFromSearch, calc
             </>
           ) : null}
         </div>
-  )
-}
+  );
+};

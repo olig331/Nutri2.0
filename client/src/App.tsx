@@ -7,7 +7,7 @@ import './style/style.css';
 import { LoggedInUserSettingsContext, DailyFoodContext, UserAuthedContext, LoggedInIDContext, NavigatedFromTrackerContext, UsersSettingsContext, SignedOutContext, NavigatedFromLoginContext } from './Context/Context';
 import { UserSelect } from './components/UserSelect';
 import { SettingsForm } from './components/SettingsForm';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { NewPassword } from './components/NewPassword';
 import { ForgotUserName } from './components/ForgotUserName';
 import { ForgotPassword } from './components/ForgotPassword';
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   const [navigatedFromTracker, setnavigatedFromTracker] = useState<boolean>(false)
   const [userSettings, setuserSettings] = useState<UsersType>({
     userName: "",
-    userPicture: "/static/media/bear.3a7022d5.png",
+    userPicture: "/static/media/bear.60975053.png",
     password: "",
     email: "",
     usersPersonalSettings: {
@@ -45,7 +45,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="app">
-      <CustomWindowToolBar />
+
       <NavigatedFromLoginContext.Provider value={{ navigatedFromLogin, setnavigatedFromLogin }}>
         <UsersSettingsContext.Provider value={{ userSettings, setuserSettings }}>
           <NavigatedFromTrackerContext.Provider value={{ navigatedFromTracker, setnavigatedFromTracker }}>
@@ -53,6 +53,7 @@ export const App: React.FC = () => {
               <LoggedInUserSettingsContext.Provider value={{ loggedInUserSettings, setLoggedInUserSettings }}>
                 <DailyFoodContext.Provider value={{ dailyFood, setdailyFood }}>
                   <LoggedInIDContext.Provider value={{ loggedInID, setloggedInID }}>
+                    <CustomWindowToolBar />
                     <SignedOutContext.Provider value={{ signedOut, setsignedOut }}>
                       <Router>
                         <Switch>
@@ -63,7 +64,7 @@ export const App: React.FC = () => {
                           <Route path='/tracker' component={Tracker} />
                           <Route path='/history' render={props => (<History />)} />
                           <Route path='/settings' component={SettingsForm} />
-                          <Route path="/dashboard" render={props => (<Dashboard />)} />
+                          <Route path="/dashboard" component={Dashboard} />
                           <Route path="/signUpComplete" component={SignUpComplete}/>
                           <Route path="/:token" component={NewPassword} />
                         </Switch>

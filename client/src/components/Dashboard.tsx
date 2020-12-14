@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { LoggedInUserSettingsContext, LoggedInIDContext, DailyFoodContext, NavigatedFromTrackerContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
+import { LoggedInUserSettingsContext, LoggedInIDContext, NavigatedFromTrackerContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
 import { UserInfo } from './UserInfo';
 import { BsPencilSquare, BsCalendar } from "react-icons/bs";
 import { GiCog } from 'react-icons/gi';
@@ -11,8 +11,7 @@ import '../style/dashboard.css';
 export const Dashboard: React.FC = () => {
 
   // PAGE HISTORY HOOK FOR NAVIGATION 
-  const pageHistory: any = useHistory()
-
+  const pageHistory: any = useHistory();
   //Date Variable for checking if dailyFood needs to be History
   const todaysDate = new Date().toLocaleDateString();
 
@@ -21,11 +20,11 @@ export const Dashboard: React.FC = () => {
   const [finishLoad, setfinishLoad] = useState<boolean>(false);
 
   //CONTEXT 
-  const { navigatedFromTracker, setnavigatedFromTracker } = useContext(NavigatedFromTrackerContext)
+  const { navigatedFromTracker, setnavigatedFromTracker } = useContext(NavigatedFromTrackerContext);
   const { loggedInID } = useContext(LoggedInIDContext);
   const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
-  const { setsignedOut } = useContext(SignedOutContext)
-  const { navigatedFromLogin, setnavigatedFromLogin } = useContext(NavigatedFromLoginContext)
+  const { setsignedOut } = useContext(SignedOutContext);
+  const { navigatedFromLogin, setnavigatedFromLogin } = useContext(NavigatedFromLoginContext);
 
   // IF USER HAS NAVIGATED FROM TRACKER USER DATA WILL BE UPDATED
   useEffect(() => {
@@ -36,7 +35,7 @@ export const Dashboard: React.FC = () => {
 
   // FUNCTION TO UPDATE DATA
   const reFetchUserData = async (): Promise<void> => {
-    const response = await fetch(`/refetchUserData?userId=${loggedInID}`, {
+    const response = await fetch(`https://nutriserverside.herokuapp.com/refetchUserData?userId=${loggedInID}`, {
       method: 'GET'
     })
     const data = await response.json();
@@ -53,7 +52,7 @@ export const Dashboard: React.FC = () => {
 
   // When History tab is clicked this function will update the databse and set the previous days DailyFood to the history
   const updateHistory = async (): Promise<void> => {
-    await fetch(`http://localhost:5000/updateUserHistory?userId=${loggedInID}`, {
+    await fetch(`https://nutriserverside.herokuapp.com/updateUserHistory?userId=${loggedInID}`, {
       method: 'POST',
       body: JSON.stringify(loggedInUserSettings.usersDailyFood),
     })
@@ -69,7 +68,7 @@ export const Dashboard: React.FC = () => {
 
   // Resetting the Databses DailyFood to empty Array when it is no longer the same day.
   const resetFood = async (): Promise<void> => {
-    await fetch(`http://localhost:5000/resetFood?userId=${loggedInID}`, {
+    await fetch(`https://nutriserverside.herokuapp.com/resetFood?userId=${loggedInID}`, {
       method: 'POST',
       body: JSON.stringify([])
     })
@@ -79,20 +78,20 @@ export const Dashboard: React.FC = () => {
       })
       .catch(err => {
         console.log(err)
-      })
+      });
   };
 
 
-  useEffect(() => {
-    console.log(finishLoad)
-    console.log(navigatedFromLogin)
-    if (!finishLoad && navigatedFromLogin === true) {
-      setTimeout(() => {
-        setfinishLoad(true)
-        setnavigatedFromLogin(false)
-      }, 1500);
-    }
-  }, [])
+  // useEffect(() => {
+  //   console.log(finishLoad)
+  //   console.log(navigatedFromLogin)
+  //   if (!finishLoad && navigatedFromLogin === true) {
+  //     setTimeout(() => {
+  //       setfinishLoad(true)
+  //       setnavigatedFromLogin(false)
+  //     }, 1500);
+  //   };
+  // }, []);
 
 
   return (

@@ -10,7 +10,6 @@ import '../style/history.css';
 
 export const History: React.FC = () => {
 
-
   // Running the function when the app Renders
   useEffect(() => {
     pullHistoryFromDB()
@@ -22,30 +21,31 @@ export const History: React.FC = () => {
 
 
   //STATE
-  const [dbhistory, setdbhistory] = useState<any[][]>([])
-  const [historyCount, sethistoryCount] = useState<number>(0) //TO ACCESS INDIVIDUAL DAY OF HISTORY &&  FOR ARROW BUTTONS
+  const [dbhistory, setdbhistory] = useState<any[][]>([]);
+  const [historyCount, sethistoryCount] = useState<number>(0); //TO ACCESS INDIVIDUAL DAY OF HISTORY &&  FOR ARROW BUTTONS
   const [ready, setready] = useState<boolean>(false);
 
   // Pulls the users Current history from the Database this will be upToDate from the functions already run on the Dashboard on sign in 
-  const pullHistoryFromDB = async () => {
-    const response = await fetch(`/history?userId=${loggedInID}`, {
+  const pullHistoryFromDB = async ():Promise<void> => {
+    const response = await fetch(`https://nutriserverside.herokuapp.com/history?userId=${loggedInID}`, {
       method: 'GET'
     })
     const data = await response.json()
     setdbhistory(data);
     setready(true)
-    console.log("this is data from function")
-    console.log(data)
-  }
+    //console.log("this is data from function")
+    //console.log(data)
+  };
+
 
   useEffect(() => {
-    console.log("dbhistory useEffect Running ")
+    //console.log("dbhistory useEffect Running ")
     sethistoryCount(dbhistory.length - 1)
-  }, [dbhistory])
+  }, [dbhistory]);
 
 
   const renderHistoryPerDay = (index: any) => {
-    console.log(index)
+    //console.log(index)
     return (
       <div>
         <h3 style={{color:"#00b1b1"}}>{index[0]}</h3>
@@ -53,8 +53,8 @@ export const History: React.FC = () => {
           <h5 key={i}>{x.item_name}Kcal</h5>
         ))}
       </div>
-    )
-  }
+    );
+  };
 
 
   return (

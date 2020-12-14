@@ -7,6 +7,7 @@ interface passedProps {
 
 export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
 
+  //Context
   const { loggedInUserSettings } = useContext(LoggedInUserSettingsContext);
 
   const ProgressBar = (props: any) => {
@@ -27,7 +28,7 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
     );
   };
 
-  const getNutrientPercent = (nutrientName: any) => {
+  const getNutrientPercent = (nutrientName: string):number => {
     let total: number = 0;
     dailyFood.slice(1).map((x, i) => {
       x.hasOwnProperty(nutrientName)
@@ -37,7 +38,7 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
     return (total / helperFunc(nutrientName)) * 100;
   };
 
-  const getNutrientTotal = (nutrientName: any) => {
+  const getNutrientTotal = (nutrientName: string):number => {
     let total: number = 0;
     dailyFood.slice(1).map((x, i) => {
       console.log(x)
@@ -48,7 +49,7 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
     return total;
   };
 
-  const usersCalculatedIntake = () => {
+  const usersCalculatedIntake = ():number => {
     const copy = { ...loggedInUserSettings };
     const stats = { ...copy.usersPersonalSettings }
     let bmr, cals, heightInCm, weightInKg;
@@ -83,7 +84,7 @@ export const Stats: React.FC<passedProps> = ({ dailyFood }) => {
 
 
 
-  const helperFunc = (name: string) => {
+  const helperFunc = (name: string):number => {
     let multiplier: number = 1
     let divider: number = 1
     if (name === "nf_protein") {

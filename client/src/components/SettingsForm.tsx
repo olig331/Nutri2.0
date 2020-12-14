@@ -1,45 +1,46 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { rejects } from "assert";
+import { UserInfo } from "./UserInfo";
+import { RiDashboardFill } from "react-icons/ri";
+import '../style/settingsForm.css';
 import {
   UsersSettingsContext,
   LoggedInUserSettingsContext,
   LoggedInIDContext,
   UserAuthedContext,
 } from "../Context/Context";
-import { Link, useHistory } from "react-router-dom";
-import { rejects } from "assert";
-import { UserInfo } from "./UserInfo";
-import { RiContrastDropLine, RiDashboardFill } from "react-icons/ri";
-import { BsArrowLeftShort } from "react-icons/bs";
-import '../style/settingsForm.css';
+
 
 export const SettingsForm: React.FC = () => {
+
   const ageArray: number[] = Array.from(Array(100), (_, i) => i + 1);
 
   const pageHistory = useHistory();
 
+  //Context
   const { userAuthed } = useContext(UserAuthedContext);
   const { userSettings, setuserSettings } = useContext(UsersSettingsContext);
-  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(
-    LoggedInUserSettingsContext
-  );
-  const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
+  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const { loggedInID } = useContext(LoggedInIDContext);
 
     
-  const handleSettingsOnChange = (e: any) => {
+  const handleSettingsOnChange = (e: any):void => {
     var nestedCopy = loggedInUserSettings === undefined
       ? { ...userSettings.usersPersonalSettings }
       : {...loggedInUserSettings.usersPersonalSettings};
 
-    console.log(nestedCopy);
+    //console.log(nestedCopy);
     var fullCopy = { ...userSettings };
     nestedCopy[e.target.name] = e.target.value;
     fullCopy.usersPersonalSettings = nestedCopy;
     setuserSettings(fullCopy);
   };
 
+
   // ADD NEW USER TO MONGODB
   const userSetUpComplete = async (): Promise<void> => {
-    await fetch("http://localhost:5000/createUser", {
+    await fetch("https://nutriserverside.herokuapp.com/createUser", {
       method: "POST",
       body: JSON.stringify(userSettings),
     })
@@ -54,18 +55,18 @@ export const SettingsForm: React.FC = () => {
   };
 
   const sendComfEmail = async ():Promise<void> =>{
-    const response = await fetch("http://localhost:5000/sendConfEmail", {
+    const response = await fetch("https://nutriserverside.herokuapp.com/sendConfEmail", {
       method:"POST",
       body: JSON.stringify(userSettings)
     });
     
     const data = await response.json();
-    console.log(data);
-  }
+    //console.log(data);
+  };
 
   const saveUserSettings = async (): Promise<void> => {
-    console.log(userSettings.usersPersonalSettings);
-    const response = await fetch(`/updateUsersSettings?userId=${loggedInID}`, {
+    //console.log(userSettings.usersPersonalSettings);
+    const response = await fetch(`https://nutriserverside.herokuapp.com/updateUsersSettings?userId=${loggedInID}`, {
       method: "POST",
       body: JSON.stringify(userSettings.usersPersonalSettings),
     });

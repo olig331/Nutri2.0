@@ -7,14 +7,17 @@ import { TiTick } from "react-icons/ti";
 import "../style/userSetUp.css";
 
 export const UserSetUp: React.FC = () => {
+
+  // import images
   const importAll = (r: any) => {
     return r.keys().map(r);
   };
-  
+
   //if you get TS context error --- npm install -D @types/webpack-env
   let images = importAll(
-    require.context("../UserIcons", false, /\.(png|jpe?g|svg)$/)
+    require.context("../UserIcons", true, /\.(png|jpe?g|svg)$/)
   );
+
 
   //STATE
   const [checkComplete, setcheckComplete] = useState<boolean>(false);
@@ -34,11 +37,11 @@ export const UserSetUp: React.FC = () => {
   };
 
   // Function access the databse and matches a username to the input Field if null is returned Validation failed
-  const validateUserName = async () => {
+  const validateUserName = async ():Promise<boolean> => {
     const name = userSettings.userName;
-    console.log(name);
+    //console.log(name);
     const response = await fetch(
-      `http://localhost:5000/validateUserName?name=${name}`,
+      `https://nutriserverside.herokuapp.com/validateUserName?name=${name}`,
       {
         method: "GET",
       }
@@ -47,22 +50,22 @@ export const UserSetUp: React.FC = () => {
     if (data.status === 200) {
       setuniqueName(true);
       next();
-      return true
+      return true;
     } else {
       setuniqueName(false);
-      return false
+      return false;
     }
   };
 
   const validateForm = async ():Promise<void> =>{
     if(await validateUserName() && passwordsMatch && checkEmail()){
-      console.log("tests passed")
       setcheckComplete(true);
     } 
+    return;
   } 
 
   // Setting username to be passed onto settings to complete setup
-  const settingName = (e: React.FormEvent<HTMLInputElement>) => {
+  const settingName = (e: React.FormEvent<HTMLInputElement>):void => {
     console.log(validEmail)
     if([e.currentTarget.name].toString() === "email"){
       if(e.currentTarget.value === ""){
@@ -77,20 +80,22 @@ export const UserSetUp: React.FC = () => {
   };
 
   // Selecting The users icon and saving to state
-  const selectAvatar = (src: string) => {
+  const selectAvatar = (src: string):void => {
     let userSettingsCopy = { ...userSettings };
     userSettingsCopy.userPicture = src;
     setuserSettings(userSettingsCopy);
+    return;
   };
 
   // Matches the two passwords together 
-  const passwordMatcher = (e: React.FormEvent<HTMLInputElement>) => {
+  const passwordMatcher = (e: React.FormEvent<HTMLInputElement>):void => {
     if (userSettings.password !== e.currentTarget.value) {
       setpasswordsMatch(false);
     } else {
       setpasswordsMatch(true);
     }
     setconfirmPassword(e.currentTarget.value);
+    return;
   };
 
 
@@ -100,13 +105,12 @@ export const UserSetUp: React.FC = () => {
     if (regex.test(userSettings.email)) {
       setvalidEmail(true);
       return true;
-    } else {
-      setvalidEmail(false); 
-      return false;
-    }
+    };
+    setvalidEmail(false); 
+    return false;
   };
 
-  const toggleShowImg = () => {
+  const toggleShowImg = ():void => {
     showImgPopUp ? setshowImgPopUp(false) : setshowImgPopUp(true);
   };
 
@@ -120,7 +124,7 @@ export const UserSetUp: React.FC = () => {
               onClick={toggleShowImg}
               src={
                 userSettings.userPicture === ""
-                  ? images[0]
+                  ? images[0].default
                   : userSettings.userPicture
               }
               alt="User Avatar"
@@ -134,15 +138,15 @@ export const UserSetUp: React.FC = () => {
                 </span>
                 {/* // <div ref={node}> */}
                 <br />
-                {images.map((src: string, index: number) => (
+                {images.map((src: any, index: number) => (
                   <img
                     key={index}
                     onClick={() => {
-                      selectAvatar(src);
+                      selectAvatar(src.default);
                       toggleShowImg();
                     }}
                     style={{ width: "75px", height: "75px" }}
-                    src={src}
+                    src={src.default}
                   />
                 ))}
               </div>

@@ -15,15 +15,15 @@ export const ForgotUserName: React.FC = () => {
   };
 
   // Sends email to user upon completion of forgot username form
-  const retreieveUserName = async () => {
-    const response = await fetch("http://localhost:5000/forgotUserName", {
+  const retreieveUserName = async ():Promise<void> => {
+    const response = await fetch("https://nutriserverside.herokuapp.com/forgotUserName", {
       method: "POST",
       body: JSON.stringify({
         email: forgotDeatilsEmail,
       }),
     });
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
     setresponseFromMailReq(data.message);
   };
 

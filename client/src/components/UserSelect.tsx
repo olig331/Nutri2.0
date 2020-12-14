@@ -1,45 +1,55 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { LoggedInUserSettingsContext, UserAuthedContext, LoggedInIDContext, SignedOutContext, NavigatedFromLoginContext } from '../Context/Context';
 import { Link, useHistory } from 'react-router-dom';
-import Logo from '../imgs/NutriLogo.png'
+import Logo from '../imgs/NutriLogo.png';
 import { RiUserAddLine } from 'react-icons/ri';
 import '../style/userSelect.css';
 
 
 export const UserSelect: React.FC = () => {
 
+  // const getIp = async () =>{
+  //   const response = await fetch("https://ipgeolocation.abstractapi.com/v1/?api_key=13109748f2a64efc9ff327573580b6da")
+
+  //   const data = await response.json();
+  //   console.log(data);
+
+  // }
+
+  // getIp()
+
   // For navigation through the application
-  const pageHistory = useHistory()
+  const pageHistory = useHistory();
 
   //STATE
   const [enterUserName, setenterUserName] = useState<string>("");
-  const [password, setpassword] = useState<string>("")
+  const [password, setpassword] = useState<string>("");
   const [loginattemptfailed, setloginattemptfailed] = useState<boolean>(false);
-  const [forgotPasswordPopUp, setforgotPasswordPopUp] = useState<boolean>(false)
+  //const [forgotPasswordPopUp, setforgotPasswordPopUp] = useState<boolean>(false)
 
   // CONTEXT
-  const { navigatedFromLogin, setnavigatedFromLogin } = useContext(NavigatedFromLoginContext)
-  const { loggedInID, setloggedInID } = useContext(LoggedInIDContext);
-  const { userAuthed, setuserAuthed } = useContext(UserAuthedContext);
-  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
-  const { signedOut, setsignedOut } = useContext(SignedOutContext)
+  const { setnavigatedFromLogin } = useContext(NavigatedFromLoginContext)
+  const { setloggedInID } = useContext(LoggedInIDContext);
+  const { setuserAuthed } = useContext(UserAuthedContext);
+  const { setLoggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const { signedOut } = useContext(SignedOutContext);
 
   // SETTING STATE FROM LOG IN INPUT 
-  const enteredUserName = (e: React.FormEvent<HTMLInputElement>) => {
+  const enteredUserName = (e: React.FormEvent<HTMLInputElement>):void => {
     setenterUserName(e.currentTarget.value);
     setloginattemptfailed(false);
-  }
+  };
 
   // SETTING STATE FOR ENTERED PASSWORD
-  const enteredPassword = (e: React.FormEvent<HTMLInputElement>) => {
+  const enteredPassword = (e: React.FormEvent<HTMLInputElement>):void => {
     setpassword(e.currentTarget.value);
     setloginattemptfailed(false);
-  }
+  };
 
 
   // CHECK IF USER EXISTS ON DB ? LOGIN : REJECT 
-  const login = async () => {
-    const response = await fetch(`http://localhost:5000/login`, {
+  const login = async ():Promise<void> => {
+    const response = await fetch(`https://nutriserverside.herokuapp.com/login`, {
       method: "POST",
       body: JSON.stringify({ userName: enterUserName, passWord: password })
     })
@@ -47,7 +57,7 @@ export const UserSelect: React.FC = () => {
     console.log(data)
     delete data.password;
     if (data !== "401") {
-      console.log("user Found")
+      //console.log("user Found")
       setuserAuthed(true)
       setloggedInID(data._id);
       setLoggedInUserSettings(data)
@@ -55,21 +65,21 @@ export const UserSelect: React.FC = () => {
       pageHistory.replace("/dashboard") // will navigate to /dashboard page on succesfull user auth
     } else {
       setloginattemptfailed(true)
-    }
+    };
   };
  
 
 
   // if user signed out calling refresh to set all app state back to default
   useEffect(() => {
-    signedOut ? refreshApp() : console.log("no refresh needed")
-  }, [])
+    signedOut ? refreshApp() : console.log("no refresh needed");
+  }, []);
 
 
 
-  const refreshApp = () => {
-    window.location.reload()
-  }
+  const refreshApp = ():void => {
+    window.location.reload();
+  };
 
 
   return (

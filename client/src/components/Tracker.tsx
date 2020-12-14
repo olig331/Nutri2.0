@@ -1,45 +1,45 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Search } from "./Search";
 import { Stats } from "./Stats";
-import { Link } from "react-router-dom";
-import {
-  LoggedInUserSettingsContext,
-  DailyFoodContext,
-  LoggedInIDContext,
-  NavigatedFromTrackerContext,
-} from "../Context/Context";
+import { useHistory } from "react-router-dom";
 import { UserInfo } from "./UserInfo";
 import { RiDashboardFill } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
 import "../style/tracker.css";
 import { CreateCustomItem } from "./CreateCustomItem";
 import {AddACustomFood} from './AddACustomFood';
+import {
+  LoggedInUserSettingsContext,
+  DailyFoodContext,
+  LoggedInIDContext,
+  NavigatedFromTrackerContext,
+} from "../Context/Context";
+
+
+
 
 
 export const Tracker: React.FC = () => {
+
+  const pageHistory = useHistory();
+
   //Context
   const { loggedInID } = useContext(LoggedInIDContext);
   const { dailyFood, setdailyFood } = useContext(DailyFoodContext);
-  const { loggedInUserSettings, setLoggedInUserSettings } = useContext(
-    LoggedInUserSettingsContext
-  );
-  const { setnavigatedFromTracker } = useContext(
-    NavigatedFromTrackerContext
-  );
+  const { loggedInUserSettings } = useContext(LoggedInUserSettingsContext);
+  const { setnavigatedFromTracker } = useContext(NavigatedFromTrackerContext);
 
   // State
   const [customResults, setcustomResults] = useState<CustomAddObj[]>();
 
-  const refetchCustomAdds = async () => {
+  const refetchCustomAdds = async ():Promise<void> => {
     const response = await fetch(
-      `http://localhost:5000/fetchCustomAdds?userId=${loggedInID}`,
-      {
+      `https://nutriserverside.herokuapp.com/fetchCustomAdds?userId=${loggedInID}`, {
         method: "GET",
       }
     );
     const data = await response.json();
-    console.log("this is refetch data V");
-    console.log(data);
+    //console.log(data);
     setcustomResults(data);
   };
 
@@ -52,47 +52,36 @@ export const Tracker: React.FC = () => {
   useEffect(() => {
     console.log("running on mount first useEffect");
     getDailyFood();
-  }, []);
+  }, []); 
 
-  const updateUsersDailyFood = async () => {
-    await fetch(`http://localhost:5000/updateUsersFood?userId=${loggedInID}`, {
+
+  const updateUsersDailyFood = async ():Promise<void> => {
+    console.log("updateUserDailyFoodFunc");
+    await fetch(`https://nutriserverside.herokuapp.com/updateUsersFood?userId=${loggedInID}`, {
       method: "POST",
       body: JSON.stringify(dailyFood),
     })
-      .then((res) => {
-        console.log(res);
-        setdailyFood([]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setdailyFood([]);
+    console.log("updated");
+    return;
   };
 
-  const serchCustomFoods = (): void => {
-    console.log("seraching customss");
-  };
 
   // Pull daily Food from the Database will only return If the data is the same date as when posted due to funtions on Dashboard
-  const getDailyFood = async () => {
+  const getDailyFood = async ():Promise<void> => {
     const response = await fetch(
-      `http://localhost:5000/getDailyFood?userId=${loggedInID}`,
+      `https://nutriserverside.herokuapp.com/getDailyFood?userId=${loggedInID}`,
       {
         method: "GET",
       }
     );
     const data = await response.json();
-    console.log("data should be shown from get dailyfood");
-    console.log(data);
+    //console.log(data);
     setdailyFood(data);
   };
 
-  window.onbeforeunload = () => {
-    updateUsersDailyFood();
-  };
 
-  const calcCustomWeightAdditions = (
-    item: responseItemsFields | CustomAddObj,
-    weight: number ) => {
+  const calcCustomWeightAdditions = (item: responseItemsFields | CustomAddObj,weight: number ) => {
 
       let newItemVals = { ...item };
       let prevWeight: any = item.nf_serving_weight_grams;
@@ -136,13 +125,11 @@ export const Tracker: React.FC = () => {
         copy.push(newItemVals);
         setdailyFood(copy);
       }
-      console.log(copy);
   };
 
   //Add a search item to dailyFood State
-  const addApiItemFromSearch = (
-    item: responseItemsFields | CustomAddObj
-  ): void => {
+  const addApiItemFromSearch = (item: responseItemsFields | CustomAddObj): void => {
+
     let copy: any[] = [...dailyFood];
     if (copy.length === 0) {
       copy.push(new Date().toLocaleDateString());
@@ -152,14 +139,11 @@ export const Tracker: React.FC = () => {
       copy.push(item);
       setdailyFood(copy);
     }
-    console.log(copy);
   };
 
   // Remove an item from DailyFood
   const removeItem = (indexOfItem: number): void => {
     let dailyFoodCopy = [...dailyFood];
-    console.log(dailyFoodCopy);
-    console.log(indexOfItem);
     dailyFoodCopy.splice(indexOfItem + 1, 1);
     setdailyFood(dailyFoodCopy);
   };
@@ -178,17 +162,15 @@ export const Tracker: React.FC = () => {
       </div>
       {/*  */}
   
-      <Link to="/dashboard">
         <div
-          onClick={() => {
-            updateUsersDailyFood();
-            setnavigatedFromTracker(true);
+          onClick={async () => {
+            await updateUsersDailyFood();
+             pageHistory.replace("/dashboard")
           }}
           className="dashboard_button"
         >
           <RiDashboardFill />
         </div>
-      </Link>
       {/*  */}
         
       <div className="bottom_half">
@@ -226,7 +208,6 @@ export const Tracker: React.FC = () => {
         <div className="create_a_custom_item">
           <CreateCustomItem 
             refetchCustomAdds={refetchCustomAdds}
-            customResults={customResults}
           />
         </div>
         {/*  */}

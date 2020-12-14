@@ -1,14 +1,14 @@
-import React,{useState, useContext, useEffect} from 'react'
+import React,{useState, useContext} from 'react';
 import { LoggedInIDContext, LoggedInUserSettingsContext } from '../Context/Context';
 import {BsChevronDoubleUp, BsChevronDoubleDown} from 'react-icons/bs';
 
 interface passedFunc {
   refetchCustomAdds:()=>void;
-  customResults: CustomAddObj[] | undefined
-}
+};
 
-export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds, customResults}) => {
+export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds}) => {
 
+  // Defauly state for ease of resetting to defaut
   const defaultCustomAddVals: CustomAddObj = {
     item_name: "",
     nf_serving_weight_grams: undefined,
@@ -20,23 +20,20 @@ export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds, custom
     nf_sugars: undefined,
   };
 
+  //Context
   const {loggedInID} = useContext(LoggedInIDContext);
   const {loggedInUserSettings} = useContext(LoggedInUserSettingsContext);
 
   const [showcustomAdd, setshowcustomAdd] = useState<boolean>(false);
   const [itemAddedResMessage, setitemAddedResMessage] = useState<string>("");
-  const [customAddVals, setcustomAddVals] = useState<CustomAddObj>({
-       ...defaultCustomAddVals,
-  });
+  const [customAddVals, setcustomAddVals] = useState<CustomAddObj>({...defaultCustomAddVals});
 
  
 
-  const submitCustomItem = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const submitCustomItem = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    console.log("submitted");
-    const response = await fetch("http://localhost:5000/addToCustomList", {
+    //console.log("submitted");
+    const response = await fetch("https://nutriserverside.herokuapp.com/addToCustomList", {
       method: "POST",
       body: JSON.stringify({
         payload: customAddVals,
@@ -44,7 +41,7 @@ export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds, custom
       }),
     });
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
     setitemAddedResMessage(data.message);
     refetchCustomAdds();
 
@@ -59,10 +56,7 @@ export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds, custom
     showcustomAdd ? setshowcustomAdd(false) : setshowcustomAdd(true);
   };
 
-  const handleCustomFoodOnChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    fieldName: string
-  ): void => {
+  const handleCustomFoodOnChange = (e: React.ChangeEvent<HTMLInputElement>,fieldName: string): void => {
     var copy: any = { ...customAddVals };
     if (fieldName !== "item_name") {
       copy[fieldName] = parseInt(e.currentTarget.value);
@@ -193,5 +187,5 @@ export const CreateCustomItem:React.FC<passedFunc> = ({refetchCustomAdds, custom
             ""
           )}
         </div>
-  )
-}
+  );
+};

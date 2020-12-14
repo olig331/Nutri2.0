@@ -1,32 +1,54 @@
 {
   "name": "nutri",
-  "version": "0.1.0",
-  "main": "public/electron.tsx",
-  "private": true,
-  "proxy": "http://localhost:5000",
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "electron-is-dev": "^1.2.0",
-    "firebase": "^7.19.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-icons": "^3.11.0",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
-    "typescript": "~3.7.2"
-  },
+  "version": "1.0.0",
+  "description": "Nutrional Tracking Application",
+  "main": "build/electron.js",
+  "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "win" : "react-scripts build --win",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "bundle": "webpack",
+    "postinstall": "electron-builder install-app-deps",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "electron-builder build -w",
+    "electron-dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -w"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/react-router-dom": "^5.1.6",
+    "@types/webpack-env": "^1.16.0",
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.2",
+    "electron": "^11.0.3",
+    "electron-builder": "^22.9.1",
+    "html-webpack-plugin": "^4.5.0",
+    "wait-on": "^5.2.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "babel-loader": "^8.1.0",
+    "electron-is-dev": "^1.2.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-icons": "^4.1.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.1",
+    "regedit": "^3.0.3",
+    "typescript": "^4.1.2",
+    "webpack": "^4.44.2"
   },
   "browserslist": {
     "production": [
@@ -40,16 +62,37 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@types/node": "^12.12.62",
-    "@types/react": "^16.9.46",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-router-dom": "^5.1.5",
-    "@types/webpack-env": "^1.15.3",
-    "concurrently": "^5.3.0",
-    "cross-env": "^7.0.2",
-    "electron": "^9.2.0",
-    "electron-builder": "^22.8.0",
-    "wait-on": "^5.2.0"
+  "author": {
+    "name": "Oliver Giles ",
+    "email": "nutri.trouble.help@gmail.com"
+  },
+  "build": {
+    "appId": "com.myapp.nutri",
+    "productName": "nutri",
+    "target": "NSIS",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "protocols":[{
+      "name": "nutri",
+      "role": "Viewer",
+      "schemes": ["nutri"]
+   }],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": false,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": false,
+      "installerIcon": "build/favicon.ico",
+      "uninstallerIcon": "build/favicon.ico"
+    },
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "build/nurtiLogo.png"
+    }
   }
 }

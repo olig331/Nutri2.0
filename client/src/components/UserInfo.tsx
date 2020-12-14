@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { LoggedInUserSettingsContext } from "../Context/Context";
 
 export const UserInfo: React.FC = () => {
+  
+  //Context
   const { loggedInUserSettings } = useContext(LoggedInUserSettingsContext);
 
   return (
