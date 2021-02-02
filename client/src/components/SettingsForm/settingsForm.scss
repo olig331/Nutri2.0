@@ -1,0 +1,177 @@
+@import "../../style/mixins.scss";
+
+// .settings_form_parent{
+//   height: 100vh;
+//   button{
+//     @include loginSetupButtons();
+//   }
+//   .settings_table_container{
+//     height: 100%;
+//     @include columnFlex(column);
+
+//     .right_side{
+
+//       @include columnFlex(row);
+
+//       .container {
+
+//         display: block;
+//         position: relative;
+//         padding-left: 35px;
+//         margin-bottom: 12px;
+//         cursor: pointer;
+//         font-size: 22px;
+//         -webkit-user-select: none;
+//         -moz-user-select: none;
+//         -ms-user-select: none;
+//         user-select: none;
+
+//       }
+
+//       /* Hide the browser's default checkbox */
+//       .container input {
+//         position: absolute;
+//         opacity: 0;
+//         cursor: pointer;
+//         height: 0;
+//         width: 0;
+//       }
+
+//       /* Create a custom checkbox */
+//       .checkmark {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         height: 25px;
+//         width: 25px;
+//         background-color: #eee;
+//       }
+
+//       /* On mouse-over, add a grey background color */
+//       .container:hover input ~ .checkmark {
+//         background-color: #ccc;
+//       }
+
+//       /* When the checkbox is checked, add a blue background */
+//       .container input:checked ~ .checkmark {
+//         background-color: #2196F3;
+//       }
+
+//       /* Create the checkmark/indicator (hidden when not checked) */
+//       .checkmark:after {
+//         content: "";
+//         position: absolute;
+//         display: none;
+//       }
+
+//       /* Show the checkmark when checked */
+//       .container input:checked ~ .checkmark:after {
+//         display: block;
+//       }
+
+//       /* Style the checkmark/indicator */
+//       .container .checkmark:after {
+//         left: 9px;
+//         top: 5px;
+//         width: 5px;
+//         height: 10px;
+//         border: solid white;
+//         border-width: 0 3px 3px 0;
+//         -webkit-transform: rotate(45deg);
+//         -ms-transform: rotate(45deg);
+//         transform: rotate(45deg);
+//       }
+//     }
+//   }
+// }
+
+.settings_form_parent {
+	color: whitesmoke;
+	.settings_table_container {
+		//border: 1px solid white;
+		height: 100vh;
+		@include columnFlex(column);
+		button {
+			@include loginSetupButtons();
+			width: 320px;
+		}
+		td {
+			padding: 0.5rem 0;
+			padding-right: 2rem;
+			font-size: 1.2rem;
+			color: $main-clr;
+			//border-bottom: 2px solid $main-clr;
+			//height: 50px;
+			input {
+				position: relative;
+				@include inputBar();
+				width: 75px;
+				&::selection {
+					color: $main-clr;
+					background-color: $main-clr;
+				}
+				&:hover {
+					cursor: pointer;
+				}
+				&:focus {
+					outline: 1px solid $main-clr;
+				}
+			}
+
+			//   input[type='radio']:after {
+			//     width: 15px;
+			//     height: 15px;
+			//     border-radius: 15px;
+			//     top: -2px;
+			//     left: -1px;
+			//     position: absolute;
+			//     background-color: #d1d3d1;
+			//     content: '';
+			//     display: inline-block;
+			//     visibility: visible;
+			//     border: 2px solid white;
+			// }
+			input[type="radio"] {
+				height: 20px;
+			}
+
+			// input[type='radio']:checked:after {
+			//     width: 15px;
+			//     height: 15px;
+			//     border-radius: 15px;
+			//     top: -2px;
+			//     left: -1px;
+			//     position: absolute;
+			//     background-color: #ffa500;
+			//     content: '';
+			//     display: inline-block;
+			//     visibility: visible;
+			//     border: 2px solid white;
+			// }
+			select {
+				@include inputBar();
+				width: 86px;
+				height: 32px;
+			}
+		}
+
+		.left_side {
+			//border-right: 1px solid $main-clr;
+			font-size: 1.5rem;
+		}
+		.right_side {
+			min-height: 50px;
+			border-bottom: 2px solid $main-clr;
+			padding-left: 2rem;
+			color: whitesmoke;
+			display: flex;
+			justify-content: space-evenly;
+			flex-direction: column;
+			align-items: flex-end;
+			position: relative;
+		}
+		.activity {
+			border-bottom: none;
+		}
+	}
+}

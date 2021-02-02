@@ -1,0 +1,18 @@
+@import "../../style/mixins.scss";
+
+.signup_complete_container {
+	margin-top: -80px;
+	height: 100vh;
+	color: whitesmoke;
+	letter-spacing: 0.09rem;
+	@include columnFlex(column);
+	span {
+		color: $main-clr;
+	}
+	p {
+		margin-top: 30px;
+	}
+	button {
+		@include loginSetupButtons();
+	}
+}

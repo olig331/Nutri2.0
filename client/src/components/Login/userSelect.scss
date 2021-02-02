@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap");
+@import "../../style/mixins.scss";
+
+.user_select_parent {
+	position: absolute;
+	left: 50%;
+	top: 40%;
+	transform: translate(-50%, -40%);
+
+	.login_inputs {
+		//imported from mixins flex center center column
+		@include columnFlex(column);
+
+		// Nutri Logo Img
+		img {
+			@include logoImgWH();
+		}
+
+		// UserName and Password Fields
+		input {
+			//imported from ./mixins
+			@include inputBar();
+		}
+
+		// Login / Forgot Password / Forgot Username / Sign up Buttons
+		button {
+			//imported from ./mixins
+			@include loginSetupButtons();
+		}
+
+		// Forgot Password and forgot username parent container
+		.forgot_buttons {
+			// Overwriting some of the mixin default vals
+			button {
+				width: 180px;
+				margin-left: 0.1rem;
+				margin-right: 0.1rem;
+				background-color: #00b1b1;
+				box-shadow: none;
+				color: whitesmoke;
+				font-size: 1.05rem;
+				letter-spacing: 0.1rem;
+				font-weight: 550;
+				&:hover {
+					transition: 0.2s linear;
+					cursor: pointer;
+					box-shadow: none;
+					color: #fff;
+					background-color: #009696;
+				}
+			}
+		}
+
+		// Sign up parent
+		.create_user {
+			//imported from mixins flex center center column
+			@include columnFlex(column);
+			margin-top: 1.5rem;
+			border: 2px solid #00b1b1;
+			border-radius: 50%;
+			height: 80px;
+			width: 80px;
+			span {
+				color: #00b1b1;
+				margin-bottom: -20px;
+				margin-top: 20px;
+				font-size: 1.6rem;
+			}
+			h5 {
+				color: #00b1b1;
+				font-size: 15px;
+			}
+			&:hover {
+				cursor: pointer;
+				background-color: #00b1b1;
+				transition: 0.2s linear;
+				span {
+					color: whitesmoke;
+				}
+				h5 {
+					color: whitesmoke;
+				}
+			}
+		}
+	}
+}

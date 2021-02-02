@@ -1,0 +1,20 @@
+@import "../../../style/mixins.scss";
+
+.forgot_username_parent {
+	position: absolute;
+	left: 50%;
+	top: 23%;
+	transform: translate(-50%, -23%);
+	.items {
+		@include columnFlex(column);
+		img {
+			@include logoImgWH();
+		}
+		input {
+			@include inputBar();
+		}
+		button {
+			@include loginSetupButtons();
+		}
+	}
+}
