@@ -111,6 +111,12 @@
           color: $main-clr;
           background-color: $main-clr;
         }
+        &:hover{
+          cursor: pointer;
+        }
+        &:focus{
+          outline: 1px solid $main-clr;
+        }
       }
 
     //   input[type='radio']:after {

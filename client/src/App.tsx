@@ -7,7 +7,7 @@ import './style/style.css';
 import { LoggedInUserSettingsContext, DailyFoodContext, UserAuthedContext, LoggedInIDContext, NavigatedFromTrackerContext, UsersSettingsContext, SignedOutContext, NavigatedFromLoginContext } from './Context/Context';
 import { UserSelect } from './components/UserSelect';
 import { SettingsForm } from './components/SettingsForm';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { NewPassword } from './components/NewPassword';
 import { ForgotUserName } from './components/ForgotUserName';
 import { ForgotPassword } from './components/ForgotPassword';
@@ -15,7 +15,19 @@ import './style/style.css'
 import { CustomWindowToolBar } from './components/CustomWindowToolBar';
 import { SignUpComplete } from './components/SignUpComplete';
 
+
 export const App: React.FC = () => {
+
+  // import images
+  const importAll = (r: any) => {
+    return r.keys().map(r);
+  };
+
+  //if you get TS context error --- npm install -D @types/webpack-env
+  let images = importAll(
+    require.context("./UserIcons", true, /\.(png|jpe?g|svg)$/)
+  );
+
 
   const [navigatedFromLogin, setnavigatedFromLogin] = useState<boolean>(false);
   const [userAuthed, setuserAuthed] = useState<boolean>(false)
@@ -26,7 +38,7 @@ export const App: React.FC = () => {
   const [navigatedFromTracker, setnavigatedFromTracker] = useState<boolean>(false)
   const [userSettings, setuserSettings] = useState<UsersType>({
     userName: "",
-    userPicture: "/static/media/bear.60975053.png",
+    userPicture: images[0].default,
     password: "",
     email: "",
     usersPersonalSettings: {
@@ -42,6 +54,7 @@ export const App: React.FC = () => {
     usersDailyFood: [],
     usersHistory: []
   });
+
 
   return (
     <div className="app">

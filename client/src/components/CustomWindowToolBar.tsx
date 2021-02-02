@@ -8,6 +8,27 @@ import { useHistory } from "react-router-dom";
 const ipcRenderer = window.require("electron").ipcRenderer;
 
 export const CustomWindowToolBar: React.FC = () => {
+
+  const [isOnline, setisOnline] = useState<boolean>(true);
+
+  const updateOnlineStatus = () => {
+    ipcRenderer.send(
+      "online-status-changed",
+      navigator.onLine ? "online" : "offline"
+    );
+  };
+
+  window.addEventListener("online", () => {
+    updateOnlineStatus();
+    setisOnline(true);
+  });
+  window.addEventListener("offline", () => {
+    updateOnlineStatus();
+    setisOnline(false);
+  });
+
+  setTimeout(updateOnlineStatus, 20000);
+
   const pageHistory = useHistory();
   console.log(pageHistory);
   //State
@@ -69,6 +90,17 @@ export const CustomWindowToolBar: React.FC = () => {
         <img src={logo} alt="Logo Icon" />
         <span>Nutri </span> <span className="divider">|</span> Personal
         Nutritonal Tracking App
+        <h5 className="online_status">
+          <div
+            className="online_indicator"
+            style={
+              isOnline
+                ? { backgroundColor: "rgb(8, 235, 8)" }
+                : { backgroundColor: "red" }
+            }
+          ></div>
+          {isOnline ? "Online" : "Offline"}
+        </h5>
       </div>
 
       <div className="title_buttons">

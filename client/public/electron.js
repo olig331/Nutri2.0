@@ -1,5 +1,4 @@
 const electron = require('electron');
-//const ipcMain = require('electron').ipcMain;
 const app = electron.app;
 const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
@@ -9,11 +8,10 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const { webContents } = require('electron');
 
-console.log(url)
-console.log("this is electron log")
 
 let mainWindow;
 let deepLinkUrl;
+let onlineStatus;
 
 const protocol = electron.protocol;
 const PROTOCOL_PREFIX = 'nutri';
@@ -29,16 +27,14 @@ if (!locked) {
 		// argv: An array of the second instance’s (command line / deep linked) arguments
 		if (process.platform == 'win32') {
 			// Keep only command line / deep linked arguments
-			deepLinkUrl = argv.slice(1)
+			deepLinkUrl = argv.slice(2).toString().replace('nutri:/', "");
 		}
-		logEverywhere("app.makeSingleInstance# " + deepLinkUrl);
-		console.log("app.makesingleInstance# " + deepLinkUrl)
-		console.log(deepLinkUrl)
 
 		if (mainWindow) {
 			if (mainWindow.isMinimized()) mainWindow.restore()
 			mainWindow.focus()
 		}
+		mainWindow.webContents.send('protocol-route', `${deepLinkUrl}`)
 	}))
 }
 
@@ -46,6 +42,15 @@ if (!locked) {
 // 	app.quit()
 // 	return;
 // }
+
+app.whenReady().then(() => {
+	onlineStatus = new BrowserWindow({ width: 0, height: 0, show: false })
+	onlineStatus.loadURL(`file://${__dirname}/index.html`)
+})
+
+ipcMain.on('online-status-changed', (event, status) => {
+	console.log(status)
+})
 
 
 function createWindow() {
@@ -73,14 +78,14 @@ function createWindow() {
 
 	if (isDev) {
 		//Open Dev Tools
-		mainWindow.webContents.openDevTools();
+		//mainWindow.webContents.openDevTools();
 		//console.log(webContents.getAllWebContents());
 	}
 	//console.log(win.webContents.getURL())
-	mainWindow.webContents.openDevTools();
+	//mainWindow.webContents.openDevTools();
 	//console.log(webContents.getURL())
 
-	console.log(webContents.getAllWebContents());
+	//console.log(webContents.getAllWebContents());
 	mainWindow.on('closed', () => mainWindow = null);
 	mainWindow.setMenu(null);
 	mainWindow.setResizable(true);

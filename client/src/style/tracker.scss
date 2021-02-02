@@ -71,6 +71,7 @@
         margin-top: 2px;
         margin-left: -1px;
         div {
+          background-color: rgb(216, 212, 212);
           border: 1px solid $bg-clr;
           //display: flex;
           //align-items: center;
@@ -190,7 +191,6 @@
         bottom: 1%;
         transform: translate(-50%, 1%);
         @include columnFlex(column);
-
         h5 {
           margin-bottom: 2px;
           font-size: 1.1rem;
@@ -227,6 +227,7 @@
           margin: 0;
           padding: 0;
           div {
+            background-color:rgb(216, 212, 212);
             //width: 100%;
             border: 1.5px solid $bg-clr;
             color: black;

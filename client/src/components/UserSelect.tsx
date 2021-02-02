@@ -4,6 +4,8 @@ import { Link, useHistory } from 'react-router-dom';
 import Logo from '../imgs/NutriLogo.png';
 import { RiUserAddLine } from 'react-icons/ri';
 import '../style/userSelect.css';
+import { LoadingWheel } from './LoadingWheel';
+const ipcRenderer = window.require("electron").ipcRenderer;
 
 
 export const UserSelect: React.FC = () => {
@@ -25,6 +27,7 @@ export const UserSelect: React.FC = () => {
   const [enterUserName, setenterUserName] = useState<string>("");
   const [password, setpassword] = useState<string>("");
   const [loginattemptfailed, setloginattemptfailed] = useState<boolean>(false);
+  const [renderLoader, setrenderLoader] = useState<boolean>(false);
   //const [forgotPasswordPopUp, setforgotPasswordPopUp] = useState<boolean>(false)
 
   // CONTEXT
@@ -47,8 +50,16 @@ export const UserSelect: React.FC = () => {
   };
 
 
+  ipcRenderer.on('protocol-route', function(ev:any, route:any){
+    console.log("protocol-route called from main process");
+    console.log(pageHistory);
+    pageHistory.push(route);
+    console.log(pageHistory);
+  })
+
   // CHECK IF USER EXISTS ON DB ? LOGIN : REJECT 
   const login = async ():Promise<void> => {
+      setrenderLoader(true);
     const response = await fetch(`https://nutriserverside.herokuapp.com/login`, {
       method: "POST",
       body: JSON.stringify({ userName: enterUserName, passWord: password })
@@ -113,10 +124,11 @@ export const UserSelect: React.FC = () => {
         <button 
           className="login_button"
           onClick={() => {
-            login(); 
-            console.log(password) 
+            login();
           }}>
           Log In
+          
+          {/* {!loginattemptfailed && renderLoader ? <LoadingWheel width={"5px"} height={"5px"}/> : "" } */}
         </button>
 
 

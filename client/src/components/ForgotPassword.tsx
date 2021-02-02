@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { isJSDocParameterTag } from "typescript";
 import Logo from "../imgs/NutriLogo.png";
 import "../style/forgotPassword.css";
 
@@ -59,7 +58,7 @@ export const ForgotPassword: React.FC = () => {
 
     console.log(ipAdress)
     const response = await fetch(
-      "http://localhost:5000/forgotPassword",
+      "https://nutriserverside.herokuapp.com/forgotPassword",
       {
         method: "POST",
         body: JSON.stringify({

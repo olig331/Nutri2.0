@@ -2,7 +2,7 @@
   "name": "nutri",
   "version": "1.0.0",
   "description": "Nutrional Tracking Application",
-  "main": "build/electron.js",
+  "main": "public/electron.js",
   "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
@@ -89,10 +89,10 @@
       "uninstallerIcon": "build/favicon.ico"
     },
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "build"
     },
     "win": {
-      "icon": "build/nurtiLogo.png"
+      "icon": "build/logo.png"
     }
   }
 }
