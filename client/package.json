@@ -7,7 +7,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "win" : "react-scripts build --win",
+    "win": "react-scripts build --win",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "bundle": "webpack",
@@ -74,11 +74,15 @@
       "build/**/*",
       "node_modules/**/*"
     ],
-    "protocols":[{
-      "name": "nutri",
-      "role": "Viewer",
-      "schemes": ["nutri"]
-   }],
+    "protocols": [
+      {
+        "name": "nutri",
+        "role": "Viewer",
+        "schemes": [
+          "nutri"
+        ]
+      }
+    ],
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": false,
